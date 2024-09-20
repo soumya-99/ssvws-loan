@@ -37,6 +37,8 @@ const HomeScreen = () => {
     const [groupNames, setGroupNames] = useState(() => [])
     const [groupCode, setGroupCode] = useState(() => "") // grp_code
 
+    const [fullUserDetails, setFullUserDetails] = useState(() => "")
+
     const handleFetchGroupNames = async () => {
         setGroupNames(() => [])
         await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${110}`).then(res => {
@@ -92,10 +94,32 @@ const HomeScreen = () => {
         handleFetchEducations()
     }, [])
 
-    const fetchClientDetails = async () => {
-        await axios.get(`${ADDRESSES.FETCH_CLIENT_DETAILS}`).then(res => {
+    const fetchClientDetails = async (flag, data) => {
+        const creds = {
+            flag: flag,
+            user_dt: data
+        }
 
-        }).catch()
+        await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
+            if (res?.data?.suc === 1) {
+                // setFullUserDetails(JSON.stringify(res?.data?.msg[0]))
+                setClientName(res?.data?.msg[0]?.client_name)
+                setClientMobile(res?.data?.msg[0]?.client_mobile)
+                setGuardianName(res?.data?.msg[0]?.gurd_name)
+                setGuardianMobile(res?.data?.msg[0]?.gurd_mobile)
+                setClientAddress(res?.data?.msg[0]?.client_addr)
+                setClientPin(res?.data?.msg[0]?.pin_no)
+                setAadhaarNumber(res?.data?.msg[0]?.aadhar_no)
+                setPanNumber(res?.data?.msg[0]?.pan_no)
+                setReligion(res?.data?.msg[0]?.religion)
+                setCaste(res?.data?.msg[0]?.caste)
+                setEducation(res?.data?.msg[0]?.education)
+                setGroupCode(res?.data?.msg[0]?.prov_grp_code)
+                setDob(new Date(res?.data?.msg[0]?.dob))
+            }
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
+        })
     }
 
     const handleSubmitBasicDetails = async () => {
@@ -138,10 +162,6 @@ const HomeScreen = () => {
         })
     }
 
-    // const validateUser = async () => {
-
-    // }
-
     return (
         <SafeAreaView>
             {/* <ActivityIndicator size={'large'} /> */}
@@ -156,7 +176,7 @@ const HomeScreen = () => {
                     borderBottomRightRadius: 30
                 }}>
                     <View style={{
-                        padding: 20,
+                        padding: 15,
                     }}>
                         <Text variant="headlineLarge" style={{
                             color: theme.colors.onSecondaryContainer,
@@ -175,9 +195,9 @@ const HomeScreen = () => {
                     gap: 8
                 }}>
                     <Divider />
-                    <InputPaper label="Mobile No." keyboardType="phone-pad" value={clientMobile} onChangeText={(txt: any) => setClientMobile(txt)} />
-                    <InputPaper label="Aadhaar No." keyboardType="numeric" value={aadhaarNumber} onChangeText={(txt: any) => setAadhaarNumber(txt)} />
-                    <InputPaper label="PAN No." keyboardType="numeric" value={panNumber} onChangeText={(txt: any) => setPanNumber(txt)} />
+                    <InputPaper label="Mobile No." keyboardType="phone-pad" value={clientMobile} onChangeText={(txt: any) => setClientMobile(txt)} onBlur={() => fetchClientDetails("M", clientMobile)} />
+                    <InputPaper label="Aadhaar No." keyboardType="numeric" value={aadhaarNumber} onChangeText={(txt: any) => setAadhaarNumber(txt)} onBlur={() => fetchClientDetails("A", aadhaarNumber)} />
+                    <InputPaper label="PAN No." keyboardType="numeric" value={panNumber} onChangeText={(txt: any) => setPanNumber(txt)} onBlur={() => fetchClientDetails("P", panNumber)} />
                     <InputPaper label="Client Name" value={clientName} onChangeText={(txt: any) => setClientName(txt)} />
                     <InputPaper label="Guarian Name" value={guardianName} onChangeText={(txt: any) => setGuardianName(txt)} />
                     <InputPaper label="Guardian Mobile No." keyboardType="phone-pad" value={guardianMobile} onChangeText={(txt: any) => setGuardianMobile(txt)} />
