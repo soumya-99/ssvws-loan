@@ -72,7 +72,7 @@ const GroupFormScreen = () => {
                 }}>
                     <Divider />
 
-                    <InputPaper label="Group Name" keyboardType="default" value={groupName} onChangeText={(txt: any) => setGroupName(txt)} />
+                    <InputPaper label="Group Name" leftIcon='account-group-outline' keyboardType="default" value={groupName} onChangeText={(txt: any) => setGroupName(txt)} />
 
                     <List.Item
                         title="Choose Group Type"
@@ -86,9 +86,9 @@ const GroupFormScreen = () => {
                         }}
                     />
 
-                    <InputPaper label="Address" keyboardType="default" value={address} onChangeText={(txt: any) => setAddress(txt)} />
-                    <InputPaper label="Mobile No." keyboardType="phone-pad" value={phoneNo} onChangeText={(txt: any) => setPhoneNo(txt)} />
-                    <InputPaper label="Email Id." keyboardType="email-address" value={emailId} onChangeText={(txt: any) => setEmailId(txt)} />
+                    <InputPaper label="Address" leftIcon='card-account-phone-outline' keyboardType="default" value={address} onChangeText={(txt: any) => setAddress(txt)} />
+                    <InputPaper label="Mobile No." leftIcon='phone' keyboardType="phone-pad" value={phoneNo} onChangeText={(txt: any) => setPhoneNo(txt)} />
+                    <InputPaper label="Email Id." leftIcon='email-outline' keyboardType="email-address" value={emailId} onChangeText={(txt: any) => setEmailId(txt)} />
 
                     <View style={{
                         flexDirection: "row",
