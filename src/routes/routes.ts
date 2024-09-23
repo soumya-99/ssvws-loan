@@ -3,6 +3,7 @@ const navigationRoutes = {
     register: "Register",
     createPinScreen: "CreatePinScreen",
     homeScreen: "HomeScreen",
+    grtFormScreen: "GRTFormScreen",
     groupFormScreen: "GroupFormScreen",
     bottomNavigationPaper: "BottomNavigationPaper",
     homeNavigation: "HomeNavigation",

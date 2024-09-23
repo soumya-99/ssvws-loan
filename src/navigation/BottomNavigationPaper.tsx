@@ -5,6 +5,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { usePaperColorScheme } from "../theme/theme"
 import SettingsNavigation from "./SettingsNavigation"
 import HomeNavigation from "./HomeNavigation"
+import GRTNavigation from "./GRTNavigation"
+import GroupNavigation from "./GroupNavigation"
 // import ReportsNavigation from "./ReportsNavigation"
 // import MoreNavigation from "./MoreNavigation"
 // import CalculateNavigation from "./CalculateModeNavigation"
@@ -52,6 +54,40 @@ function BottomNavigationPaper() {
                             />
                         ) : (
                             <MaterialCommunityIcons name="home" color={color} size={26} />
+                        ),
+                }}
+            />
+            <Tab.Screen
+                name="GRT"
+                component={GRTNavigation}
+                options={{
+                    tabBarLabel: "GRT Form",
+                    tabBarIcon: ({ color, focused }) =>
+                        !focused ? (
+                            <MaterialCommunityIcons
+                                name="form-select"
+                                color={color}
+                                size={26}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
+                        ),
+                }}
+            />
+            <Tab.Screen
+                name="GROUPCREATE"
+                component={GroupNavigation}
+                options={{
+                    tabBarLabel: "Create Group",
+                    tabBarIcon: ({ color, focused }) =>
+                        !focused ? (
+                            <MaterialCommunityIcons
+                                name="account-multiple-plus-outline"
+                                color={color}
+                                size={26}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons name="account-multiple-plus" color={color} size={26} />
                         ),
                 }}
             />

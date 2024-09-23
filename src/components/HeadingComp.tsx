@@ -13,7 +13,7 @@ const HeadingComp = ({
         <View style={{
             backgroundColor: theme.colors.primaryContainer,
             margin: 20,
-            paddingVertical: 25,
+            paddingVertical: 30,
             borderTopLeftRadius: 30,
             borderBottomRightRadius: 30
         }}>

@@ -10,7 +10,7 @@ export default function HomeNavigation() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name={navigationRoutes.homeScreen} component={HomeScreen} />
-            <Stack.Screen name={navigationRoutes.groupFormScreen} component={GroupFormScreen} />
+            {/* <Stack.Screen name={navigationRoutes.groupFormScreen} component={GroupFormScreen} /> */}
             {/* <Stack.Screen
                 name={navigationRoutes.productsScreen}
                 component={ProductsScreen}

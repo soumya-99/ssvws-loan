@@ -11,4 +11,8 @@ export const ADDRESSES = {
     SAVE_BASIC_DETAILS: `${BASE_URL}/save_basic_dtls`,
     FETCH_CLIENT_DETAILS: `${BASE_URL}/fetch_validation`,
     SAVE_GROUP: `${BASE_URL}/save_group`,
+
+    GET_STATES: `${BASE_URL}/get_state`,
+    GET_DISTS: `${BASE_URL}/get_district`,
+    GET_BLOCKS: `${BASE_URL}/get_block`,
 }
