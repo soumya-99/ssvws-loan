@@ -10,10 +10,14 @@ import MenuPaper from "../components/MenuPaper"
 import axios from "axios"
 import { ADDRESSES } from '../config/api_list'
 import { clearStates } from "../utils/clearStates"
+import { CommonActions, useNavigation } from '@react-navigation/native'
+import navigationRoutes from '../routes/routes'
+import HeadingComp from "../components/HeadingComp"
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
     // 110 -> Branch Code
+    const navigation = useNavigation()
 
     // created_by
     const [dob, setDob] = useState(() => new Date()) //dob
@@ -37,7 +41,7 @@ const HomeScreen = () => {
     const [groupNames, setGroupNames] = useState(() => [])
     const [groupCode, setGroupCode] = useState(() => "") // grp_code
 
-    const [fullUserDetails, setFullUserDetails] = useState(() => "")
+    // const [fullUserDetails, setFullUserDetails] = useState(() => "")
 
     const handleFetchGroupNames = async () => {
         setGroupNames(() => [])
@@ -123,7 +127,10 @@ const HomeScreen = () => {
     }
 
     const handleCreateNewGroup = () => {
-        console.log("New group created!")
+        // console.log("New group created!")
+        navigation.dispatch(CommonActions.navigate({
+            name: navigationRoutes.groupFormScreen,
+        }))
     }
 
     const handleSubmitBasicDetails = async () => {
@@ -172,7 +179,7 @@ const HomeScreen = () => {
             <ScrollView style={{
                 backgroundColor: theme.colors.background
             }}>
-                <View style={{
+                {/* <View style={{
                     backgroundColor: theme.colors.primaryContainer,
                     margin: 20,
                     paddingVertical: 25,
@@ -184,15 +191,14 @@ const HomeScreen = () => {
                     }}>
                         <Text variant="headlineLarge" style={{
                             color: theme.colors.onSecondaryContainer,
-                            // textAlign: "left",
                         }}>GRT Form</Text>
                         <Text variant="bodyLarge" style={{
                             color: theme.colors.onSecondaryContainer,
-                            // textAlign: "left",
                         }}>Basic Details</Text>
                     </View>
 
-                </View>
+                </View> */}
+                <HeadingComp title="GRT Form" subtitle="Basic Details" />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 10,
@@ -282,16 +288,6 @@ const HomeScreen = () => {
                             color: theme.colors.primary,
                         }}
                     />
-
-                    {/* <TouchableRipple onPress={() => handleCreateNewGroup()} style={{
-                        alignSelf: "flex-end",
-                        bottom: 20,
-                        right: 20
-                    }}>
-                        <Text variant='bodyMedium' style={{
-                            color: "red"
-                        }}>Can't find group?</Text>
-                    </TouchableRipple> */}
 
                     <ButtonPaper mode='text' onPress={handleCreateNewGroup} icon="account-multiple-plus-outline">
                         Create New Group

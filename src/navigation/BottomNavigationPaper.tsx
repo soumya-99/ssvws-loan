@@ -3,7 +3,7 @@ import React from 'react'
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import { usePaperColorScheme } from "../theme/theme"
-// import SettingsNavigation from "./SettingsNavigation"
+import SettingsNavigation from "./SettingsNavigation"
 import HomeNavigation from "./HomeNavigation"
 // import ReportsNavigation from "./ReportsNavigation"
 // import MoreNavigation from "./MoreNavigation"
@@ -88,7 +88,7 @@ function BottomNavigationPaper() {
                             />
                         ),
                 }}
-            />
+            /> */}
             <Tab.Screen
                 name="Settings"
                 component={SettingsNavigation}
@@ -105,7 +105,7 @@ function BottomNavigationPaper() {
                             <MaterialCommunityIcons name="cog" color={color} size={26} />
                         ),
                 }}
-            /> */}
+            />
 
         </Tab.Navigator>
     )

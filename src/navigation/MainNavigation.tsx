@@ -2,20 +2,18 @@ import React, { useContext } from "react"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import LoginScreen from "../screens/LoginScreen"
 import navigationRoutes from "../routes/routes"
-// import { AppStore } from "../context/AppContext"
 import { NavigationContainer } from "@react-navigation/native"
 import BottomNavigationPaper from "./BottomNavigationPaper"
-import NoInternetScreen from "../screens/NoInternetScreen.tsx"
+import NoInternetScreen from "../screens/NoInternetScreen"
 import { useNetInfo } from "@react-native-community/netinfo"
-// import { AppStoreContext } from "../models/custom_types"
+import { AppStore } from "../context/AppContext"
 
 export default function MainNavigation() {
     const Stack = createNativeStackNavigator()
     const { isConnected } = useNetInfo()
     console.log("NET INFOOOOOOO", isConnected)
 
-    // const { isLogin } = useContext(AppStore)
-    var isLogin = true
+    const { isLogin } = useContext<any>(AppStore)
 
     return (
         <>
