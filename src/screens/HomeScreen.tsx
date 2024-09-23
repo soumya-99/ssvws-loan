@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, View, ScrollView, Alert, ToastAndroid } from 'react-native'
-import { List, Text, Divider, ActivityIndicator } from "react-native-paper"
+import { List, Text, Divider, ActivityIndicator, TouchableRipple } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { formattedDate } from "../utils/dateFormatter"
 import InputPaper from "../components/InputPaper"
@@ -120,6 +120,10 @@ const HomeScreen = () => {
         }).catch(err => {
             ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
         })
+    }
+
+    const handleCreateNewGroup = () => {
+        console.log("New group created!")
     }
 
     const handleSubmitBasicDetails = async () => {
@@ -279,8 +283,23 @@ const HomeScreen = () => {
                         }}
                     />
 
+                    {/* <TouchableRipple onPress={() => handleCreateNewGroup()} style={{
+                        alignSelf: "flex-end",
+                        bottom: 20,
+                        right: 20
+                    }}>
+                        <Text variant='bodyMedium' style={{
+                            color: "red"
+                        }}>Can't find group?</Text>
+                    </TouchableRipple> */}
 
-                    <ButtonPaper mode="contained" onPress={handleSubmitBasicDetails}>
+                    <ButtonPaper mode='text' onPress={handleCreateNewGroup} icon="account-multiple-plus-outline">
+                        Create New Group
+                    </ButtonPaper>
+
+                    <ButtonPaper mode="contained" onPress={handleSubmitBasicDetails} style={{
+                        marginBottom: 10
+                    }}>
                         SUBMIT
                     </ButtonPaper>
                 </View>
