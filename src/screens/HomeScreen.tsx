@@ -188,7 +188,7 @@ const HomeScreen = () => {
                     // paddingTop: 10,
                     gap: 8
                 }}>
-                    <Text>{JSON.stringify(loginStore)}</Text>
+                    <Text variant='bodySmall'>{JSON.stringify(loginStore)}</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>

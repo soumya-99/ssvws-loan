@@ -87,7 +87,7 @@ const GroupFormScreen = () => {
                     />
 
                     <InputPaper label="Address" leftIcon='card-account-phone-outline' keyboardType="default" value={address} onChangeText={(txt: any) => setAddress(txt)} />
-                    <InputPaper label="Mobile No." leftIcon='phone' keyboardType="phone-pad" value={phoneNo} onChangeText={(txt: any) => setPhoneNo(txt)} />
+                    <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={phoneNo} onChangeText={(txt: any) => setPhoneNo(txt)} />
                     <InputPaper label="Email Id." leftIcon='email-outline' keyboardType="email-address" value={emailId} onChangeText={(txt: any) => setEmailId(txt)} />
 
                     <View style={{

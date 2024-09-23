@@ -112,8 +112,13 @@ const GRTFormScreen = () => {
             user_dt: data
         }
 
+        if (!clientMobile || !aadhaarNumber || !panNumber) {
+            // ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
+            return
+        }
+
         await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
-            if (res?.data?.suc === 1) {
+            if (res?.data?.msg?.length > 0) {
                 // setFullUserDetails(JSON.stringify(res?.data?.msg[0]))
                 setClientName(res?.data?.msg[0]?.client_name)
                 setClientMobile(res?.data?.msg[0]?.client_mobile)
@@ -143,6 +148,29 @@ const GRTFormScreen = () => {
         }))
     }
 
+    const handleResetForm = () => {
+        Alert.alert("Reset", "Are you sure about this?", [{
+            text: "Yes",
+            onPress: () => clearStates([
+                setClientName,
+                setClientMobile,
+                setGuardianName,
+                setGuardianMobile,
+                setClientAddress,
+                setClientPin,
+                setAadhaarNumber,
+                setPanNumber,
+                setReligion,
+                setCaste,
+                setEducation
+            ], "")
+        }, {
+            text: "No",
+            onPress: () => null
+        }])
+
+    }
+
     const handleSubmitBasicDetails = async () => {
         const creds = {
             branch_code: 110, // should be dynamic in future (from loginStorage)
@@ -160,6 +188,11 @@ const GRTFormScreen = () => {
             education: education, // dropdown
             dob: formattedDob,
             created_by: "Soumyadeep Mondal" // should be dynamic in future (from loginStorage)
+        }
+
+        if (!clientMobile || !aadhaarNumber || !panNumber) {
+            ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
+            return
         }
 
         await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
@@ -293,11 +326,21 @@ const GRTFormScreen = () => {
                         Create New Group
                     </ButtonPaper>
 
-                    <ButtonPaper mode="contained" onPress={handleSubmitBasicDetails} style={{
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        gap: 40,
                         marginBottom: 10
                     }}>
-                        SUBMIT
-                    </ButtonPaper>
+                        <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore">
+                            RESET FORM
+                        </ButtonPaper>
+                        <ButtonPaper mode="contained" onPress={handleSubmitBasicDetails} style={{
+
+                        }}>
+                            SUBMIT
+                        </ButtonPaper>
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
