@@ -27,7 +27,7 @@ const LoginScreen = () => {
 
     return (
         <SafeAreaView>
-            <ScrollView style={{
+            <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.surfaceVariant
             }}>
                 <View style={{

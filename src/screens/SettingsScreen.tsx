@@ -2,8 +2,11 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
 import ButtonPaper from '../components/ButtonPaper'
 import { AppStore } from '../context/AppContext'
+import { CommonActions, useNavigation } from '@react-navigation/native'
+import navigationRoutes from '../routes/routes'
 
 const SettingsScreen = () => {
+    const navigation = useNavigation()
     const { handleLogout } = useContext<any>(AppStore)
 
     const logginOut = () => {
@@ -11,7 +14,9 @@ const SettingsScreen = () => {
     }
 
     return (
-        <View>
+        <View style={{
+            padding: 20
+        }}>
             <Text>Settings</Text>
             <ButtonPaper mode='contained' icon="logout" onPress={logginOut}>LOG OUT</ButtonPaper>
         </View>

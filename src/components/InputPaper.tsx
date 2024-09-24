@@ -19,6 +19,9 @@ type InputPaperProps = {
     clearTextOnFocus?: boolean
     // themeColors?: string
     hideUnderline?: boolean
+    multiline?: boolean
+    onFocus?: () => void
+    onKeyPress?: () => void
 }
 
 const InputPaper = ({
@@ -37,10 +40,15 @@ const InputPaper = ({
     disabled,
     clearTextOnFocus,
     // themeColors,
+    multiline,
     hideUnderline = false,
+    onFocus,
+    onKeyPress,
 }: InputPaperProps) => {
     return (
         <TextInput
+            onKeyPress={onKeyPress}
+            onFocus={onFocus}
             selectTextOnFocus={selectTextOnFocus}
             mode={mode}
             keyboardType={keyboardType}
@@ -54,6 +62,7 @@ const InputPaper = ({
             // right={<TextInput.Icon icon={secureTextEntry ? "eye-off" : "eye"} onPress={() => setSecureTextEntry(!secureTextEntry)} />}
             autoFocus={autoFocus}
             maxLength={maxLength}
+            multiline={multiline}
             // underlineColor={themeColors}
             // underlineStyle={{ backgroundColor: themeColors }}
             // cursorColor={themeColors}

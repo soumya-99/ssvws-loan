@@ -1,23 +1,13 @@
-import { StyleSheet, SafeAreaView, View, ScrollView, Alert, ToastAndroid } from 'react-native'
-import { List, Text, Divider, ActivityIndicator, TouchableRipple } from "react-native-paper"
-import React, { useEffect, useState } from 'react'
-import { formattedDate } from "../utils/dateFormatter"
-import InputPaper from "../components/InputPaper"
-import ButtonPaper from "../components/ButtonPaper"
+import { StyleSheet, SafeAreaView, View, ScrollView } from 'react-native'
+import { Text } from "react-native-paper"
+import React from 'react'
 import { usePaperColorScheme } from '../theme/theme'
-import DatePicker from "react-native-date-picker"
-import MenuPaper from "../components/MenuPaper"
-import axios from "axios"
-import { ADDRESSES } from '../config/api_list'
-import { clearStates } from "../utils/clearStates"
-import { CommonActions, useNavigation } from '@react-navigation/native'
-import navigationRoutes from '../routes/routes'
+import { useNavigation } from '@react-navigation/native'
 import HeadingComp from "../components/HeadingComp"
 import { loginStorage } from '../storage/appStorage'
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
-    // 110 -> Branch Code
     const navigation = useNavigation()
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
@@ -34,7 +24,7 @@ const HomeScreen = () => {
                     // paddingTop: 10,
                     gap: 8
                 }}>
-                    <Text variant='bodySmall'>{JSON.stringify(loginStore)}</Text>
+                    <Text variant='bodyLarge'>{JSON.stringify(loginStore)}</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
