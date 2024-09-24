@@ -11,7 +11,7 @@ const LoadingOverlay = () => {
                 blurAmount={5} // Adjust this value to control the blur intensity
                 reducedTransparencyFallbackColor="rgba(0,0,0,0.7)" // Fallback for Android
             />
-            <ActivityIndicator size="large" color="#ffffff" />
+            <ActivityIndicator size="large" color="#333333" />
         </View>
     );
 };

@@ -5,6 +5,7 @@ export const ADDRESSES = {
     // UPDATE_LOGIN_FLAG: `${BASE_URL}/api/update_login_status`,
     // RECEIPT_SETTINGS: `${BASE_URL}/api/receipt_settings`,
     GROUP_NAMES: `${BASE_URL}/get_group`,
+    GROUP_NAMES_ES: `${BASE_URL}/get_group_add`,
     GET_RELIGIONS: `${BASE_URL}/get_religion`,
     GET_CASTES: `${BASE_URL}/get_caste`,
     GET_EDUCATIONS: `${BASE_URL}/get_education`,

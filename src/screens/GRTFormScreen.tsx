@@ -52,9 +52,9 @@ const GRTFormScreen = () => {
     // const [fullUserDetails, setFullUserDetails] = useState(() => "")
 
     const handleFetchGroupNames = async () => {
+        setLoading(true)
         setGroupNames(() => [])
         await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`).then(res => {
-
             console.log("================", res?.data?.msg)
 
             res?.data?.msg?.map((item, i) => (
@@ -65,6 +65,7 @@ const GRTFormScreen = () => {
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT)
         })
+        setLoading(false)
     }
 
     const handleFetchReligions = async () => {
@@ -87,7 +88,7 @@ const GRTFormScreen = () => {
                 setCastes(prev => [...prev, { title: item?.name, func: () => setCaste(item?.id) }])
             ))
         }).catch(err => {
-            ToastAndroid.show("Some error occurred {handleFetchReligions}!", ToastAndroid.SHORT)
+            ToastAndroid.show("Some error occurred {handleFetchCastes}!", ToastAndroid.SHORT)
         })
     }
 
@@ -99,7 +100,7 @@ const GRTFormScreen = () => {
                 setEducations(prev => [...prev, { title: item?.name, func: () => setEducation(item?.id) }])
             ))
         }).catch(err => {
-            ToastAndroid.show("Some error occurred {handleFetchReligions}!", ToastAndroid.SHORT)
+            ToastAndroid.show("Some error occurred {handleFetchEducations}!", ToastAndroid.SHORT)
         })
     }
 
@@ -112,7 +113,7 @@ const GRTFormScreen = () => {
 
     // useEffect(() => {
     //     setGroupNames(() => [])
-    //     const eventSource = new EventSource(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`);
+    //     const eventSource = new EventSource(`${ADDRESSES.GROUP_NAMES_ES}?branch_code=${loginStore?.brn_code}`);
 
 
     //     eventSource.addEventListener("open", (event) => {
@@ -122,10 +123,13 @@ const GRTFormScreen = () => {
     //     eventSource.addEventListener("message", (event) => {
     //         console.log("New message event:", event.data);
     //         const newData = JSON.parse(event.data);
-    //         newData?.msg?.map((item, i) => (
-    //             //@ts-ignore
-    //             setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { setGroupCode(item?.group_code); setGroupCodeName(item?.group_name) } }])
-    //         ))
+
+    //         console.log("===+++++=====++++++=====", newData)
+
+    //         // newData?.msg?.map((item, i) => (
+    //         //     //@ts-ignore
+    //         //     setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { setGroupCode(item?.group_code); setGroupCodeName(item?.group_name) } }])
+    //         // ))
     //     });
 
     //     eventSource.addEventListener("error", (event) => {
@@ -262,151 +266,150 @@ const GRTFormScreen = () => {
     return (
         <SafeAreaView>
 
-            {!loading
-                ? <ScrollView keyboardShouldPersistTaps="handled" style={{
-                    backgroundColor: theme.colors.background
+            <ScrollView keyboardShouldPersistTaps="handled" style={{
+                backgroundColor: theme.colors.background
+            }}>
+                <HeadingComp title="GRT Form" subtitle="Basic Details" />
+                <View style={{
+                    paddingHorizontal: 20,
+                    paddingTop: 10,
+                    gap: 10
                 }}>
-                    <HeadingComp title="GRT Form" subtitle="Basic Details" />
+                    <Divider />
+
+                    <List.Item
+                        title="Choose Group"
+                        description={`Group Code: ${groupCodeName}`}
+                        left={props => <List.Icon {...props} icon="account-group-outline" />}
+                        right={props => {
+                            return <MenuPaper menuArrOfObjects={groupNames} />
+                        }}
+                        descriptionStyle={{
+                            color: theme.colors.tertiary,
+                        }}
+                    />
+
+                    <Divider />
+
+                    <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={clientMobile} onChangeText={(txt: any) => setClientMobile(txt)} onBlur={() => fetchClientDetails("M", clientMobile)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
+                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={aadhaarNumber} onChangeText={(txt: any) => setAadhaarNumber(txt)} onBlur={() => fetchClientDetails("A", aadhaarNumber)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
+                    <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={panNumber} onChangeText={(txt: any) => setPanNumber(txt)} onBlur={() => fetchClientDetails("P", panNumber)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
+                    <InputPaper label="Client Name" leftIcon='account-circle-outline' value={clientName} onChangeText={(txt: any) => setClientName(txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
+                    <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={guardianName} onChangeText={(txt: any) => setGuardianName(txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
+                    <InputPaper label="Guardian Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={guardianMobile} onChangeText={(txt: any) => setGuardianMobile(txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
+                    <InputPaper label="Client Address" multiline leftIcon='card-account-phone-outline' value={clientAddress} onChangeText={(txt: any) => setClientAddress(txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                        minHeight: 95,
+                    }} />
+
+                    <InputPaper label="Client PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={clientPin} onChangeText={(txt: any) => setClientPin(txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
+                    <ButtonPaper
+                        textColor={theme.colors.primary}
+                        onPress={() => setOpenDate(true)}
+                        mode="text"
+                        icon="baby-face-outline">
+                        CHOOSE DOB: {dob?.toLocaleDateString("en-GB")}
+                    </ButtonPaper>
+                    <DatePicker
+                        modal
+                        mode="date"
+                        // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
+                        open={openDate}
+                        date={dob}
+                        onConfirm={date => {
+                            setOpenDate(false)
+                            setDob(date)
+                        }}
+                        onCancel={() => {
+                            setOpenDate(false)
+                        }}
+                    />
+
+                    <List.Item
+                        title="Choose Religion"
+                        description={`Religion: ${religion}`}
+                        left={props => <List.Icon {...props} icon="peace" />}
+                        right={props => {
+                            return <MenuPaper menuArrOfObjects={religions} />
+                        }}
+                        descriptionStyle={{
+                            color: theme.colors.tertiary,
+                        }}
+                    />
+
+                    <List.Item
+                        title="Choose Caste"
+                        description={`Caste: ${caste}`}
+                        left={props => <List.Icon {...props} icon="account-question-outline" />}
+                        right={props => {
+                            return <MenuPaper menuArrOfObjects={castes} />
+                        }}
+                        descriptionStyle={{
+                            color: theme.colors.tertiary,
+                        }}
+                    />
+
+                    <List.Item
+                        title="Choose Education"
+                        description={`Education: ${education}`}
+                        left={props => <List.Icon {...props} icon="book-education-outline" />}
+                        right={props => {
+                            return <MenuPaper menuArrOfObjects={educations} />
+                        }}
+                        descriptionStyle={{
+                            color: theme.colors.tertiary,
+                        }}
+                    />
+
                     <View style={{
-                        paddingHorizontal: 20,
-                        paddingTop: 10,
-                        gap: 10
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        gap: 40,
+                        marginBottom: 10
                     }}>
-                        <Divider />
-
-                        <List.Item
-                            title="Choose Group"
-                            description={`Group Code: ${groupCodeName}`}
-                            left={props => <List.Icon {...props} icon="account-group-outline" />}
-                            right={props => {
-                                return <MenuPaper menuArrOfObjects={groupNames} />
-                            }}
-                            descriptionStyle={{
-                                color: theme.colors.tertiary,
-                            }}
-                        />
-
-                        <Divider />
-
-                        <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={clientMobile} onChangeText={(txt: any) => setClientMobile(txt)} onBlur={() => fetchClientDetails("M", clientMobile)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                        }} />
-
-                        <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={aadhaarNumber} onChangeText={(txt: any) => setAadhaarNumber(txt)} onBlur={() => fetchClientDetails("A", aadhaarNumber)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                        }} />
-
-                        <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={panNumber} onChangeText={(txt: any) => setPanNumber(txt)} onBlur={() => fetchClientDetails("P", panNumber)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                        }} />
-
-                        <InputPaper label="Client Name" leftIcon='account-circle-outline' value={clientName} onChangeText={(txt: any) => setClientName(txt)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                        }} />
-
-                        <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={guardianName} onChangeText={(txt: any) => setGuardianName(txt)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                        }} />
-
-                        <InputPaper label="Guardian Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={guardianMobile} onChangeText={(txt: any) => setGuardianMobile(txt)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                        }} />
-
-                        <InputPaper label="Client Address" multiline leftIcon='card-account-phone-outline' value={clientAddress} onChangeText={(txt: any) => setClientAddress(txt)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                            minHeight: 95,
-                        }} />
-
-                        <InputPaper label="Client PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={clientPin} onChangeText={(txt: any) => setClientPin(txt)} customStyle={{
-                            backgroundColor: theme.colors.background,
-                        }} />
-
-                        <ButtonPaper
-                            textColor={theme.colors.primary}
-                            onPress={() => setOpenDate(true)}
-                            mode="text"
-                            icon="baby-face-outline">
-                            CHOOSE DOB: {dob?.toLocaleDateString("en-GB")}
+                        <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore">
+                            RESET FORM
                         </ButtonPaper>
-                        <DatePicker
-                            modal
-                            mode="date"
-                            // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
-                            open={openDate}
-                            date={dob}
-                            onConfirm={date => {
-                                setOpenDate(false)
-                                setDob(date)
+                        <ButtonPaper
+                            mode="contained"
+                            icon="content-save-outline"
+                            onPress={() => {
+                                Alert.alert("Create GRT", "Are you sure you want to create this GRT?", [
+                                    { text: "No", onPress: () => null },
+                                    { text: "Yes", onPress: () => handleSubmitBasicDetails() },
+                                ])
                             }}
-                            onCancel={() => {
-                                setOpenDate(false)
-                            }}
-                        />
-
-                        <List.Item
-                            title="Choose Religion"
-                            description={`Religion: ${religion}`}
-                            left={props => <List.Icon {...props} icon="peace" />}
-                            right={props => {
-                                return <MenuPaper menuArrOfObjects={religions} />
-                            }}
-                            descriptionStyle={{
-                                color: theme.colors.tertiary,
-                            }}
-                        />
-
-                        <List.Item
-                            title="Choose Caste"
-                            description={`Caste: ${caste}`}
-                            left={props => <List.Icon {...props} icon="account-question-outline" />}
-                            right={props => {
-                                return <MenuPaper menuArrOfObjects={castes} />
-                            }}
-                            descriptionStyle={{
-                                color: theme.colors.tertiary,
-                            }}
-                        />
-
-                        <List.Item
-                            title="Choose Education"
-                            description={`Education: ${education}`}
-                            left={props => <List.Icon {...props} icon="book-education-outline" />}
-                            right={props => {
-                                return <MenuPaper menuArrOfObjects={educations} />
-                            }}
-                            descriptionStyle={{
-                                color: theme.colors.tertiary,
-                            }}
-                        />
-
-                        <View style={{
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            gap: 40,
-                            marginBottom: 10
-                        }}>
-                            <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore">
-                                RESET FORM
-                            </ButtonPaper>
-                            <ButtonPaper
-                                mode="contained"
-                                icon="content-save-outline"
-                                onPress={() => {
-                                    Alert.alert("Create GRT", "Are you sure you want to create this GRT?", [
-                                        { text: "No", onPress: () => null },
-                                        { text: "Yes", onPress: () => handleSubmitBasicDetails() },
-                                    ])
-                                }}
-                                disabled={loading || !clientMobile || !aadhaarNumber || !panNumber || !clientName || !guardianName || !guardianMobile || !clientAddress || !clientPin || !dob || !religion || !caste || !education}
-                                loading={loading}
-                                buttonColor={theme.colors.primary}>
-                                SUBMIT
-                            </ButtonPaper>
-                            {/* disabled={!groupCode || !clientMobile || !aadhaarNumber || !panNumber || !clientName || !guardianName || !guardianMobile || !clientAddress || !clientPin || !dob || !religion || !caste || !education} */}
-                        </View>
+                            disabled={loading || !clientMobile || !aadhaarNumber || !panNumber || !clientName || !guardianName || !guardianMobile || !clientAddress || !clientPin || !dob || !religion || !caste || !education}
+                            loading={loading}
+                            buttonColor={theme.colors.primary}>
+                            SUBMIT
+                        </ButtonPaper>
+                        {/* disabled={!groupCode || !clientMobile || !aadhaarNumber || !panNumber || !clientName || !guardianName || !guardianMobile || !clientAddress || !clientPin || !dob || !religion || !caste || !education} */}
                     </View>
-                </ScrollView>
-                : <LoadingOverlay />}
+                </View>
+            </ScrollView>
+            {loading && <LoadingOverlay />}
             {/* <LoadingOverlay /> */}
         </SafeAreaView>
     )
