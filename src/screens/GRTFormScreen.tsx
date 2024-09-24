@@ -151,19 +151,22 @@ const GRTFormScreen = () => {
     const handleResetForm = () => {
         Alert.alert("Reset", "Are you sure about this?", [{
             text: "Yes",
-            onPress: () => clearStates([
-                setClientName,
-                setClientMobile,
-                setGuardianName,
-                setGuardianMobile,
-                setClientAddress,
-                setClientPin,
-                setAadhaarNumber,
-                setPanNumber,
-                setReligion,
-                setCaste,
-                setEducation
-            ], "")
+            onPress: () => {
+                clearStates([
+                    setClientName,
+                    setClientMobile,
+                    setGuardianName,
+                    setGuardianMobile,
+                    setClientAddress,
+                    setClientPin,
+                    setAadhaarNumber,
+                    setPanNumber,
+                    setReligion,
+                    setCaste,
+                    setEducation
+                ], "")
+                setDob(new Date())
+            }
         }, {
             text: "No",
             onPress: () => null
