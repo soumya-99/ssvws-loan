@@ -7,6 +7,7 @@ import SettingsNavigation from "./SettingsNavigation"
 import HomeNavigation from "./HomeNavigation"
 import GRTNavigation from "./GRTNavigation"
 import GroupNavigation from "./GroupNavigation"
+import navigationRoutes from '../routes/routes'
 // import ReportsNavigation from "./ReportsNavigation"
 // import MoreNavigation from "./MoreNavigation"
 // import CalculateNavigation from "./CalculateModeNavigation"
@@ -41,7 +42,7 @@ function BottomNavigationPaper() {
             compact
         >
             <Tab.Screen
-                name="Home"
+                name={navigationRoutes.homeNavigation}
                 component={HomeNavigation}
                 options={{
                     tabBarLabel: "Home",
@@ -58,7 +59,7 @@ function BottomNavigationPaper() {
                 }}
             />
             <Tab.Screen
-                name="GRT"
+                name={navigationRoutes.grtNavigation}
                 component={GRTNavigation}
                 options={{
                     tabBarLabel: "GRT Form",
@@ -75,7 +76,7 @@ function BottomNavigationPaper() {
                 }}
             />
             <Tab.Screen
-                name="GROUPCREATE"
+                name={navigationRoutes.groupNavigation}
                 component={GroupNavigation}
                 options={{
                     tabBarLabel: "Create Group",
@@ -126,7 +127,7 @@ function BottomNavigationPaper() {
                 }}
             /> */}
             <Tab.Screen
-                name="Settings"
+                name={navigationRoutes.settingsNavigation}
                 component={SettingsNavigation}
                 options={{
                     tabBarLabel: "Settings",

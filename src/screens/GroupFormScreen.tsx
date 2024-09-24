@@ -108,11 +108,11 @@ const GroupFormScreen = () => {
                         }}>
                             ADD GROUP
                         </ButtonPaper>
-                        <ButtonPaper icon="arrow-right-bottom-bold" mode="contained-tonal" onPress={() => navigation.dispatch(CommonActions.navigate({
-                            name: navigationRoutes.homeScreen
+                        {/* <ButtonPaper icon="arrow-right-bottom-bold" mode="contained-tonal" onPress={() => navigation.dispatch(CommonActions.navigate({
+                            name: "GRT"
                         }))}>
                             GO TO GRT
-                        </ButtonPaper>
+                        </ButtonPaper> */}
                     </View>
 
                 </View>

@@ -112,10 +112,10 @@ const GRTFormScreen = () => {
             user_dt: data
         }
 
-        if (!clientMobile || !aadhaarNumber || !panNumber) {
-            // ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
-            return
-        }
+        // if (!clientMobile || !aadhaarNumber || !panNumber) {
+        //     // ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
+        //     return
+        // }
 
         await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
             if (res?.data?.msg?.length > 0) {
@@ -144,7 +144,7 @@ const GRTFormScreen = () => {
     const handleCreateNewGroup = () => {
         // console.log("New group created!")
         navigation.dispatch(CommonActions.navigate({
-            name: navigationRoutes.groupFormScreen,
+            name: navigationRoutes.groupNavigation,
         }))
     }
 
@@ -173,7 +173,7 @@ const GRTFormScreen = () => {
 
     const handleSubmitBasicDetails = async () => {
         const creds = {
-            branch_code: 110, // should be dynamic in future (from loginStorage)
+            branch_code: loginStore?.brn_code,
             prov_grp_code: groupCode,
             client_name: clientName,
             client_mobile: clientMobile,
@@ -183,11 +183,11 @@ const GRTFormScreen = () => {
             pin_no: clientPin,
             aadhar_no: aadhaarNumber,
             pan_no: panNumber,
-            religion: religion, // dropdown
-            caste: caste, // dropdown
-            education: education, // dropdown
+            religion: religion,
+            caste: caste,
+            education: education,
             dob: formattedDob,
-            created_by: "Soumyadeep Mondal" // should be dynamic in future (from loginStorage)
+            created_by: loginStore?.emp_name
         }
 
         if (!clientMobile || !aadhaarNumber || !panNumber) {
@@ -211,6 +211,7 @@ const GRTFormScreen = () => {
                 setCaste,
                 setEducation
             ], "")
+            setDob(new Date())
         }).catch(err => {
             ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
         })
@@ -335,7 +336,12 @@ const GRTFormScreen = () => {
                         <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore">
                             RESET FORM
                         </ButtonPaper>
-                        <ButtonPaper mode="contained" onPress={handleSubmitBasicDetails} style={{
+                        <ButtonPaper mode="contained" icon="content-save-outline" onPress={() => {
+                            Alert.alert("Create GRT", "Are you sure you want to create this GRT?", [
+                                { text: "No", onPress: () => null },
+                                { text: "Yes", onPress: () => handleSubmitBasicDetails() },
+                            ])
+                        }} style={{
 
                         }}>
                             SUBMIT
