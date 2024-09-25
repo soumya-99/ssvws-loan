@@ -1,0 +1,77 @@
+import { StyleSheet, View } from 'react-native'
+import React, { useState } from 'react'
+import { Icon, RadioButton, Text } from 'react-native-paper'
+import { usePaperColorScheme } from '../theme/theme'
+
+interface DataArrayProps {
+    optionName: string
+    optionState: string
+    currentState: string
+    optionSetStateDispathFun: React.Dispatch<React.SetStateAction<string>>
+}
+
+interface RadioCompProps {
+    title: string
+    icon?: string
+    dataArray: Array<DataArrayProps>
+}
+
+const RadioComp = ({ title, icon, dataArray }: RadioCompProps) => {
+    const theme = usePaperColorScheme()
+
+    return (
+        <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 15,
+            paddingVertical: 5,
+        }}>
+            <View style={{
+                flexDirection: "row",
+                gap: 12
+            }}>
+                <Icon source={icon} size={28} color={theme.colors.secondary} />
+                <Text variant='bodyLarge'>{title}</Text>
+            </View>
+            <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 5
+            }}>
+                {
+                    dataArray?.map((item, i) => (
+                        <View key={i} style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 5
+                        }}>
+                            <Text>{item?.optionName}</Text>
+                            <RadioButton
+                                value={item?.optionState}
+                                status={item?.optionState === item?.currentState ? 'checked' : 'unchecked'}
+                                onPress={() => item?.optionSetStateDispathFun(item?.currentState)}
+                            />
+                        </View>
+                    ))
+                }
+                {/* <Text>YES</Text>
+                <RadioButton
+                    value="yes"
+                    status={tvAvailable === 'yes' ? 'checked' : 'unchecked'}
+                    onPress={() => setTvAvailable('yes')}
+                />
+                <Text>NO</Text>
+                <RadioButton
+                    value="no"
+                    status={tvAvailable === 'no' ? 'checked' : 'unchecked'}
+                    onPress={() => setTvAvailable('no')}
+                /> */}
+            </View>
+        </View>
+    )
+}
+
+export default RadioComp
+
+const styles = StyleSheet.create({})

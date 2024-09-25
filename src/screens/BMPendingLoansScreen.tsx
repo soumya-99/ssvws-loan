@@ -8,6 +8,7 @@ import ButtonPaper from '../components/ButtonPaper'
 import { Icon } from 'react-native-paper'
 import BMBasicDetailsForm from "./forms/BMBasicDetailsForm"
 import BMOccupationDetailsForm from "./forms/BMOccupationDetailsForm"
+import BMHouseholdDetailsForm from "./forms/BMHouseholdDetailsForm"
 
 const BMPendingLoansScreen = () => {
     const theme = usePaperColorScheme()
@@ -21,7 +22,7 @@ const BMPendingLoansScreen = () => {
         currentStepIndicatorSize: 45,
         separatorStrokeWidth: 3,
         currentStepStrokeWidth: 5,
-        stepStrokeCurrentColor: "green",
+        stepStrokeCurrentColor: "lightgreen",
         stepStrokeWidth: 2,
         stepStrokeFinishedColor: 'green',
         stepStrokeUnFinishedColor: '#CCCCCC',
@@ -63,11 +64,23 @@ const BMPendingLoansScreen = () => {
                         currentPosition={currentPosition}
                         labels={labels}
                         stepCount={4}
-                        renderStepIndicator={({ position }) => position === 0 && <Icon size={20} source="account" color='green' />}
+                        renderStepIndicator={
+                            ({ position, stepStatus }) =>
+                                position === 0
+                                    ? <Icon size={20} source="account" color='green' />
+                                    : position === 1
+                                        ? <Icon size={20} source="office-building-outline" color='green' />
+                                        : position === 2
+                                            ? <Icon size={20} source="home-city-outline" color='green' />
+                                            : position === 3
+                                                ? <Icon size={20} source="human-male-female-child" color='green' />
+                                                : null
+                        }
                     />
 
                     {currentPosition === 0 && <BMBasicDetailsForm />}
                     {currentPosition === 1 && <BMOccupationDetailsForm />}
+                    {currentPosition === 2 && <BMHouseholdDetailsForm />}
 
                     <View style={{
                         flexDirection: "row",

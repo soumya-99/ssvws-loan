@@ -22,6 +22,8 @@ const BMOccupationDetailsForm = () => {
     const [monthlyEmi, setMonthlyEmi] = useState(() => "")
 
     useEffect(() => {
+        setPurposesOfLoan([]);
+
         [{ purpose: "Some Reason 1", value: "1" }, { purpose: "Some Reason 2", value: "2" }]?.map((item, i) => (
             //@ts-ignore
             setPurposesOfLoan(prev => [...prev, { title: item?.purpose, func: () => setPurposeOfLoan(item?.value) }])
