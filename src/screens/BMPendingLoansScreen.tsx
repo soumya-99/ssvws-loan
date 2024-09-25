@@ -26,17 +26,17 @@ const BMPendingLoansScreen = () => {
         stepStrokeCurrentColor: theme.colors.greenContainer,
         stepStrokeWidth: 2,
         stepStrokeFinishedColor: theme.colors.green,
-        stepStrokeUnFinishedColor: '#CCCCCC',
+        stepStrokeUnFinishedColor: theme.colors.outlineVariant,
         separatorFinishedColor: theme.colors.onGreenContainer,
-        separatorUnFinishedColor: '#aaaaaa',
+        separatorUnFinishedColor: theme.colors.outline,
         stepIndicatorFinishedColor: theme.colors.green,
-        stepIndicatorUnFinishedColor: '#ffffff',
-        stepIndicatorCurrentColor: "white",
+        stepIndicatorUnFinishedColor: theme.colors.surface,
+        stepIndicatorCurrentColor: theme.colors.surface,
         stepIndicatorLabelFontSize: 13,
         currentStepIndicatorLabelFontSize: 13,
-        stepIndicatorLabelCurrentColor: "#000000",
-        stepIndicatorLabelFinishedColor: '#ffffff',
-        stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+        stepIndicatorLabelCurrentColor: theme.colors.onBackground,
+        stepIndicatorLabelFinishedColor: theme.colors.green,
+        stepIndicatorLabelUnFinishedColor: theme.colors.surface,
         labelColor: theme.colors.secondary,
         labelSize: 13,
         currentStepLabelColor: theme.colors.green,
@@ -68,13 +68,13 @@ const BMPendingLoansScreen = () => {
                         renderStepIndicator={
                             ({ position, stepStatus }) =>
                                 position === 0
-                                    ? <Icon size={20} source="account" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
+                                    ? <Icon size={20} source="account" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
                                     : position === 1
-                                        ? <Icon size={20} source="office-building-outline" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
+                                        ? <Icon size={20} source="office-building-outline" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
                                         : position === 2
-                                            ? <Icon size={20} source="home-city-outline" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
+                                            ? <Icon size={20} source="home-city-outline" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
                                             : position === 3
-                                                ? <Icon size={20} source="human-male-female-child" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
+                                                ? <Icon size={20} source="human-male-female-child" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
                                                 : null
                         }
                     />
