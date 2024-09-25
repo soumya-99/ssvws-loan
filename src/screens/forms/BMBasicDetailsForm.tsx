@@ -69,6 +69,7 @@ const BMBasicDetailsForm = () => {
     }
 
     const handleFetchReligions = async () => {
+        setLoading(true)
         setReligions(() => [])
         await axios.get(`${ADDRESSES.GET_RELIGIONS}`).then(res => {
             res?.data?.map((item, i) => (
@@ -78,9 +79,11 @@ const BMBasicDetailsForm = () => {
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchReligions}!", ToastAndroid.SHORT)
         })
+        setLoading(false)
     }
 
     const handleFetchCastes = async () => {
+        setLoading(true)
         setCastes(() => [])
         await axios.get(`${ADDRESSES.GET_CASTES}`).then(res => {
             res?.data?.map((item, i) => (
@@ -90,9 +93,11 @@ const BMBasicDetailsForm = () => {
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchCastes}!", ToastAndroid.SHORT)
         })
+        setLoading(false)
     }
 
     const handleFetchEducations = async () => {
+        setLoading(true)
         setEducations(() => [])
         await axios.get(`${ADDRESSES.GET_EDUCATIONS}`).then(res => {
             res?.data?.map((item, i) => (
@@ -102,6 +107,7 @@ const BMBasicDetailsForm = () => {
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchEducations}!", ToastAndroid.SHORT)
         })
+        setLoading(false)
     }
 
     useEffect(() => {
