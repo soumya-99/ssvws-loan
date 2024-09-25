@@ -72,7 +72,7 @@ const BMFamilyMemberDetailsForm = () => {
                         <InputPaper
                             label="Relation"
                             maxLength={15}
-                            leftIcon='account-cash-outline'
+                            leftIcon='account-child-outline'
                             keyboardType="default"
                             value={item?.relation}
                             onChangeText={(txt) => handleInputChange(i, 'relation', txt)}
@@ -82,7 +82,7 @@ const BMFamilyMemberDetailsForm = () => {
                         <InputPaper
                             label="Age"
                             maxLength={3}
-                            leftIcon='bag-personal-outline'
+                            leftIcon='account-clock-outline'
                             keyboardType="number-pad"
                             value={item?.age}
                             onChangeText={(txt) => handleInputChange(i, 'age', txt)}
@@ -91,7 +91,7 @@ const BMFamilyMemberDetailsForm = () => {
 
                         <RadioComp
                             title="Sex"
-                            icon="cash-multiple"
+                            icon="gender-male-female"
                             dataArray={[
                                 {
                                     optionName: "MALE",
@@ -111,7 +111,7 @@ const BMFamilyMemberDetailsForm = () => {
                         <InputPaper
                             label="Education"
                             maxLength={50}
-                            leftIcon='account-cash-outline'
+                            leftIcon='book-education-outline'
                             keyboardType="default"
                             value={item?.education}
                             onChangeText={(txt) => handleInputChange(i, 'education', txt)}
@@ -120,7 +120,7 @@ const BMFamilyMemberDetailsForm = () => {
 
                         <RadioComp
                             title="Study/Work"
-                            icon="cash-multiple"
+                            icon="office-building-cog-outline"
                             dataArray={[
                                 {
                                     optionName: "STUDY",
