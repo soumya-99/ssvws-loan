@@ -125,7 +125,7 @@ const GroupFormScreen = () => {
         <SafeAreaView>
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background,
-                // minHeight: SCREEN_HEIGHT,
+                minHeight: SCREEN_HEIGHT,
                 height: "auto",
             }}>
                 <HeadingComp title="Create Group" subtitle="Fill Details" />
@@ -133,7 +133,8 @@ const GroupFormScreen = () => {
                     paddingHorizontal: 20,
                     paddingTop: 5,
                     gap: 15,
-                    marginBottom: normalize(10)
+                    // marginBottom: normalize(10)
+                    paddingBottom: 120,
                 }}>
                     <Divider />
 

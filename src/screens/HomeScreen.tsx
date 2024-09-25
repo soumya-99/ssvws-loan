@@ -5,6 +5,7 @@ import { usePaperColorScheme } from '../theme/theme'
 import { useNavigation } from '@react-navigation/native'
 import HeadingComp from "../components/HeadingComp"
 import { loginStorage } from '../storage/appStorage'
+import { SCREEN_HEIGHT } from 'react-native-normalize'
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
@@ -15,13 +16,15 @@ const HomeScreen = () => {
     return (
         <SafeAreaView>
             {/* <ActivityIndicator size={'large'} /> */}
-            <ScrollView style={{
-                backgroundColor: theme.colors.background
+            <ScrollView keyboardShouldPersistTaps="handled" style={{
+                backgroundColor: theme.colors.background,
+                minHeight: SCREEN_HEIGHT,
+                height: "auto"
             }}>
                 <HeadingComp title="Dashboard" subtitle="Welcome CO!" />
                 <View style={{
                     paddingHorizontal: 20,
-                    // paddingTop: 10,
+                    paddingBottom: 120,
                     gap: 8
                 }}>
                     <Text variant='bodyLarge'>{JSON.stringify(loginStore)}</Text>
