@@ -23,13 +23,13 @@ const BMPendingLoansScreen = () => {
         currentStepIndicatorSize: 45,
         separatorStrokeWidth: 3,
         currentStepStrokeWidth: 5,
-        stepStrokeCurrentColor: "lightgreen",
+        stepStrokeCurrentColor: theme.colors.greenContainer,
         stepStrokeWidth: 2,
-        stepStrokeFinishedColor: 'green',
+        stepStrokeFinishedColor: theme.colors.green,
         stepStrokeUnFinishedColor: '#CCCCCC',
-        separatorFinishedColor: "forestgreen",
+        separatorFinishedColor: theme.colors.onGreenContainer,
         separatorUnFinishedColor: '#aaaaaa',
-        stepIndicatorFinishedColor: 'green',
+        stepIndicatorFinishedColor: theme.colors.green,
         stepIndicatorUnFinishedColor: '#ffffff',
         stepIndicatorCurrentColor: "white",
         stepIndicatorLabelFontSize: 13,
@@ -39,7 +39,7 @@ const BMPendingLoansScreen = () => {
         stepIndicatorLabelUnFinishedColor: '#aaaaaa',
         labelColor: theme.colors.secondary,
         labelSize: 13,
-        currentStepLabelColor: "green",
+        currentStepLabelColor: theme.colors.green,
     }
 
     return (
@@ -68,13 +68,13 @@ const BMPendingLoansScreen = () => {
                         renderStepIndicator={
                             ({ position, stepStatus }) =>
                                 position === 0
-                                    ? <Icon size={20} source="account" color='green' />
+                                    ? <Icon size={20} source="account" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
                                     : position === 1
-                                        ? <Icon size={20} source="office-building-outline" color='green' />
+                                        ? <Icon size={20} source="office-building-outline" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
                                         : position === 2
-                                            ? <Icon size={20} source="home-city-outline" color='green' />
+                                            ? <Icon size={20} source="home-city-outline" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
                                             : position === 3
-                                                ? <Icon size={20} source="human-male-female-child" color='green' />
+                                                ? <Icon size={20} source="human-male-female-child" color={stepStatus === "current" ? theme.colors.green : theme.colors.greenContainer} />
                                                 : null
                         }
                     />

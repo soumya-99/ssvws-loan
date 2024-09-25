@@ -99,7 +99,12 @@ export const usePaperColorScheme = () => {
                 },
                 "surfaceDisabled": "rgba(234, 225, 217, 0.12)",
                 "onSurfaceDisabled": "rgba(234, 225, 217, 0.38)",
-                "backdrop": "rgba(55, 47, 36, 0.4)"
+                "backdrop": "rgba(55, 47, 36, 0.4)",
+
+                "green": "rgb(156, 216, 73)",
+                "onGreen": "rgb(32, 54, 0)",
+                "greenContainer": "rgb(49, 79, 0)",
+                "onGreenContainer": "rgb(183, 245, 99)"
             },
             fonts: configureFonts({ config: fontConfig }),
         }
@@ -146,7 +151,12 @@ export const usePaperColorScheme = () => {
                 },
                 "surfaceDisabled": "rgba(31, 27, 22, 0.12)",
                 "onSurfaceDisabled": "rgba(31, 27, 22, 0.38)",
-                "backdrop": "rgba(55, 47, 36, 0.4)"
+                "backdrop": "rgba(55, 47, 36, 0.4)",
+
+                "green": "rgb(66, 105, 0)",
+                "onGreen": "rgb(255, 255, 255)",
+                "greenContainer": "rgb(183, 245, 99)",
+                "onGreenContainer": "rgb(17, 32, 0)"
             },
             fonts: configureFonts({ config: fontConfig }),
         }

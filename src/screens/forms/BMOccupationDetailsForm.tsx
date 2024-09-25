@@ -22,6 +22,7 @@ const BMOccupationDetailsForm = () => {
     const [subPurposeOfLoan, setSubPurposeOfLoan] = useState(() => "")
     const [amountApplied, setAmountApplied] = useState(() => "")
     const [checkOtherOngoingLoan, setCheckOtherOngoingLoan] = useState(() => 'yes')
+    const [otherLoanAmount, setOtherLoanAmount] = useState(() => "")
     const [monthlyEmi, setMonthlyEmi] = useState(() => "")
 
     useEffect(() => {
@@ -121,9 +122,13 @@ const BMOccupationDetailsForm = () => {
                         ]}
                     />
 
-                    {checkOtherOngoingLoan === "yes" && <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="number-pad" value={monthlyEmi} onChangeText={(txt: any) => setMonthlyEmi(txt)} customStyle={{
+                    {checkOtherOngoingLoan === "yes" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="number-pad" value={otherLoanAmount} onChangeText={(txt: any) => setOtherLoanAmount(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />}
+
+                    <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="number-pad" value={monthlyEmi} onChangeText={(txt: any) => setMonthlyEmi(txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
 
                 </View>
             </ScrollView>
