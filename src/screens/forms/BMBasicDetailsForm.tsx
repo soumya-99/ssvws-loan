@@ -1,23 +1,23 @@
 import { StyleSheet, SafeAreaView, View, ScrollView, Alert, ToastAndroid } from 'react-native'
 import { List, Divider } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
-import { formattedDate } from "../utils/dateFormatter"
-import InputPaper from "../components/InputPaper"
-import ButtonPaper from "../components/ButtonPaper"
-import { usePaperColorScheme } from '../theme/theme'
+import { formattedDate } from "../../utils/dateFormatter"
+import InputPaper from "../../components/InputPaper"
+import ButtonPaper from "../../components/ButtonPaper"
+import { usePaperColorScheme } from '../../theme/theme'
 import DatePicker from "react-native-date-picker"
-import MenuPaper from "../components/MenuPaper"
+import MenuPaper from "../../components/MenuPaper"
 import axios from "axios"
-import { ADDRESSES } from '../config/api_list'
-import { clearStates } from "../utils/clearStates"
+import { ADDRESSES } from '../../config/api_list'
+import { clearStates } from "../../utils/clearStates"
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import navigationRoutes from '../routes/routes'
-import HeadingComp from "../components/HeadingComp"
-import { loginStorage } from '../storage/appStorage'
-import LoadingOverlay from "../components/LoadingOverlay"
+import navigationRoutes from '../../routes/routes'
+import HeadingComp from "../../components/HeadingComp"
+import { loginStorage } from '../../storage/appStorage'
+import LoadingOverlay from "../../components/LoadingOverlay"
 import EventSource from "react-native-sse";
 
-const GRTFormScreen = () => {
+const BMBasicDetailsForm = () => {
     const theme = usePaperColorScheme()
     // 110 -> Branch Code
     const navigation = useNavigation()
@@ -269,9 +269,8 @@ const GRTFormScreen = () => {
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background
             }}>
-                <HeadingComp title="GRT Form" subtitle="Basic Details" />
                 <View style={{
-                    paddingHorizontal: 20,
+                    // paddingHorizontal: 20,
                     paddingTop: 10,
                     gap: 10
                 }}>
@@ -382,7 +381,7 @@ const GRTFormScreen = () => {
                         }}
                     />
 
-                    <View style={{
+                    {/* <View style={{
                         flexDirection: "row",
                         justifyContent: "center",
                         gap: 40,
@@ -405,8 +404,16 @@ const GRTFormScreen = () => {
                             buttonColor={theme.colors.primary}>
                             SUBMIT
                         </ButtonPaper>
-                        {/* disabled={!groupCode || !clientMobile || !aadhaarNumber || !panNumber || !clientName || !guardianName || !guardianMobile || !clientAddress || !clientPin || !dob || !religion || !caste || !education} */}
-                    </View>
+                    </View> */}
+
+                    {/* <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={() => {
+                        Alert.alert("Create GRT", "Are you sure you want to create this GRT?", [
+                            { text: "No", onPress: () => null },
+                            { text: "Yes", onPress: () => handleSubmitBasicDetails() },
+                        ])
+                    }} disabled={loading || !clientMobile || !aadhaarNumber || !panNumber || !clientName || !guardianName || !guardianMobile || !clientAddress || !clientPin || !dob || !religion || !caste || !education}
+                        loading={loading}
+                        buttonColor={theme.colors.primary}>NEXT</ButtonPaper> */}
                 </View>
             </ScrollView>
             {loading && <LoadingOverlay />}
@@ -414,6 +421,6 @@ const GRTFormScreen = () => {
     )
 }
 
-export default GRTFormScreen
+export default BMBasicDetailsForm
 
 const styles = StyleSheet.create({})

@@ -9,7 +9,7 @@ export default function Main() {
   const theme = usePaperColorScheme();
   return (
     <AppContext>
-      <PaperProvider theme={theme}>
+      <PaperProvider theme={theme} settings={{rippleEffectEnabled: true}}>
         <App />
       </PaperProvider>
     </AppContext>

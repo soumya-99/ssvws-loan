@@ -12,6 +12,9 @@ const navigationRoutes = {
     settingsNavigation: "SettingsNavigation",
     settingsScreen: "SettingsScreen",
     noInternetScreen: "NoInternetScreen",
+
+    bmPendingLoansNavigation: "BMPendingLoansNavigation",
+    bmPendingLoansScreen: "BMPendingLoansScreen",
 }
 
 export default navigationRoutes

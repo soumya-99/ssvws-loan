@@ -7,8 +7,10 @@ import SettingsNavigation from "./SettingsNavigation"
 import HomeNavigation from "./HomeNavigation"
 import GRTNavigation from "./GRTNavigation"
 import GroupNavigation from "./GroupNavigation"
-import BMPendingLoansNavigation from "./BMPendingLoansNavigation"
 import navigationRoutes from '../routes/routes'
+// import ReportsNavigation from "./ReportsNavigation"
+// import MoreNavigation from "./MoreNavigation"
+// import CalculateNavigation from "./CalculateModeNavigation"
 // import useCurrentRouteName from "../hooks/useCurrentRoute"
 // import { loginStorage } from "../storage/appStorage"
 // import { LoginDataMessage } from "../models/api_types"
@@ -24,7 +26,7 @@ function BottomNavigationPaper() {
 
     // const shouldHideTabBar = ["BottomNavigationPaper", "Home", "HomeScreen", "More", "MoreScreen", "Reports", "ReportsScreen", "Settings", "SettingsScreen", "CalculateMode", "CalculateModeScreen"].includes(currentRoute)
 
-    const checkBMOrCOFlag: "C" | "B" = "B"
+    const checkBMOrCOFlag: "B" | "C" = "B"
 
     return (
         <Tab.Navigator
@@ -38,7 +40,7 @@ function BottomNavigationPaper() {
                 borderColor: theme.colors.secondaryContainer,
                 // display: shouldHideTabBar ? "flex" : "none"
             }}
-            shifting
+            // shifting
             compact
         >
             <Tab.Screen
@@ -58,65 +60,40 @@ function BottomNavigationPaper() {
                         ),
                 }}
             />
-            {checkBMOrCOFlag === "C" ? (
-                <>
-                    <Tab.Screen
-                        name={navigationRoutes.grtNavigation}
-                        component={GRTNavigation}
-                        options={{
-                            tabBarLabel: "GRT Form",
-                            tabBarIcon: ({ color, focused }) =>
-                                !focused ? (
-                                    <MaterialCommunityIcons
-                                        name="form-select"
-                                        color={color}
-                                        size={26}
-                                    />
-                                ) : (
-                                    <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
-                                ),
-                        }}
-                    />
-                    <Tab.Screen
-                        name={navigationRoutes.groupNavigation}
-                        component={GroupNavigation}
-                        options={{
-                            tabBarLabel: "Create Group",
-                            tabBarIcon: ({ color, focused }) =>
-                                !focused ? (
-                                    <MaterialCommunityIcons
-                                        name="account-multiple-plus-outline"
-                                        color={color}
-                                        size={26}
-                                    />
-                                ) : (
-                                    <MaterialCommunityIcons name="account-multiple-plus" color={color} size={26} />
-                                ),
-                        }}
-                    />
-                </>
-            )
-                : checkBMOrCOFlag === "B" ? (
-                    <Tab.Screen
-                        name={navigationRoutes.bmPendingLoansNavigation}
-                        component={BMPendingLoansNavigation}
-                        options={{
-                            tabBarLabel: "Pending Forms",
-                            tabBarIcon: ({ color, focused }) =>
-                                !focused ? (
-                                    <MaterialCommunityIcons
-                                        name="form-select"
-                                        color={color}
-                                        size={26}
-                                    />
-                                ) : (
-                                    <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
-                                ),
-                        }}
-                    />
-                )
-                    : (null)
-            }
+            <Tab.Screen
+                name={navigationRoutes.grtNavigation}
+                component={GRTNavigation}
+                options={{
+                    tabBarLabel: "GRT Form",
+                    tabBarIcon: ({ color, focused }) =>
+                        !focused ? (
+                            <MaterialCommunityIcons
+                                name="form-select"
+                                color={color}
+                                size={26}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
+                        ),
+                }}
+            />
+            <Tab.Screen
+                name={navigationRoutes.groupNavigation}
+                component={GroupNavigation}
+                options={{
+                    tabBarLabel: "Create Group",
+                    tabBarIcon: ({ color, focused }) =>
+                        !focused ? (
+                            <MaterialCommunityIcons
+                                name="account-multiple-plus-outline"
+                                color={color}
+                                size={26}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons name="account-multiple-plus" color={color} size={26} />
+                        ),
+                }}
+            />
             {/* <Tab.Screen
                 name="Reports"
                 component={ReportsNavigation}
