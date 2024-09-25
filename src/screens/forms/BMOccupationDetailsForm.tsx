@@ -121,11 +121,9 @@ const BMOccupationDetailsForm = () => {
                         ]}
                     />
 
-                    <Divider />
-
-                    <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="number-pad" value={monthlyEmi} onChangeText={(txt: any) => setMonthlyEmi(txt)} customStyle={{
+                    {checkOtherOngoingLoan === "yes" && <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="number-pad" value={monthlyEmi} onChangeText={(txt: any) => setMonthlyEmi(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} />}
 
                 </View>
             </ScrollView>
