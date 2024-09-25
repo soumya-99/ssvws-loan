@@ -5,6 +5,7 @@ import InputPaper from '../../components/InputPaper'
 import { Divider, List, RadioButton, Text } from 'react-native-paper'
 import MenuPaper from '../../components/MenuPaper'
 import LoadingOverlay from '../../components/LoadingOverlay'
+import RadioComp from '../../components/RadioComp'
 
 const BMOccupationDetailsForm = () => {
     const theme = usePaperColorScheme()
@@ -17,17 +18,27 @@ const BMOccupationDetailsForm = () => {
     const [spouseMonthlyIncome, setSpouseMonthlyIncome] = useState(() => "")
     const [purposesOfLoan, setPurposesOfLoan] = useState(() => [])
     const [purposeOfLoan, setPurposeOfLoan] = useState(() => "")
+    const [subPurposesOfLoan, setSubPurposesOfLoan] = useState(() => [])
+    const [subPurposeOfLoan, setSubPurposeOfLoan] = useState(() => "")
     const [amountApplied, setAmountApplied] = useState(() => "")
     const [checkOtherOngoingLoan, setCheckOtherOngoingLoan] = useState(() => 'yes')
     const [monthlyEmi, setMonthlyEmi] = useState(() => "")
 
     useEffect(() => {
         setPurposesOfLoan([]);
+        setSubPurposesOfLoan([]);
 
         [{ purpose: "Some Reason 1", value: "1" }, { purpose: "Some Reason 2", value: "2" }]?.map((item, i) => (
             //@ts-ignore
             setPurposesOfLoan(prev => [...prev, { title: item?.purpose, func: () => setPurposeOfLoan(item?.value) }])
-        ))
+        ));
+
+        [{ purpose: "Some Sub Reason 1", value: "1" }, { purpose: "Some Sub Reason 2", value: "2" }]?.map((item, i) => (
+            //@ts-ignore
+            setSubPurposesOfLoan(prev => [...prev, { title: item?.purpose, func: () => setSubPurposeOfLoan(item?.value) }])
+        ));
+
+
     }, [])
 
 
@@ -43,7 +54,7 @@ const BMOccupationDetailsForm = () => {
                 }}>
                     <Divider />
 
-                    <InputPaper label="Self Occupation" maxLength={10} leftIcon='bag-personal-outline' keyboardType="default" value={selfOccupation} onChangeText={(txt: any) => setSelfOccupation(txt)} customStyle={{
+                    <InputPaper label="Self Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={selfOccupation} onChangeText={(txt: any) => setSelfOccupation(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -51,7 +62,7 @@ const BMOccupationDetailsForm = () => {
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Spouse Occupation" maxLength={10} leftIcon='bag-personal-outline' keyboardType="default" value={spouseOccupation} onChangeText={(txt: any) => setSpouseOccupation(txt)} customStyle={{
+                    <InputPaper label="Spouse Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={spouseOccupation} onChangeText={(txt: any) => setSpouseOccupation(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -75,39 +86,40 @@ const BMOccupationDetailsForm = () => {
                         }}
                     />
 
+                    <List.Item
+                        title="Sub Purpose"
+                        description={`Purpose: ${subPurposeOfLoan}`}
+                        left={props => <List.Icon {...props} icon="file-question-outline" />}
+                        right={props => {
+                            return <MenuPaper menuArrOfObjects={subPurposesOfLoan} />
+                        }}
+                        descriptionStyle={{
+                            color: theme.colors.tertiary,
+                        }}
+                    />
+
                     <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="number-pad" value={amountApplied} onChangeText={(txt: any) => setAmountApplied(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <View style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        paddingHorizontal: 10,
-                        paddingVertical: 5,
-                    }}>
-                        <View>
-                            <Text variant='bodyLarge'>Other Ongoing Loans?</Text>
-                        </View>
-                        <View style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 5
-                        }}>
-                            <Text>YES</Text>
-                            <RadioButton
-                                value="yes"
-                                status={checkOtherOngoingLoan === 'yes' ? 'checked' : 'unchecked'}
-                                onPress={() => setCheckOtherOngoingLoan('first')}
-                            />
-                            <Text>NO</Text>
-                            <RadioButton
-                                value="no"
-                                status={checkOtherOngoingLoan === 'no' ? 'checked' : 'unchecked'}
-                                onPress={() => setCheckOtherOngoingLoan('no')}
-                            />
-                        </View>
-                    </View>
+                    <RadioComp
+                        title="Other Loans?"
+                        icon="cash-multiple"
+                        dataArray={[
+                            {
+                                optionName: "YES",
+                                optionState: checkOtherOngoingLoan,
+                                currentState: "yes",
+                                optionSetStateDispathFun: setCheckOtherOngoingLoan
+                            },
+                            {
+                                optionName: "NO",
+                                optionState: checkOtherOngoingLoan,
+                                currentState: "no",
+                                optionSetStateDispathFun: setCheckOtherOngoingLoan
+                            },
+                        ]}
+                    />
 
                     <Divider />
 

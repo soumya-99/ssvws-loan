@@ -9,6 +9,7 @@ import { Icon } from 'react-native-paper'
 import BMBasicDetailsForm from "./forms/BMBasicDetailsForm"
 import BMOccupationDetailsForm from "./forms/BMOccupationDetailsForm"
 import BMHouseholdDetailsForm from "./forms/BMHouseholdDetailsForm"
+import BMFamilyMemberDetailsForm from "./forms/BMFamilyMemberDetailsForm"
 
 const BMPendingLoansScreen = () => {
     const theme = usePaperColorScheme()
@@ -81,6 +82,7 @@ const BMPendingLoansScreen = () => {
                     {currentPosition === 0 && <BMBasicDetailsForm />}
                     {currentPosition === 1 && <BMOccupationDetailsForm />}
                     {currentPosition === 2 && <BMHouseholdDetailsForm />}
+                    {currentPosition === 3 && <BMFamilyMemberDetailsForm />}
 
                     <View style={{
                         flexDirection: "row",

@@ -31,7 +31,7 @@ const RadioComp = ({ title, icon, dataArray }: RadioCompProps) => {
                 flexDirection: "row",
                 gap: 12
             }}>
-                <Icon source={icon} size={28} color={theme.colors.secondary} />
+                <Icon source={icon} size={25} color={theme.colors.secondary} />
                 <Text variant='bodyLarge'>{title}</Text>
             </View>
             <View style={{
