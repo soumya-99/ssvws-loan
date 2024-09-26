@@ -9,6 +9,7 @@ import GRTNavigation from "./GRTNavigation"
 import GroupNavigation from "./GroupNavigation"
 import BMPendingLoansNavigation from "./BMPendingLoansNavigation"
 import navigationRoutes from '../routes/routes'
+import { loginStorage } from '../storage/appStorage'
 // import useCurrentRouteName from "../hooks/useCurrentRoute"
 // import { loginStorage } from "../storage/appStorage"
 // import { LoginDataMessage } from "../models/api_types"
@@ -18,13 +19,14 @@ const Tab = createMaterialBottomTabNavigator()
 function BottomNavigationPaper() {
     const theme = usePaperColorScheme()
     // const currentRoute = useCurrentRouteName()
-    // const loginStore = JSON.parse(loginStorage.getString("login-data")) as LoginDataMessage
+
+    const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     // console.log("CURRNT ROUTE: ", currentRoute)
 
     // const shouldHideTabBar = ["BottomNavigationPaper", "Home", "HomeScreen", "More", "MoreScreen", "Reports", "ReportsScreen", "Settings", "SettingsScreen", "CalculateMode", "CalculateModeScreen"].includes(currentRoute)
 
-    const checkBMOrCOFlag: "C" | "B" = "B"
+    const checkBMOrCOFlag = loginStore?.id
 
     return (
         <Tab.Navigator
@@ -58,7 +60,7 @@ function BottomNavigationPaper() {
                         ),
                 }}
             />
-            {checkBMOrCOFlag === "C" ? (
+            {checkBMOrCOFlag === 1 ? (
                 <>
                     <Tab.Screen
                         name={navigationRoutes.grtNavigation}
@@ -96,7 +98,7 @@ function BottomNavigationPaper() {
                     />
                 </>
             )
-                : checkBMOrCOFlag === "B" ? (
+                : checkBMOrCOFlag === 2 ? (
                     <Tab.Screen
                         name={navigationRoutes.bmPendingLoansNavigation}
                         component={BMPendingLoansNavigation}

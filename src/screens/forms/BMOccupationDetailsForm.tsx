@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import InputPaper from '../../components/InputPaper'
@@ -6,6 +6,8 @@ import { Divider, List, RadioButton, Text } from 'react-native-paper'
 import MenuPaper from '../../components/MenuPaper'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import RadioComp from '../../components/RadioComp'
+import axios from 'axios'
+import { ADDRESSES } from '../../config/api_list'
 
 const BMOccupationDetailsForm = () => {
     const theme = usePaperColorScheme()
@@ -18,8 +20,10 @@ const BMOccupationDetailsForm = () => {
     const [spouseMonthlyIncome, setSpouseMonthlyIncome] = useState(() => "")
     const [purposesOfLoan, setPurposesOfLoan] = useState(() => [])
     const [purposeOfLoan, setPurposeOfLoan] = useState(() => "")
+    const [purposeOfLoanName, setPurposeOfLoanName] = useState(() => "")
     const [subPurposesOfLoan, setSubPurposesOfLoan] = useState(() => [])
     const [subPurposeOfLoan, setSubPurposeOfLoan] = useState(() => "")
+    const [subPurposeOfLoanName, setSubPurposeOfLoanName] = useState(() => "")
     const [amountApplied, setAmountApplied] = useState(() => "")
     const [checkOtherOngoingLoan, setCheckOtherOngoingLoan] = useState(() => 'yes')
     const [otherLoanAmount, setOtherLoanAmount] = useState(() => "")
@@ -39,9 +43,44 @@ const BMOccupationDetailsForm = () => {
             setSubPurposesOfLoan(prev => [...prev, { title: item?.purpose, func: () => setSubPurposeOfLoan(item?.value) }])
         ));
 
-
     }, [])
 
+    const fetchPurposeOfLoan = async () => {
+        setPurposesOfLoan([]);
+        setLoading(true)
+        await axios.get(`${ADDRESSES.FETCH_PURPOSE_OF_LOAN}`).then(res => {
+            // purp_id
+            if (res?.data?.suc === 1) {
+                res?.data?.msg?.map((item, _) => (
+                    setPurposesOfLoan(prev => [...prev, { title: item?.purpose_id, func: () => { setPurposeOfLoan(item?.purp_id); setPurposeOfLoanName(item?.purpose_id) } }])
+                ))
+            }
+        }).catch(err => {
+            ToastAndroid.show("Some error while fetching Purposes of Loan!", ToastAndroid.SHORT)
+        })
+        setLoading(false)
+    }
+
+    const fetchSubPurposeOfLoan = async () => {
+        setSubPurposesOfLoan([]);
+        setLoading(true)
+        await axios.get(`${ADDRESSES.FETCH_SUB_PURPOSE_OF_LOAN}?purp_id=${purposeOfLoan}`).then(res => {
+            if (res?.data?.suc === 1) {
+                res?.data?.msg?.map((item, _) => (
+                    setSubPurposesOfLoan(prev => [...prev, { title: item?.sub_purp_name, func: () => { setSubPurposeOfLoan(item?.sub_purp_id); setSubPurposeOfLoanName(item?.sub_purp_name) } }])
+                ))
+            }
+        })
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchPurposeOfLoan()
+    }, [])
+
+    useEffect(() => {
+        fetchSubPurposeOfLoan()
+    }, [purposeOfLoan])
 
     return (
         <SafeAreaView>
@@ -77,7 +116,7 @@ const BMOccupationDetailsForm = () => {
                     }} /> */}
                     <List.Item
                         title="Purpose of Loan"
-                        description={`Purpose: ${purposeOfLoan}`}
+                        description={`Purpose: ${purposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="progress-question" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={purposesOfLoan} />

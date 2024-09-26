@@ -1,7 +1,7 @@
 import { BASE_URL } from "./config"
 
 export const ADDRESSES = {
-    CO_LOGIN: `${BASE_URL}/co_login`,
+    LOGIN: `${BASE_URL}/login_app`,
     // UPDATE_LOGIN_FLAG: `${BASE_URL}/api/update_login_status`,
     // RECEIPT_SETTINGS: `${BASE_URL}/api/receipt_settings`,
     GROUP_NAMES: `${BASE_URL}/get_group`,
@@ -16,4 +16,8 @@ export const ADDRESSES = {
     GET_STATES: `${BASE_URL}/get_state`,
     GET_DISTS: `${BASE_URL}/get_district`,
     GET_BLOCKS: `${BASE_URL}/get_block`,
+
+    FETCH_BASIC_DETAILS: `${BASE_URL}/fetch_basic_dtls`,
+    FETCH_PURPOSE_OF_LOAN: `${BASE_URL}/get_purpose`,
+    FETCH_SUB_PURPOSE_OF_LOAN: `${BASE_URL}/get_sub_purpose`,
 }

@@ -19,9 +19,9 @@ const AppContext = ({ children }) => {
 
         console.log("LOGIN-----USERNAME-----PASS", creds)
 
-        await axios.post(`${ADDRESSES.CO_LOGIN}`, creds).then(res => {
+        await axios.post(`${ADDRESSES.LOGIN}`, creds).then(res => {
             if (res?.data?.suc === 1) {
-                ToastAndroid.show("Welcome CO!", ToastAndroid.SHORT)
+                ToastAndroid.show(`${res?.data?.msg}`, ToastAndroid.SHORT)
                 loginStorage.set("login-data", JSON.stringify(res?.data?.user_dtls))
 
                 setIsLogin(true)

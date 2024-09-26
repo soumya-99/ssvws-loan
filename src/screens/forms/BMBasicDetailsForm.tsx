@@ -48,6 +48,7 @@ const BMBasicDetailsForm = () => {
     const [groupNames, setGroupNames] = useState(() => [])
     const [groupCode, setGroupCode] = useState(() => "") // grp_code
     const [groupCodeName, setGroupCodeName] = useState(() => "")
+    const [groupNamesAndCodesTemp, setGroupNamesAndCodesTemp] = useState(() => [])
 
     // const [fullUserDetails, setFullUserDetails] = useState(() => "")
 
@@ -55,12 +56,15 @@ const BMBasicDetailsForm = () => {
         setLoading(true)
         setGroupNames(() => [])
         await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`).then(res => {
-            console.log("================", res?.data?.msg)
+            setGroupNamesAndCodesTemp(res?.data?.msg)
+            console.log("XXXXXXXXXXXXXXXXXX", res?.data?.msg)
 
-            res?.data?.msg?.map((item, i) => (
-                //@ts-ignore
-                setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { setGroupCode(item?.group_code); setGroupCodeName(item?.group_name) } }])
-            ))
+            res?.data?.msg?.map((item, i) => {
+                return (
+                    //@ts-ignore
+                    setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { setGroupCode(item?.group_code); setGroupCodeName(item?.group_name) } }])
+                )
+            })
 
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT)
@@ -194,6 +198,45 @@ const BMBasicDetailsForm = () => {
     //         name: navigationRoutes.groupNavigation,
     //     }))
     // }
+
+    const fetchBasicDetails = async () => {
+        setLoading(true)
+
+        const creds = {
+            branch_code: "120",
+            form_no: "2024001002"
+        }
+
+        await axios.post(`${ADDRESSES.FETCH_BASIC_DETAILS}`, creds).then(res => {
+            if (res?.data?.suc === 1) {
+                console.log("LLLLLLLLLLLLLLLLL", res?.data?.msg[0]?.prov_grp_code)
+
+                setGroupCode(res?.data?.msg[0]?.prov_grp_code)
+                setGroupCodeName(groupNamesAndCodesTemp?.find((item) => item?.group_code === res?.data?.msg[0]?.prov_grp_code)?.group_name)
+                setClientName(res?.data?.msg[0]?.client_name)
+                setClientMobile(res?.data?.msg[0]?.client_mobile)
+                setGuardianName(res?.data?.msg[0]?.gurd_name)
+                setGuardianMobile(res?.data?.msg[0]?.gurd_mobile)
+                setClientAddress(res?.data?.msg[0]?.client_addr)
+                setClientPin(res?.data?.msg[0]?.pin_no)
+                setAadhaarNumber(res?.data?.msg[0]?.aadhar_no)
+                setPanNumber(res?.data?.msg[0]?.pan_no)
+                setReligion(res?.data?.msg[0]?.religion)
+                setCaste(res?.data?.msg[0]?.caste)
+                setEducation(res?.data?.msg[0]?.education)
+                setDob(new Date(res?.data?.msg[0]?.dob))
+
+            }
+        }).catch(err => {
+            ToastAndroid.show("Some error while fetching basic details!", ToastAndroid.SHORT)
+        })
+
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchBasicDetails()
+    }, [])
 
     const handleResetForm = () => {
         Alert.alert("Reset", "Are you sure about this?", [{

@@ -21,7 +21,7 @@ const HomeScreen = () => {
                 minHeight: SCREEN_HEIGHT,
                 height: "auto"
             }}>
-                <HeadingComp title="Dashboard" subtitle="Welcome CO!" />
+                <HeadingComp title="Dashboard" subtitle={`Welcome back ${loginStore?.id === 1 ? "Credit Officer" : "Branch Manager"}!`} />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingBottom: 120,
