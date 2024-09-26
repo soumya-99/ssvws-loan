@@ -59,7 +59,7 @@ const BMOccupationDetailsForm = () => {
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Self Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="number-pad" value={selfMonthlyIncome} onChangeText={(txt: any) => setSelfMonthlyIncome(txt)} customStyle={{
+                    <InputPaper label="Self Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={selfMonthlyIncome} onChangeText={(txt: any) => setSelfMonthlyIncome(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -67,7 +67,7 @@ const BMOccupationDetailsForm = () => {
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Spouse Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="number-pad" value={spouseMonthlyIncome} onChangeText={(txt: any) => setSpouseMonthlyIncome(txt)} customStyle={{
+                    <InputPaper label="Spouse Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={spouseMonthlyIncome} onChangeText={(txt: any) => setSpouseMonthlyIncome(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -99,7 +99,7 @@ const BMOccupationDetailsForm = () => {
                         }}
                     />
 
-                    <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="number-pad" value={amountApplied} onChangeText={(txt: any) => setAmountApplied(txt)} customStyle={{
+                    <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={amountApplied} onChangeText={(txt: any) => setAmountApplied(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -122,11 +122,11 @@ const BMOccupationDetailsForm = () => {
                         ]}
                     />
 
-                    {checkOtherOngoingLoan === "yes" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="number-pad" value={otherLoanAmount} onChangeText={(txt: any) => setOtherLoanAmount(txt)} customStyle={{
+                    {checkOtherOngoingLoan === "yes" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={otherLoanAmount} onChangeText={(txt: any) => setOtherLoanAmount(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />}
 
-                    <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="number-pad" value={monthlyEmi} onChangeText={(txt: any) => setMonthlyEmi(txt)} customStyle={{
+                    <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={monthlyEmi} onChangeText={(txt: any) => setMonthlyEmi(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 

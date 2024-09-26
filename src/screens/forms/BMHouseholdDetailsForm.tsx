@@ -48,7 +48,7 @@ const BMHouseholdDetailsForm = () => {
                 }}>
                     <Divider />
 
-                    <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="number-pad" value={noOfRooms} onChangeText={(txt: any) => setNoOfRooms(txt)} customStyle={{
+                    <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={noOfRooms} onChangeText={(txt: any) => setNoOfRooms(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -90,7 +90,7 @@ const BMHouseholdDetailsForm = () => {
 
                     <Divider />
 
-                    <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="number-pad" value={totalLand} onChangeText={(txt: any) => setTotalLand(txt)} customStyle={{
+                    <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={totalLand} onChangeText={(txt: any) => setTotalLand(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 

@@ -83,7 +83,7 @@ const BMFamilyMemberDetailsForm = () => {
                             label="Age"
                             maxLength={3}
                             leftIcon='account-clock-outline'
-                            keyboardType="number-pad"
+                            keyboardType="numeric"
                             value={item?.age}
                             onChangeText={(txt) => handleInputChange(i, 'age', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
@@ -141,7 +141,7 @@ const BMFamilyMemberDetailsForm = () => {
                             label="Monthly Income"
                             maxLength={15}
                             leftIcon='account-cash-outline'
-                            keyboardType="number-pad"
+                            keyboardType="numeric"
                             value={item?.monthlyIncome}
                             onChangeText={(txt) => handleInputChange(i, 'monthlyIncome', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
