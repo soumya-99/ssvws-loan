@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
+import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import InputPaper from '../../components/InputPaper'
@@ -8,8 +8,9 @@ import LoadingOverlay from '../../components/LoadingOverlay'
 import RadioComp from '../../components/RadioComp'
 import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
+import ButtonPaper from '../../components/ButtonPaper'
 
-const BMOccupationDetailsForm = () => {
+const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
     const theme = usePaperColorScheme()
 
     const [loading, setLoading] = useState(() => false)
@@ -27,7 +28,7 @@ const BMOccupationDetailsForm = () => {
         subPurposeOfLoan: "",
         subPurposeOfLoanName: "",
         amountApplied: "",
-        checkOtherOngoingLoan: "yes",
+        checkOtherOngoingLoan: "N",
         otherLoanAmount: "",
         monthlyEmi: "",
     })
@@ -77,6 +78,28 @@ const BMOccupationDetailsForm = () => {
     useEffect(() => {
         fetchSubPurposeOfLoan()
     }, [formData.purposeOfLoan])
+
+    const handleFormUpdate = async () => {
+        const creds = {
+            "form_no": formNumber,
+            "self_occu": formData.selfOccupation,
+            "self_income": formData.selfMonthlyIncome,
+            "spouse_occu": formData.spouseOccupation,
+            "spouse_income": formData.spouseMonthlyIncome,
+            "loan_purpose": formData.purposeOfLoan,
+            "sub_pupose": formData.subPurposeOfLoan,
+            "applied_amt": formData.amountApplied,
+            "other_loan_flag": "",
+            "other_loan_amt": "",
+            "other_loan_emi": "",
+            "political_flag": "",
+            "parental_addr": "",
+            "parental_phone": "",
+            "modified_by": "",
+            "created_by": ""
+        }
+        await axios.post(`${ADDRESSES.SAVE_OCCUPATION_DETAILS}`, creds)
+    }
 
     return (
         <SafeAreaView>
@@ -164,6 +187,14 @@ const BMOccupationDetailsForm = () => {
                     <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={formData.monthlyEmi} onChangeText={(txt: any) => handleFormChange("monthlyEmi", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
+
+                    <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                        Alert.alert("Update Basic Details", "Are you sure you want to update this?", [
+                            { text: "No", onPress: () => null },
+                            { text: "Yes", onPress: () => handleFormUpdate() },
+                        ])
+                    }} disabled={loading}
+                        loading={loading}>UPDATE</ButtonPaper>
 
                 </View>
             </ScrollView>

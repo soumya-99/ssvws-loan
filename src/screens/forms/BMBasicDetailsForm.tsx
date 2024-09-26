@@ -282,6 +282,32 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
     //     setLoading(false)
     // }
 
+    const handleUpdateBasicDetails = async () => {
+        const creds = {
+            form_no: formNumber,
+            prov_grp_code: formData.groupCode,
+            client_name: formData.clientName,
+            client_mobile: formData.clientMobile,
+            gurd_name: formData.guardianName,
+            gurd_mobile: formData.guardianMobile,
+            client_addr: formData.clientAddress,
+            pin_no: formData.clientPin,
+            aadhar_no: formData.aadhaarNumber,
+            pan_no: formData.panNumber,
+            religion: formData.religion,
+            caste: formData.caste,
+            education: formData.education,
+            dob: formattedDob,
+            modified_by: loginStore?.emp_name
+        }
+        await axios.post(`${ADDRESSES.EDIT_BASIC_DETAILS}`, creds).then(res => {
+            console.log("QQQQQQQQQQQQQQQ", res?.data)
+            ToastAndroid.show("Update Successful", ToastAndroid.SHORT)
+        }).catch(err => {
+            ToastAndroid.show("Some error while updating basic details!", ToastAndroid.SHORT)
+        })
+    }
+
     const renderLoader = () => loading && <LoadingOverlay />;
 
     return (
@@ -427,14 +453,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                         </ButtonPaper>
                     </View> */}
 
-                    {/* <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={() => {
-                        Alert.alert("Create GRT", "Are you sure you want to create this GRT?", [
+                    <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                        Alert.alert("Update Basic Details", "Are you sure you want to update this?", [
                             { text: "No", onPress: () => null },
-                            { text: "Yes", onPress: () => handleSubmitBasicDetails() },
+                            { text: "Yes", onPress: () => handleUpdateBasicDetails() },
                         ])
-                    }} disabled={loading || !clientMobile || !aadhaarNumber || !panNumber || !clientName || !guardianName || !guardianMobile || !clientAddress || !clientPin || !dob || !religion || !caste || !education}
-                        loading={loading}
-                        buttonColor={theme.colors.primary}>NEXT</ButtonPaper> */}
+                    }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education}
+                        loading={loading}>UPDATE</ButtonPaper>
                 </View>
             </ScrollView>
             {/* {loading && (
