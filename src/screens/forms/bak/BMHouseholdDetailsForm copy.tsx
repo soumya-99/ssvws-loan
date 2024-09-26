@@ -12,45 +12,26 @@ const BMHouseholdDetailsForm = () => {
 
     const [loading, setLoading] = useState(() => false)
 
-    // const [noOfRooms, setNoOfRooms] = useState(() => "")
-    // const [parentalAddress, setParentalAddress] = useState(() => "")
+    const [noOfRooms, setNoOfRooms] = useState(() => "")
+    const [parentalAddress, setParentalAddress] = useState(() => "")
     // const [spouseOccupation, setSpouseOccupation] = useState(() => "")
     // const [spouseMonthlyIncome, setSpouseMonthlyIncome] = useState(() => "")
     const [houseTypes, setHouseTypes] = useState(() => [])
-    // const [houseType, setHouseType] = useState(() => "")
+    const [houseType, setHouseType] = useState(() => "")
     // const [amountApplied, setAmountApplied] = useState(() => "")
-    // const [checkOwnOrRent, setCheckOwnOrRent] = useState(() => 'own')
-    // const [totalLand, setTotalLand] = useState(() => "")
-    // const [tvAvailable, setTvAvailable] = useState(() => 'yes')
-    // const [bikeAvailable, setBikeAvailable] = useState(() => "no")
-    // const [fridgeAvailable, setFridgeAvailable] = useState(() => "yes")
-    // const [washingMachineAvailable, setWashingMachineAvailable] = useState(() => "no")
-
-    const [formData, setFormData] = useState({
-        noOfRooms: "",
-        parentalAddress: "",
-        houseType: "",
-        checkOwnOrRent: "own",
-        totalLand: "",
-        tvAvailable: "yes",
-        bikeAvailable: "no",
-        fridgeAvailable: "yes",
-        washingMachineAvailable: "no",
-    })
-
-    const handleFormChange = (field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value,
-        }))
-    }
+    const [checkOwnOrRent, setCheckOwnOrRent] = useState(() => 'own')
+    const [totalLand, setTotalLand] = useState(() => "")
+    const [tvAvailable, setTvAvailable] = useState(() => 'yes')
+    const [bikeAvailable, setBikeAvailable] = useState(() => "no")
+    const [fridgeAvailable, setFridgeAvailable] = useState(() => "yes")
+    const [washingMachineAvailable, setWashingMachineAvailable] = useState(() => "no")
 
     useEffect(() => {
         setHouseTypes([]);
 
         [{ type: "Asbestor", value: "1" }, { type: "Roof", value: "2" }, { type: "Kacha", value: "3" }]?.map((item, i) => (
             //@ts-ignore
-            setHouseTypes(prev => [...prev, { title: item?.type, func: () => handleFormChange("houseType", item?.value) }])
+            setHouseTypes(prev => [...prev, { title: item?.type, func: () => setHouseType(item?.value) }])
         ))
     }, [])
 
@@ -67,18 +48,18 @@ const BMHouseholdDetailsForm = () => {
                 }}>
                     <Divider />
 
-                    <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
+                    <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={noOfRooms} onChangeText={(txt: any) => setNoOfRooms(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Parental Address" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
+                    <InputPaper label="Parental Address" multiline leftIcon='form-textbox' value={parentalAddress} onChangeText={(txt: any) => setParentalAddress(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} />
 
                     <List.Item
                         title="House Type"
-                        description={`Purpose: ${formData.houseType}`}
+                        description={`Purpose: ${houseType}`}
                         left={props => <List.Icon {...props} icon="office-building-cog-outline" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={houseTypes} />
@@ -94,22 +75,22 @@ const BMHouseholdDetailsForm = () => {
                         dataArray={[
                             {
                                 optionName: "OWN",
-                                optionState: formData.checkOwnOrRent,
+                                optionState: checkOwnOrRent,
                                 currentState: "own",
-                                optionSetStateDispathFun: (e) => handleFormChange("checkOwnOrRent", e)
+                                optionSetStateDispathFun: setCheckOwnOrRent
                             },
                             {
                                 optionName: "RENT",
-                                optionState: formData.checkOwnOrRent,
+                                optionState: checkOwnOrRent,
                                 currentState: "rent",
-                                optionSetStateDispathFun: (e) => handleFormChange("checkOwnOrRent", e)
+                                optionSetStateDispathFun: setCheckOwnOrRent
                             },
                         ]}
                     />
 
                     <Divider />
 
-                    <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
+                    <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={totalLand} onChangeText={(txt: any) => setTotalLand(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -160,15 +141,15 @@ const BMHouseholdDetailsForm = () => {
                         dataArray={[
                             {
                                 optionName: "YES",
-                                optionState: formData.tvAvailable,
+                                optionState: tvAvailable,
                                 currentState: "yes",
-                                optionSetStateDispathFun: (e) => handleFormChange("tvAvailable", e)
+                                optionSetStateDispathFun: setTvAvailable
                             },
                             {
                                 optionName: "NO",
-                                optionState: formData.tvAvailable,
+                                optionState: tvAvailable,
                                 currentState: "no",
-                                optionSetStateDispathFun: (e) => handleFormChange("tvAvailable", e)
+                                optionSetStateDispathFun: setTvAvailable
                             },
                         ]}
                     />
@@ -178,15 +159,15 @@ const BMHouseholdDetailsForm = () => {
                         dataArray={[
                             {
                                 optionName: "YES",
-                                optionState: formData.bikeAvailable,
+                                optionState: bikeAvailable,
                                 currentState: "yes",
-                                optionSetStateDispathFun: (e) => handleFormChange("bikeAvailable", e)
+                                optionSetStateDispathFun: setBikeAvailable
                             },
                             {
                                 optionName: "NO",
-                                optionState: formData.bikeAvailable,
+                                optionState: bikeAvailable,
                                 currentState: "no",
-                                optionSetStateDispathFun: (e) => handleFormChange("bikeAvailable", e)
+                                optionSetStateDispathFun: setBikeAvailable
                             },
                         ]}
                     />
@@ -196,15 +177,15 @@ const BMHouseholdDetailsForm = () => {
                         dataArray={[
                             {
                                 optionName: "YES",
-                                optionState: formData.fridgeAvailable,
+                                optionState: fridgeAvailable,
                                 currentState: "yes",
-                                optionSetStateDispathFun: (e) => handleFormChange("fridgeAvailable", e)
+                                optionSetStateDispathFun: setFridgeAvailable
                             },
                             {
                                 optionName: "NO",
-                                optionState: formData.fridgeAvailable,
+                                optionState: fridgeAvailable,
                                 currentState: "no",
-                                optionSetStateDispathFun: (e) => handleFormChange("fridgeAvailable", e)
+                                optionSetStateDispathFun: setFridgeAvailable
                             },
                         ]}
                     />
@@ -214,15 +195,15 @@ const BMHouseholdDetailsForm = () => {
                         dataArray={[
                             {
                                 optionName: "YES",
-                                optionState: formData.washingMachineAvailable,
+                                optionState: washingMachineAvailable,
                                 currentState: "yes",
-                                optionSetStateDispathFun: (e) => handleFormChange("washingMachineAvailable", e)
+                                optionSetStateDispathFun: setWashingMachineAvailable
                             },
                             {
                                 optionName: "NO",
-                                optionState: formData.washingMachineAvailable,
+                                optionState: washingMachineAvailable,
                                 currentState: "no",
-                                optionSetStateDispathFun: (e) => handleFormChange("washingMachineAvailable", e)
+                                optionSetStateDispathFun: setWashingMachineAvailable
                             },
                         ]}
                     />

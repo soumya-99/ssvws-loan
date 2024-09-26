@@ -21,45 +21,41 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
     const theme = usePaperColorScheme()
     // 110 -> Branch Code
     const navigation = useNavigation()
+
     console.log("****************", formNumber, branchCode)
+
+    // var formNo = formNumber
+    // var brnCode = branchCode
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [loading, setLoading] = useState(() => false)
 
-    const [religions, setReligions] = useState(() => []) // rel
-    const [castes, setCastes] = useState(() => [])
-    const [educations, setEducations] = useState(() => []) // edu
-    const [groupNames, setGroupNames] = useState(() => [])
-
-    const [formData, setFormData] = useState({
-        clientName: "",
-        clientMobile: "",
-        guardianName: "",
-        guardianMobile: "",
-        clientAddress: "",
-        clientPin: "",
-        aadhaarNumber: "",
-        panNumber: "",
-        religion: "",
-        caste: "",
-        education: "",
-        groupCode: "",
-        groupCodeName: "",
-        dob: new Date()
-    })
-
-    // const [dob, setDob] = useState(() => new Date()) //dob
+    // created_by
+    const [dob, setDob] = useState(() => new Date()) //dob
     const [openDate, setOpenDate] = useState(() => false)
-    const formattedDob = formattedDate(formData?.dob)
+    const formattedDob = formattedDate(dob)
 
+    const [clientName, setClientName] = useState(() => "") // name
+    const [clientMobile, setClientMobile] = useState(() => "") // mob
+    const [guardianName, setGuardianName] = useState(() => "") // guard
+    const [guardianMobile, setGuardianMobile] = useState(() => "") // guradmob
+    const [clientAddress, setClientAddress] = useState(() => "") // addr
+    const [clientPin, setClientPin] = useState(() => "") // pin
+    const [aadhaarNumber, setAadhaarNumber] = useState(() => "") // aadhaar
+    const [panNumber, setPanNumber] = useState(() => "") //pan
+    const [religions, setReligions] = useState(() => []) // rel
+    const [religion, setReligion] = useState(() => "") // rel
+    const [castes, setCastes] = useState(() => [])
+    const [caste, setCaste] = useState(() => "") // cas
+    const [educations, setEducations] = useState(() => []) // edu
+    const [education, setEducation] = useState(() => "") // edu
+    const [groupNames, setGroupNames] = useState(() => [])
+    const [groupCode, setGroupCode] = useState(() => "") // grp_code
+    const [groupCodeName, setGroupCodeName] = useState(() => "")
+    // const [groupNamesAndCodesTemp, setGroupNamesAndCodesTemp] = useState(() => [])
 
-    const handleFormChange = (field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value,
-        }))
-    }
+    // const [fullUserDetails, setFullUserDetails] = useState(() => "")
 
     const handleFetchGroupNames = async () => {
         setLoading(true)
@@ -71,7 +67,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
             res?.data?.msg?.map((item, i) => {
                 return (
                     //@ts-ignore
-                    setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { handleFormChange("groupCode", item?.group_code); handleFormChange("groupCodeName", item?.group_name) } }])
+                    setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { setGroupCode(item?.group_code); setGroupCodeName(item?.group_name) } }])
                 )
             })
 
@@ -87,7 +83,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         await axios.get(`${ADDRESSES.GET_RELIGIONS}`).then(res => {
             res?.data?.map((item, i) => (
                 //@ts-ignore
-                setReligions(prev => [...prev, { title: item?.name, func: () => handleFormChange("religion", item?.id) }])
+                setReligions(prev => [...prev, { title: item?.name, func: () => setReligion(item?.id) }])
             ))
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchReligions}!", ToastAndroid.SHORT)
@@ -101,7 +97,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         await axios.get(`${ADDRESSES.GET_CASTES}`).then(res => {
             res?.data?.map((item, i) => (
                 //@ts-ignore
-                setCastes(prev => [...prev, { title: item?.name, func: () => handleFormChange("caste", item?.id) }])
+                setCastes(prev => [...prev, { title: item?.name, func: () => setCaste(item?.id) }])
             ))
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchCastes}!", ToastAndroid.SHORT)
@@ -115,7 +111,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         await axios.get(`${ADDRESSES.GET_EDUCATIONS}`).then(res => {
             res?.data?.map((item, i) => (
                 //@ts-ignore
-                setEducations(prev => [...prev, { title: item?.name, func: () => handleFormChange("education", item?.id) }])
+                setEducations(prev => [...prev, { title: item?.name, func: () => setEducation(item?.id) }])
             ))
         }).catch(err => {
             ToastAndroid.show("Some error occurred {handleFetchEducations}!", ToastAndroid.SHORT)
@@ -130,35 +126,69 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         handleFetchEducations()
     }, [])
 
+    // useEffect(() => {
+    //     setGroupNames(() => [])
+    //     const eventSource = new EventSource(`${ADDRESSES.GROUP_NAMES_ES}?branch_code=${loginStore?.brn_code}`);
+
+
+    //     eventSource.addEventListener("open", (event) => {
+    //         console.log("Open SSE connection.");
+    //     });
+
+    //     eventSource.addEventListener("message", (event) => {
+    //         console.log("New message event:", event.data);
+    //         const newData = JSON.parse(event.data);
+
+    //         console.log("===+++++=====++++++=====", newData)
+
+    //         // newData?.msg?.map((item, i) => (
+    //         //     //@ts-ignore
+    //         //     setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { setGroupCode(item?.group_code); setGroupCodeName(item?.group_name) } }])
+    //         // ))
+    //     });
+
+    //     eventSource.addEventListener("error", (event) => {
+    //         if (event.type === "error") {
+    //             console.error("Connection error:", event.message);
+    //             eventSource.close();
+    //         } else if (event.type === "exception") {
+    //             console.error("Error:", event.message, event.error);
+    //             eventSource.close();
+    //         }
+    //     });
+
+    //     return () => {
+    //         eventSource.close();
+    //     };
+    // }, [])
+
     const fetchClientDetails = async (flag, data) => {
         const creds = {
             flag: flag,
             user_dt: data
         }
 
-        if (!formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber) {
-            ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
-            return
-        }
+        // if (!clientMobile || !aadhaarNumber || !panNumber) {
+        //     // ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
+        //     return
+        // }
 
         await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
             if (res?.data?.msg?.length > 0) {
-                setFormData({
-                    clientName: res?.data?.msg[0]?.client_name,
-                    clientMobile: res?.data?.msg[0]?.client_mobile,
-                    guardianName: res?.data?.msg[0]?.gurd_name,
-                    guardianMobile: res?.data?.msg[0]?.gurd_mobile,
-                    clientAddress: res?.data?.msg[0]?.client_addr,
-                    clientPin: res?.data?.msg[0]?.pin_no,
-                    aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
-                    panNumber: res?.data?.msg[0]?.pan_no,
-                    religion: res?.data?.msg[0]?.religion,
-                    caste: res?.data?.msg[0]?.caste,
-                    education: res?.data?.msg[0]?.education,
-                    groupCode: res?.data?.msg[0]?.prov_grp_code,
-                    groupCodeName: res?.data?.msg[0]?.prov_grp_name,
-                    dob: new Date(res?.data?.msg[0]?.dob)
-                })
+                // setFullUserDetails(JSON.stringify(res?.data?.msg[0]))
+                setClientName(res?.data?.msg[0]?.client_name)
+                setClientMobile(res?.data?.msg[0]?.client_mobile)
+                setGuardianName(res?.data?.msg[0]?.gurd_name)
+                setGuardianMobile(res?.data?.msg[0]?.gurd_mobile)
+                setClientAddress(res?.data?.msg[0]?.client_addr)
+                setClientPin(res?.data?.msg[0]?.pin_no)
+                setAadhaarNumber(res?.data?.msg[0]?.aadhar_no)
+                setPanNumber(res?.data?.msg[0]?.pan_no)
+                setReligion(res?.data?.msg[0]?.religion)
+                setCaste(res?.data?.msg[0]?.caste)
+                setEducation(res?.data?.msg[0]?.education)
+                setGroupCode(res?.data?.msg[0]?.prov_grp_code)
+                setDob(new Date(res?.data?.msg[0]?.dob))
             } else {
                 ToastAndroid.show("New client.", ToastAndroid.SHORT)
             }
@@ -166,6 +196,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
             ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
         })
     }
+
+    // const handleCreateNewGroup = () => {
+    //     // console.log("New group created!")
+    //     navigation.dispatch(CommonActions.navigate({
+    //         name: navigationRoutes.groupNavigation,
+    //     }))
+    // }
 
     const fetchBasicDetails = async () => {
         setLoading(true)
@@ -179,22 +216,20 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
             if (res?.data?.suc === 1) {
                 console.log("LLLLLLLLLLLLLLLLL", res?.data?.msg[0]?.prov_grp_code)
 
-                setFormData({
-                    clientName: res?.data?.msg[0]?.client_name,
-                    clientMobile: res?.data?.msg[0]?.client_mobile,
-                    guardianName: res?.data?.msg[0]?.gurd_name,
-                    guardianMobile: res?.data?.msg[0]?.gurd_mobile,
-                    clientAddress: res?.data?.msg[0]?.client_addr,
-                    clientPin: res?.data?.msg[0]?.pin_no,
-                    aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
-                    panNumber: res?.data?.msg[0]?.pan_no,
-                    religion: res?.data?.msg[0]?.religion,
-                    caste: res?.data?.msg[0]?.caste,
-                    education: res?.data?.msg[0]?.education,
-                    groupCode: res?.data?.msg[0]?.prov_grp_code,
-                    groupCodeName: res?.data?.msg[0]?.prov_grp_name,
-                    dob: new Date(res?.data?.msg[0]?.dob)
-                })
+                setGroupCode(res?.data?.msg[0]?.prov_grp_code)
+                setGroupCodeName(res?.data?.msg[0]?.prov_grp_name)
+                setClientName(res?.data?.msg[0]?.client_name)
+                setClientMobile(res?.data?.msg[0]?.client_mobile)
+                setGuardianName(res?.data?.msg[0]?.gurd_name)
+                setGuardianMobile(res?.data?.msg[0]?.gurd_mobile)
+                setClientAddress(res?.data?.msg[0]?.client_addr)
+                setClientPin(res?.data?.msg[0]?.pin_no)
+                setAadhaarNumber(res?.data?.msg[0]?.aadhar_no)
+                setPanNumber(res?.data?.msg[0]?.pan_no)
+                setReligion(res?.data?.msg[0]?.religion)
+                setCaste(res?.data?.msg[0]?.caste)
+                setEducation(res?.data?.msg[0]?.education)
+                // setDob(new Date(res?.data?.msg[0]?.dob))
 
             }
         }).catch(err => {
@@ -208,84 +243,84 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         fetchBasicDetails()
     }, [])
 
-    // const handleResetForm = () => {
-    //     Alert.alert("Reset", "Are you sure about this?", [{
-    //         text: "No",
-    //         onPress: () => null
-    //     }, {
-    //         text: "Yes",
-    //         onPress: () => {
-    //             clearStates([
-    //                 setClientName,
-    //                 setClientMobile,
-    //                 setGuardianName,
-    //                 setGuardianMobile,
-    //                 setClientAddress,
-    //                 setClientPin,
-    //                 setAadhaarNumber,
-    //                 setPanNumber,
-    //                 setReligion,
-    //                 setCaste,
-    //                 setEducation
-    //             ], "")
-    //             setDob(new Date())
-    //         }
-    //     }])
+    const handleResetForm = () => {
+        Alert.alert("Reset", "Are you sure about this?", [{
+            text: "No",
+            onPress: () => null
+        }, {
+            text: "Yes",
+            onPress: () => {
+                clearStates([
+                    setClientName,
+                    setClientMobile,
+                    setGuardianName,
+                    setGuardianMobile,
+                    setClientAddress,
+                    setClientPin,
+                    setAadhaarNumber,
+                    setPanNumber,
+                    setReligion,
+                    setCaste,
+                    setEducation
+                ], "")
+                setDob(new Date())
+            }
+        }])
 
-    // }
+    }
 
-    // const handleSubmitBasicDetails = async () => {
-    //     setLoading(true)
-    //     const creds = {
-    //         branch_code: loginStore?.brn_code,
-    //         prov_grp_code: groupCode,
-    //         client_name: clientName,
-    //         client_mobile: clientMobile,
-    //         gurd_name: guardianName,
-    //         gurd_mobile: guardianMobile,
-    //         client_addr: clientAddress,
-    //         pin_no: clientPin,
-    //         aadhar_no: aadhaarNumber,
-    //         pan_no: panNumber,
-    //         religion: religion,
-    //         caste: caste,
-    //         education: education,
-    //         dob: formattedDob,
-    //         created_by: loginStore?.emp_name
-    //     }
+    const handleSubmitBasicDetails = async () => {
+        setLoading(true)
+        const creds = {
+            branch_code: loginStore?.brn_code,
+            prov_grp_code: groupCode,
+            client_name: clientName,
+            client_mobile: clientMobile,
+            gurd_name: guardianName,
+            gurd_mobile: guardianMobile,
+            client_addr: clientAddress,
+            pin_no: clientPin,
+            aadhar_no: aadhaarNumber,
+            pan_no: panNumber,
+            religion: religion,
+            caste: caste,
+            education: education,
+            dob: formattedDob,
+            created_by: loginStore?.emp_name
+        }
 
-    //     if (!clientMobile || !aadhaarNumber || !panNumber) {
-    //         ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
-    //         return
-    //     }
+        if (!clientMobile || !aadhaarNumber || !panNumber) {
+            ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
+            return
+        }
 
-    //     await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
-    //         console.log("-----------", res?.data)
-    //         Alert.alert("Success", "Basic Details Saved!")
-    //         clearStates([
-    //             setClientName,
-    //             setClientMobile,
-    //             setGuardianName,
-    //             setGuardianMobile,
-    //             setClientAddress,
-    //             setClientPin,
-    //             setAadhaarNumber,
-    //             setPanNumber,
-    //             setReligion,
-    //             setCaste,
-    //             setEducation
-    //         ], "")
-    //         setDob(new Date())
-    //     }).catch(err => {
-    //         ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
-    //     })
-    //     setLoading(false)
-    // }
+        await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
+            console.log("-----------", res?.data)
+            Alert.alert("Success", "Basic Details Saved!")
+            clearStates([
+                setClientName,
+                setClientMobile,
+                setGuardianName,
+                setGuardianMobile,
+                setClientAddress,
+                setClientPin,
+                setAadhaarNumber,
+                setPanNumber,
+                setReligion,
+                setCaste,
+                setEducation
+            ], "")
+            setDob(new Date())
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
+        })
+        setLoading(false)
+    }
 
     const renderLoader = () => loading && <LoadingOverlay />;
 
     return (
-        <SafeAreaView>
+        <>
 
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background
@@ -299,7 +334,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
 
                     <List.Item
                         title="Choose Group"
-                        description={`Group Code: ${formData.groupCodeName}`}
+                        description={`Group Code: ${groupCodeName}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={groupNames} />
@@ -311,36 +346,36 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
 
                     <Divider />
 
-                    <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
+                    <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={clientMobile} onChangeText={(txt: any) => setClientMobile(txt)} onBlur={() => fetchClientDetails("M", clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
+                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={aadhaarNumber} onChangeText={(txt: any) => setAadhaarNumber(txt)} onBlur={() => fetchClientDetails("A", aadhaarNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => fetchClientDetails("P", formData.panNumber)} customStyle={{
+                    <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={panNumber} onChangeText={(txt: any) => setPanNumber(txt)} onBlur={() => fetchClientDetails("P", panNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Client Name" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
+                    <InputPaper label="Client Name" leftIcon='account-circle-outline' value={clientName} onChangeText={(txt: any) => setClientName(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
+                    <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={guardianName} onChangeText={(txt: any) => setGuardianName(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Guardian Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.guardianMobile} onChangeText={(txt: any) => handleFormChange("guardianMobile", txt)} customStyle={{
+                    <InputPaper label="Guardian Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={guardianMobile} onChangeText={(txt: any) => setGuardianMobile(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Client Address" multiline leftIcon='card-account-phone-outline' value={formData.clientAddress} onChangeText={(txt: any) => handleFormChange("clientAddress", txt)} customStyle={{
+                    <InputPaper label="Client Address" multiline leftIcon='card-account-phone-outline' value={clientAddress} onChangeText={(txt: any) => setClientAddress(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} />
 
-                    <InputPaper label="Client PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
+                    <InputPaper label="Client PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={clientPin} onChangeText={(txt: any) => setClientPin(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -349,17 +384,17 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                         onPress={() => setOpenDate(true)}
                         mode="text"
                         icon="baby-face-outline">
-                        CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")}
+                        CHOOSE DOB: {dob?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
                         modal
                         mode="date"
                         // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
                         open={openDate}
-                        date={formData.dob}
+                        date={dob}
                         onConfirm={date => {
                             setOpenDate(false)
-                            handleFormChange("dob", date)
+                            setDob(date)
                         }}
                         onCancel={() => {
                             setOpenDate(false)
@@ -368,7 +403,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
 
                     <List.Item
                         title="Choose Religion"
-                        description={`Religion: ${formData.religion}`}
+                        description={`Religion: ${religion}`}
                         left={props => <List.Icon {...props} icon="peace" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={religions} />
@@ -380,7 +415,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
 
                     <List.Item
                         title="Choose Caste"
-                        description={`Caste: ${formData.caste}`}
+                        description={`Caste: ${caste}`}
                         left={props => <List.Icon {...props} icon="account-question-outline" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={castes} />
@@ -392,7 +427,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
 
                     <List.Item
                         title="Choose Education"
-                        description={`Education: ${formData.education}`}
+                        description={`Education: ${education}`}
                         left={props => <List.Icon {...props} icon="book-education-outline" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={educations} />
@@ -440,7 +475,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
             {/* {loading && (
                 <LoadingOverlay />
             )} */}
-        </SafeAreaView>
+        </>
     )
 }
 

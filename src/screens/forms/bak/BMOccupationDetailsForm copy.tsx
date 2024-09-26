@@ -14,30 +14,36 @@ const BMOccupationDetailsForm = () => {
 
     const [loading, setLoading] = useState(() => false)
 
+    const [selfOccupation, setSelfOccupation] = useState(() => "")
+    const [selfMonthlyIncome, setSelfMonthlyIncome] = useState(() => "")
+    const [spouseOccupation, setSpouseOccupation] = useState(() => "")
+    const [spouseMonthlyIncome, setSpouseMonthlyIncome] = useState(() => "")
     const [purposesOfLoan, setPurposesOfLoan] = useState(() => [])
+    const [purposeOfLoan, setPurposeOfLoan] = useState(() => "")
+    const [purposeOfLoanName, setPurposeOfLoanName] = useState(() => "")
     const [subPurposesOfLoan, setSubPurposesOfLoan] = useState(() => [])
+    const [subPurposeOfLoan, setSubPurposeOfLoan] = useState(() => "")
+    const [subPurposeOfLoanName, setSubPurposeOfLoanName] = useState(() => "")
+    const [amountApplied, setAmountApplied] = useState(() => "")
+    const [checkOtherOngoingLoan, setCheckOtherOngoingLoan] = useState(() => 'yes')
+    const [otherLoanAmount, setOtherLoanAmount] = useState(() => "")
+    const [monthlyEmi, setMonthlyEmi] = useState(() => "")
 
-    const [formData, setFormData] = useState({
-        selfOccupation: "",
-        selfMonthlyIncome: "",
-        spouseOccupation: "",
-        spouseMonthlyIncome: "",
-        purposeOfLoan: "",
-        purposeOfLoanName: "",
-        subPurposeOfLoan: "",
-        subPurposeOfLoanName: "",
-        amountApplied: "",
-        checkOtherOngoingLoan: "yes",
-        otherLoanAmount: "",
-        monthlyEmi: "",
-    })
+    // useEffect(() => {
+    //     setPurposesOfLoan([]);
+    //     setSubPurposesOfLoan([]);
 
-    const handleFormChange = (field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value,
-        }))
-    }
+    //     [{ purpose: "Some Reason 1", value: "1" }, { purpose: "Some Reason 2", value: "2" }]?.map((item, i) => (
+    //         //@ts-ignore
+    //         setPurposesOfLoan(prev => [...prev, { title: item?.purpose, func: () => setPurposeOfLoan(item?.value) }])
+    //     ));
+
+    //     [{ purpose: "Some Sub Reason 1", value: "1" }, { purpose: "Some Sub Reason 2", value: "2" }]?.map((item, i) => (
+    //         //@ts-ignore
+    //         setSubPurposesOfLoan(prev => [...prev, { title: item?.purpose, func: () => setSubPurposeOfLoan(item?.value) }])
+    //     ));
+
+    // }, [])
 
     const fetchPurposeOfLoan = async () => {
         setPurposesOfLoan([]);
@@ -46,7 +52,7 @@ const BMOccupationDetailsForm = () => {
             // purp_id
             if (res?.data?.suc === 1) {
                 res?.data?.msg?.map((item, _) => (
-                    setPurposesOfLoan(prev => [...prev, { title: item?.purpose_id, func: () => { handleFormChange("purposeOfLoan", item?.purp_id); handleFormChange("purposeOfLoanName", item?.purpose_id) } }])
+                    setPurposesOfLoan(prev => [...prev, { title: item?.purpose_id, func: () => { setPurposeOfLoan(item?.purp_id); setPurposeOfLoanName(item?.purpose_id) } }])
                 ))
             }
         }).catch(err => {
@@ -58,10 +64,10 @@ const BMOccupationDetailsForm = () => {
     const fetchSubPurposeOfLoan = async () => {
         setSubPurposesOfLoan([]);
         setLoading(true)
-        await axios.get(`${ADDRESSES.FETCH_SUB_PURPOSE_OF_LOAN}?purp_id=${formData.purposeOfLoan}`).then(res => {
+        await axios.get(`${ADDRESSES.FETCH_SUB_PURPOSE_OF_LOAN}?purp_id=${purposeOfLoan}`).then(res => {
             if (res?.data?.suc === 1) {
                 res?.data?.msg?.map((item, _) => (
-                    setSubPurposesOfLoan(prev => [...prev, { title: item?.sub_purp_name, func: () => { handleFormChange("subPurposeOfLoan", item?.sub_purp_id); handleFormChange("subPurposeOfLoanName", item?.sub_purp_name) } }])
+                    setSubPurposesOfLoan(prev => [...prev, { title: item?.sub_purp_name, func: () => { setSubPurposeOfLoan(item?.sub_purp_id); setSubPurposeOfLoanName(item?.sub_purp_name) } }])
                 ))
             }
         }).catch(err => {
@@ -76,7 +82,7 @@ const BMOccupationDetailsForm = () => {
 
     useEffect(() => {
         fetchSubPurposeOfLoan()
-    }, [formData.purposeOfLoan])
+    }, [purposeOfLoan])
 
     return (
         <SafeAreaView>
@@ -90,19 +96,19 @@ const BMOccupationDetailsForm = () => {
                 }}>
                     <Divider />
 
-                    <InputPaper label="Self Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.selfOccupation} onChangeText={(txt: any) => handleFormChange("selfOccupation", txt)} customStyle={{
+                    <InputPaper label="Self Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={selfOccupation} onChangeText={(txt: any) => setSelfOccupation(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Self Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.selfMonthlyIncome} onChangeText={(txt: any) => handleFormChange("selfMonthlyIncome", txt)} customStyle={{
+                    <InputPaper label="Self Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={selfMonthlyIncome} onChangeText={(txt: any) => setSelfMonthlyIncome(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Spouse Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.spouseOccupation} onChangeText={(txt: any) => handleFormChange("spouseOccupation", txt)} customStyle={{
+                    <InputPaper label="Spouse Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={spouseOccupation} onChangeText={(txt: any) => setSpouseOccupation(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Spouse Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.spouseMonthlyIncome} onChangeText={(txt: any) => handleFormChange("spouseMonthlyIncome", txt)} customStyle={{
+                    <InputPaper label="Spouse Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={spouseMonthlyIncome} onChangeText={(txt: any) => setSpouseMonthlyIncome(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -112,7 +118,7 @@ const BMOccupationDetailsForm = () => {
                     }} /> */}
                     <List.Item
                         title="Purpose of Loan"
-                        description={`Purpose: ${formData.purposeOfLoanName}`}
+                        description={`Purpose: ${purposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="progress-question" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={purposesOfLoan} />
@@ -124,7 +130,7 @@ const BMOccupationDetailsForm = () => {
 
                     <List.Item
                         title="Sub Purpose"
-                        description={`Purpose: ${formData.subPurposeOfLoanName}`}
+                        description={`Purpose: ${subPurposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="file-question-outline" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={subPurposesOfLoan} />
@@ -134,7 +140,7 @@ const BMOccupationDetailsForm = () => {
                         }}
                     />
 
-                    <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} customStyle={{
+                    <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={amountApplied} onChangeText={(txt: any) => setAmountApplied(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
@@ -144,24 +150,24 @@ const BMOccupationDetailsForm = () => {
                         dataArray={[
                             {
                                 optionName: "YES",
-                                optionState: formData.checkOtherOngoingLoan,
+                                optionState: checkOtherOngoingLoan,
                                 currentState: "yes",
-                                optionSetStateDispathFun: (e) => handleFormChange("checkOtherOngoingLoan", e)
+                                optionSetStateDispathFun: setCheckOtherOngoingLoan
                             },
                             {
                                 optionName: "NO",
-                                optionState: formData.checkOtherOngoingLoan,
+                                optionState: checkOtherOngoingLoan,
                                 currentState: "no",
-                                optionSetStateDispathFun: (e) => handleFormChange("checkOtherOngoingLoan", e)
+                                optionSetStateDispathFun: setCheckOtherOngoingLoan
                             },
                         ]}
                     />
 
-                    {formData.checkOtherOngoingLoan === "yes" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.otherLoanAmount} onChangeText={(txt: any) => handleFormChange("otherLoanAmount", txt)} customStyle={{
+                    {checkOtherOngoingLoan === "yes" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={otherLoanAmount} onChangeText={(txt: any) => setOtherLoanAmount(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />}
 
-                    <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={formData.monthlyEmi} onChangeText={(txt: any) => handleFormChange("monthlyEmi", txt)} customStyle={{
+                    <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={monthlyEmi} onChangeText={(txt: any) => setMonthlyEmi(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 

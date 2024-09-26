@@ -15,6 +15,7 @@ const navigationRoutes = {
 
     bmPendingLoansNavigation: "BMPendingLoansNavigation",
     bmPendingLoansScreen: "BMPendingLoansScreen",
+    bmPendingLoanFormScreen: "BMPendingLoanFormScreen",
 }
 
 export default navigationRoutes

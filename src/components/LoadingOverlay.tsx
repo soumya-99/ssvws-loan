@@ -9,7 +9,7 @@ const LoadingOverlay = () => {
                 style={styles.blurView}
                 blurType="light" // You can change it to 'light', 'xlight' or 'dark'
                 blurAmount={5} // Adjust this value to control the blur intensity
-                reducedTransparencyFallbackColor="rgba(0,0,0,0.7)" // Fallback for Android
+            // reducedTransparencyFallbackColor="rgba(0,0,0,0.7)" // Fallback for Android
             />
             <ActivityIndicator size="large" color="#333333" />
         </View>

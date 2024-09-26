@@ -10,9 +10,13 @@ import BMBasicDetailsForm from "./forms/BMBasicDetailsForm"
 import BMOccupationDetailsForm from "./forms/BMOccupationDetailsForm"
 import BMHouseholdDetailsForm from "./forms/BMHouseholdDetailsForm"
 import BMFamilyMemberDetailsForm from "./forms/BMFamilyMemberDetailsForm"
+import { useRoute } from '@react-navigation/native'
 
 const BMPendingLoanFormScreen = () => {
     const theme = usePaperColorScheme()
+    const { params } = useRoute<any>()
+
+    console.log("WWWWWWWWWWWWWWWWWWWWWWW", params?.formNumber, params?.branchCode)
 
     const [currentPosition, setCurrentPosition] = useState(() => 0)
 
@@ -49,7 +53,7 @@ const BMPendingLoanFormScreen = () => {
                 // minHeight: SCREEN_HEIGHT,
                 height: 'auto'
             }}>
-                <HeadingComp title="GRT Form" subtitle="Form no. 2024001001" />
+                <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber}`} />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 10,
@@ -79,7 +83,7 @@ const BMPendingLoanFormScreen = () => {
                         }
                     />
 
-                    {currentPosition === 0 && <BMBasicDetailsForm />}
+                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
                     {currentPosition === 1 && <BMOccupationDetailsForm />}
                     {currentPosition === 2 && <BMHouseholdDetailsForm />}
                     {currentPosition === 3 && <BMFamilyMemberDetailsForm />}
