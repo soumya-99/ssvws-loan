@@ -9,10 +9,13 @@ import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
+import { loginStorage } from '../storage/appStorage'
 
 const BMPendingLoansScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
+
+    const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [loading, setLoading] = useState(() => false)
 
@@ -24,7 +27,7 @@ const BMPendingLoansScreen = () => {
     const fetchPendingGRTForms = async () => {
         setLoading(true)
 
-        await axios.get(`${ADDRESSES.FETCH_FORMS}`).then(res => {
+        await axios.get(`${ADDRESSES.FETCH_FORMS}?branch_code=${loginStore?.brn_code}`).then(res => {
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
             }
@@ -71,7 +74,7 @@ const BMPendingLoansScreen = () => {
             <ScrollView style={{
                 backgroundColor: theme.colors.background,
                 minHeight: SCREEN_HEIGHT,
-                height: 'auto'
+                height: 'auto',
             }} keyboardShouldPersistTaps="handled">
                 <HeadingComp title="Pending Forms" subtitle="Choose Form" />
                 {/* <BMPendingLoanFormScreen /> */}
@@ -96,7 +99,8 @@ const BMPendingLoansScreen = () => {
                 </View>
 
                 <View style={{
-                    padding: 20
+                    padding: 20,
+                    paddingBottom: 120
                 }}>
                     {filteredDataArray?.map((item, i) => (
                         <React.Fragment key={i}>
@@ -111,7 +115,7 @@ const BMPendingLoansScreen = () => {
                                 title={`${item?.form_no}`}
                                 description={`Branch Code: ${item?.branch_code}`}
                                 onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}
-                                left={props => <List.Icon {...props} icon="basket" />}
+                                left={props => <List.Icon {...props} icon="form-select" />}
                             //   right={props => (
                             //     <Text
                             //       variant="bodyMedium"

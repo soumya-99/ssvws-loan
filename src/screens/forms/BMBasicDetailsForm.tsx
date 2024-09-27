@@ -27,13 +27,15 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
 
     const [loading, setLoading] = useState(() => false)
 
-    const [religions, setReligions] = useState(() => []) // rel
+    const [religions, setReligions] = useState(() => [])
     const [castes, setCastes] = useState(() => [])
-    const [educations, setEducations] = useState(() => []) // edu
+    const [educations, setEducations] = useState(() => [])
     const [groupNames, setGroupNames] = useState(() => [])
+    const [memberGenders, setMemberGenders] = useState(() => [])
 
     const [formData, setFormData] = useState({
         clientName: "",
+        clientGender: "",
         clientMobile: "",
         guardianName: "",
         guardianMobile: "",
@@ -49,10 +51,21 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         dob: new Date()
     })
 
+    const [readonlyMemberId, setReadonlyMemberId] = useState(() => "")
+
     // const [dob, setDob] = useState(() => new Date()) //dob
     const [openDate, setOpenDate] = useState(() => false)
     const formattedDob = formattedDate(formData?.dob)
 
+    useEffect(() => {
+        setMemberGenders([])
+        setMemberGenders(prev => [
+            ...prev,
+            { title: "Male", func: () => handleFormChange("clientGender", "M") },
+            { title: "Female", func: () => handleFormChange("clientGender", "F") },
+            { title: "Others", func: () => handleFormChange("clientGender", "O") }
+        ])
+    }, [])
 
     const handleFormChange = (field: string, value: any) => {
         setFormData((prev) => ({
@@ -131,6 +144,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
     }, [])
 
     const fetchClientDetails = async (flag, data) => {
+        setLoading(true)
         const creds = {
             flag: flag,
             user_dt: data
@@ -142,9 +156,11 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         }
 
         await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
+            console.log("PPPPPPPPPPPPPPPPP", res?.data)
             if (res?.data?.msg?.length > 0) {
                 setFormData({
                     clientName: res?.data?.msg[0]?.client_name,
+                    clientGender: res?.data?.msg[0]?.gender,
                     clientMobile: res?.data?.msg[0]?.client_mobile,
                     guardianName: res?.data?.msg[0]?.gurd_name,
                     guardianMobile: res?.data?.msg[0]?.gurd_mobile,
@@ -154,17 +170,19 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                     panNumber: res?.data?.msg[0]?.pan_no,
                     religion: res?.data?.msg[0]?.religion,
                     caste: res?.data?.msg[0]?.caste,
-                    education: res?.data?.msg[0]?.education,
+                    education: res?.data?.msg[0]?.education ?? "",
                     groupCode: res?.data?.msg[0]?.prov_grp_code,
                     groupCodeName: res?.data?.msg[0]?.prov_grp_name,
-                    dob: new Date(res?.data?.msg[0]?.dob)
+                    dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
                 })
+                setReadonlyMemberId(res?.data?.msg[0]?.member_code)
             } else {
                 ToastAndroid.show("New client.", ToastAndroid.SHORT)
             }
         }).catch(err => {
             ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
         })
+        setLoading(false)
     }
 
     const fetchBasicDetails = async () => {
@@ -178,9 +196,11 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         await axios.post(`${ADDRESSES.FETCH_BASIC_DETAILS}`, creds).then(res => {
             if (res?.data?.suc === 1) {
                 console.log("LLLLLLLLLLLLLLLLL", res?.data?.msg[0]?.prov_grp_code)
+                console.log("LLLLLLLLLLLLLLLLL", res?.data)
 
                 setFormData({
                     clientName: res?.data?.msg[0]?.client_name,
+                    clientGender: res?.data?.msg[0]?.gender,
                     clientMobile: res?.data?.msg[0]?.client_mobile,
                     guardianName: res?.data?.msg[0]?.gurd_name,
                     guardianMobile: res?.data?.msg[0]?.gurd_mobile,
@@ -190,12 +210,12 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                     panNumber: res?.data?.msg[0]?.pan_no,
                     religion: res?.data?.msg[0]?.religion,
                     caste: res?.data?.msg[0]?.caste,
-                    education: res?.data?.msg[0]?.education,
+                    education: res?.data?.msg[0]?.education ?? "",
                     groupCode: res?.data?.msg[0]?.prov_grp_code,
                     groupCodeName: res?.data?.msg[0]?.prov_grp_name,
-                    dob: new Date(res?.data?.msg[0]?.dob)
+                    dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
                 })
-
+                setReadonlyMemberId(res?.data?.msg[0]?.member_code)
             }
         }).catch(err => {
             ToastAndroid.show("Some error while fetching basic details!", ToastAndroid.SHORT)
@@ -208,83 +228,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
         fetchBasicDetails()
     }, [])
 
-    // const handleResetForm = () => {
-    //     Alert.alert("Reset", "Are you sure about this?", [{
-    //         text: "No",
-    //         onPress: () => null
-    //     }, {
-    //         text: "Yes",
-    //         onPress: () => {
-    //             clearStates([
-    //                 setClientName,
-    //                 setClientMobile,
-    //                 setGuardianName,
-    //                 setGuardianMobile,
-    //                 setClientAddress,
-    //                 setClientPin,
-    //                 setAadhaarNumber,
-    //                 setPanNumber,
-    //                 setReligion,
-    //                 setCaste,
-    //                 setEducation
-    //             ], "")
-    //             setDob(new Date())
-    //         }
-    //     }])
-
-    // }
-
-    // const handleSubmitBasicDetails = async () => {
-    //     setLoading(true)
-    //     const creds = {
-    //         branch_code: loginStore?.brn_code,
-    //         prov_grp_code: groupCode,
-    //         client_name: clientName,
-    //         client_mobile: clientMobile,
-    //         gurd_name: guardianName,
-    //         gurd_mobile: guardianMobile,
-    //         client_addr: clientAddress,
-    //         pin_no: clientPin,
-    //         aadhar_no: aadhaarNumber,
-    //         pan_no: panNumber,
-    //         religion: religion,
-    //         caste: caste,
-    //         education: education,
-    //         dob: formattedDob,
-    //         created_by: loginStore?.emp_name
-    //     }
-
-    //     if (!clientMobile || !aadhaarNumber || !panNumber) {
-    //         ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
-    //         return
-    //     }
-
-    //     await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
-    //         console.log("-----------", res?.data)
-    //         Alert.alert("Success", "Basic Details Saved!")
-    //         clearStates([
-    //             setClientName,
-    //             setClientMobile,
-    //             setGuardianName,
-    //             setGuardianMobile,
-    //             setClientAddress,
-    //             setClientPin,
-    //             setAadhaarNumber,
-    //             setPanNumber,
-    //             setReligion,
-    //             setCaste,
-    //             setEducation
-    //         ], "")
-    //         setDob(new Date())
-    //     }).catch(err => {
-    //         ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
-    //     })
-    //     setLoading(false)
-    // }
-
     const handleUpdateBasicDetails = async () => {
         const creds = {
             form_no: formNumber,
+            branch_code: branchCode,
             prov_grp_code: formData.groupCode,
             client_name: formData.clientName,
             client_mobile: formData.clientMobile,
@@ -323,9 +270,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                 }}>
                     <Divider />
 
+                    <InputPaper label="Member Code" maxLength={18} leftIcon='numeric' keyboardType="numeric" value={readonlyMemberId} onChangeText={(txt: any) => setReadonlyMemberId(txt)} disabled customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
                     <List.Item
                         title="Choose Group"
-                        description={`Group Code: ${formData.groupCodeName}`}
+                        description={`${formData.groupCodeName} - ${formData.groupCode}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={groupNames} />
@@ -334,8 +285,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                             color: theme.colors.tertiary,
                         }}
                     />
-
-                    <Divider />
 
                     <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
@@ -349,9 +298,21 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Client Name" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
+                    <InputPaper label="Member Name" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
+
+                    <List.Item
+                        title="Choose Gender"
+                        description={`Gender: ${formData.clientGender}`}
+                        left={props => <List.Icon {...props} icon="gender-male-female" />}
+                        right={props => {
+                            return <MenuPaper menuArrOfObjects={memberGenders} />
+                        }}
+                        descriptionStyle={{
+                            color: theme.colors.tertiary,
+                        }}
+                    />
 
                     <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
@@ -361,12 +322,12 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Client Address" multiline leftIcon='card-account-phone-outline' value={formData.clientAddress} onChangeText={(txt: any) => handleFormChange("clientAddress", txt)} customStyle={{
+                    <InputPaper label="Member Address" multiline leftIcon='card-account-phone-outline' value={formData.clientAddress} onChangeText={(txt: any) => handleFormChange("clientAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} />
 
-                    <InputPaper label="Client PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
+                    <InputPaper label="PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 

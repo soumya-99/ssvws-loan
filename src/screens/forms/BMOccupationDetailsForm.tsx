@@ -44,7 +44,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
 
     const fetchOccupationDetails = async () => {
         setLoading(true)
-        await axios.get(`${ADDRESSES.FETCH_OCCUPATION_DETAILS}?form_no=${formNumber}`).then(res => {
+        await axios.get(`${ADDRESSES.FETCH_OCCUPATION_DETAILS}?form_no=${formNumber}?branch_code=${branchCode}`).then(res => {
             if (res?.data?.msg?.length === 0) {
                 ToastAndroid.show("No data found!", ToastAndroid.SHORT)
                 return
@@ -118,19 +118,20 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
     const handleFormUpdate = async () => {
         setLoading(true)
         const creds = {
-            "form_no": formNumber,
-            "self_occu": formData.selfOccupation,
-            "self_income": formData.selfMonthlyIncome,
-            "spouse_occu": formData.spouseOccupation,
-            "spouse_income": formData.spouseMonthlyIncome,
-            "loan_purpose": formData.purposeOfLoan,
-            "sub_pupose": formData.subPurposeOfLoan,
-            "applied_amt": formData.amountApplied,
-            "other_loan_flag": formData.checkOtherOngoingLoan,
-            "other_loan_amt": formData.otherLoanAmount,
-            "other_loan_emi": formData.monthlyEmi, // check
-            "modified_by": loginStore?.emp_name,
-            "created_by": loginStore?.emp_name,
+            form_no: formNumber,
+            branch_code: branchCode,
+            self_occu: formData.selfOccupation,
+            self_income: formData.selfMonthlyIncome,
+            spouse_occu: formData.spouseOccupation,
+            spouse_income: formData.spouseMonthlyIncome,
+            loan_purpose: formData.purposeOfLoan,
+            sub_pupose: formData.subPurposeOfLoan,
+            applied_amt: formData.amountApplied,
+            other_loan_flag: formData.checkOtherOngoingLoan,
+            other_loan_amt: formData.otherLoanAmount,
+            other_loan_emi: formData.monthlyEmi, // check
+            modified_by: loginStore?.emp_name,
+            created_by: loginStore?.emp_name,
         }
         await axios.post(`${ADDRESSES.SAVE_OCCUPATION_DETAILS}`, creds).then(res => {
             console.log("occccccuuuuuppppppddddd save", res?.data)
@@ -227,9 +228,9 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
                         backgroundColor: theme.colors.background,
                     }} />}
 
-                    <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={formData.monthlyEmi} onChangeText={(txt: any) => handleFormChange("monthlyEmi", txt)} customStyle={{
+                    {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={formData.monthlyEmi} onChangeText={(txt: any) => handleFormChange("monthlyEmi", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} />}
 
                     <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
                         Alert.alert("Update Occupation Details", "Are you sure you want to update this?", [
