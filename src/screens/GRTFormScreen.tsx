@@ -31,7 +31,12 @@ const GRTFormScreen = () => {
     const [openDate, setOpenDate] = useState(() => false)
     const formattedDob = formattedDate(dob)
 
+    const [memberCodeShowHide, setMemberCodeShowHide] = useState(() => false)
+    const [memberCode, setMemberCode] = useState(() => "")
     const [clientName, setClientName] = useState(() => "") // name
+    const [memberGenders, setMemberGenders] = useState(() => [])
+    const [memberGender, setMemberGender] = useState(() => "")
+    const [memberGenderName, setMemberGenderName] = useState(() => "")
     const [clientMobile, setClientMobile] = useState(() => "") // mob
     const [guardianName, setGuardianName] = useState(() => "") // guard
     const [guardianMobile, setGuardianMobile] = useState(() => "") // guradmob
@@ -111,41 +116,15 @@ const GRTFormScreen = () => {
         handleFetchEducations()
     }, [])
 
-    // useEffect(() => {
-    //     setGroupNames(() => [])
-    //     const eventSource = new EventSource(`${ADDRESSES.GROUP_NAMES_ES}?branch_code=${loginStore?.brn_code}`);
-
-
-    //     eventSource.addEventListener("open", (event) => {
-    //         console.log("Open SSE connection.");
-    //     });
-
-    //     eventSource.addEventListener("message", (event) => {
-    //         console.log("New message event:", event.data);
-    //         const newData = JSON.parse(event.data);
-
-    //         console.log("===+++++=====++++++=====", newData)
-
-    //         // newData?.msg?.map((item, i) => (
-    //         //     //@ts-ignore
-    //         //     setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { setGroupCode(item?.group_code); setGroupCodeName(item?.group_name) } }])
-    //         // ))
-    //     });
-
-    //     eventSource.addEventListener("error", (event) => {
-    //         if (event.type === "error") {
-    //             console.error("Connection error:", event.message);
-    //             eventSource.close();
-    //         } else if (event.type === "exception") {
-    //             console.error("Error:", event.message, event.error);
-    //             eventSource.close();
-    //         }
-    //     });
-
-    //     return () => {
-    //         eventSource.close();
-    //     };
-    // }, [])
+    useEffect(() => {
+        setMemberGenders([])
+        setMemberGenders(prev => [
+            ...prev,
+            { title: "Male", func: () => { setMemberGender("M"); setMemberGenderName("Male") } },
+            { title: "Female", func: () => { setMemberGender("F"); setMemberGenderName("Female") } },
+            { title: "Others", func: () => { setMemberGender("O"); setMemberGenderName("Other") } }
+        ])
+    }, [])
 
     const fetchClientDetails = async (flag, data) => {
         const creds = {
@@ -159,8 +138,12 @@ const GRTFormScreen = () => {
         // }
 
         await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
+
+            console.log("GFFFFFFFFFFFFFFFFGGGG", res?.data)
             if (res?.data?.msg?.length > 0) {
+                setMemberCodeShowHide(true)
                 // setFullUserDetails(JSON.stringify(res?.data?.msg[0]))
+                setMemberCode(res?.data?.msg[0]?.member_code)
                 setClientName(res?.data?.msg[0]?.client_name)
                 setClientMobile(res?.data?.msg[0]?.client_mobile)
                 setGuardianName(res?.data?.msg[0]?.gurd_name)
@@ -171,9 +154,10 @@ const GRTFormScreen = () => {
                 setPanNumber(res?.data?.msg[0]?.pan_no)
                 setReligion(res?.data?.msg[0]?.religion)
                 setCaste(res?.data?.msg[0]?.caste)
-                setEducation(res?.data?.msg[0]?.education)
+                setEducation(res?.data?.msg[0]?.education ?? "")
                 setGroupCode(res?.data?.msg[0]?.prov_grp_code)
-                setDob(new Date(res?.data?.msg[0]?.dob))
+                setGroupCodeName(res?.data?.msg[0]?.group_name)
+                setDob(new Date(res?.data?.msg[0]?.dob) ?? new Date())
             } else {
                 ToastAndroid.show("New client.", ToastAndroid.SHORT)
             }
@@ -197,7 +181,10 @@ const GRTFormScreen = () => {
             text: "Yes",
             onPress: () => {
                 clearStates([
+                    setMemberCode,
                     setClientName,
+                    setMemberGender,
+                    setMemberGenderName,
                     setClientMobile,
                     setGuardianName,
                     setGuardianMobile,
@@ -207,8 +194,11 @@ const GRTFormScreen = () => {
                     setPanNumber,
                     setReligion,
                     setCaste,
-                    setEducation
+                    setEducation,
+                    setGroupCodeName,
+                    setGroupCode,
                 ], "")
+                setMemberCodeShowHide(false)
                 setDob(new Date())
             }
         }])
@@ -221,6 +211,7 @@ const GRTFormScreen = () => {
             branch_code: loginStore?.brn_code,
             prov_grp_code: groupCode,
             client_name: clientName,
+            gender: memberGender,
             client_mobile: clientMobile,
             gurd_name: guardianName,
             gurd_mobile: guardianMobile,
@@ -244,7 +235,9 @@ const GRTFormScreen = () => {
             console.log("-----------", res?.data)
             Alert.alert("Success", "Basic Details Saved!")
             clearStates([
+                setMemberCode,
                 setClientName,
+                setMemberGender,
                 setClientMobile,
                 setGuardianName,
                 setGuardianMobile,
@@ -254,8 +247,11 @@ const GRTFormScreen = () => {
                 setPanNumber,
                 setReligion,
                 setCaste,
-                setEducation
+                setEducation,
+                setGroupCodeName,
+                setGroupCode
             ], "")
+            setMemberCodeShowHide(false)
             setDob(new Date())
         }).catch(err => {
             ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
@@ -279,7 +275,7 @@ const GRTFormScreen = () => {
 
                     <List.Item
                         title="Choose Group"
-                        description={`Group Code: ${groupCodeName}`}
+                        description={`${groupCodeName} - ${groupCode}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
                             return <MenuPaper menuArrOfObjects={groupNames} />
@@ -289,23 +285,37 @@ const GRTFormScreen = () => {
                         }}
                     />
 
-                    <Divider />
-
-                    <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={clientMobile} onChangeText={(txt: any) => setClientMobile(txt)} onBlur={() => fetchClientDetails("M", clientMobile)} customStyle={{
+                    <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={clientMobile} onChangeText={(txt: any) => setClientMobile(txt)} onBlur={() => { clientMobile && fetchClientDetails("M", clientMobile) }} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={aadhaarNumber} onChangeText={(txt: any) => setAadhaarNumber(txt)} onBlur={() => fetchClientDetails("A", aadhaarNumber)} customStyle={{
+                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={aadhaarNumber} onChangeText={(txt: any) => setAadhaarNumber(txt)} onBlur={() => { aadhaarNumber && fetchClientDetails("A", aadhaarNumber) }} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={panNumber} onChangeText={(txt: any) => setPanNumber(txt)} onBlur={() => fetchClientDetails("P", panNumber)} customStyle={{
+                    <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={panNumber} onChangeText={(txt: any) => setPanNumber(txt)} onBlur={() => { panNumber && fetchClientDetails("P", panNumber) }} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Client Name" leftIcon='account-circle-outline' value={clientName} onChangeText={(txt: any) => setClientName(txt)} customStyle={{
+                    {memberCodeShowHide && <InputPaper label="Member Code" leftIcon='numeric' value={memberCode} onChangeText={(txt: any) => setMemberCode(txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />}
+
+                    <InputPaper label="Member Name" leftIcon='account-circle-outline' value={clientName} onChangeText={(txt: any) => setClientName(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
+
+                    <List.Item
+                        title="Choose Gender"
+                        description={`Gender: ${memberGenderName}`}
+                        left={props => <List.Icon {...props} icon="gender-male-female" />}
+                        right={props => {
+                            return <MenuPaper menuArrOfObjects={memberGenders} />
+                        }}
+                        descriptionStyle={{
+                            color: theme.colors.tertiary,
+                        }}
+                    />
 
                     <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={guardianName} onChangeText={(txt: any) => setGuardianName(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
@@ -315,12 +325,12 @@ const GRTFormScreen = () => {
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    <InputPaper label="Client Address" multiline leftIcon='card-account-phone-outline' value={clientAddress} onChangeText={(txt: any) => setClientAddress(txt)} customStyle={{
+                    <InputPaper label="Member Address" multiline leftIcon='card-account-phone-outline' value={clientAddress} onChangeText={(txt: any) => setClientAddress(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} />
 
-                    <InputPaper label="Client PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={clientPin} onChangeText={(txt: any) => setClientPin(txt)} customStyle={{
+                    <InputPaper label="PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={clientPin} onChangeText={(txt: any) => setClientPin(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />
 
