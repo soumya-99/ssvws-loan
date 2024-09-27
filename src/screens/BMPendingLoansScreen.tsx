@@ -72,7 +72,7 @@ const BMPendingLoansScreen = () => {
                 backgroundColor: theme.colors.background,
                 minHeight: SCREEN_HEIGHT,
                 height: 'auto'
-            }}>
+            }} keyboardShouldPersistTaps="handled">
                 <HeadingComp title="Pending Forms" subtitle="Choose Form" />
                 {/* <BMPendingLoanFormScreen /> */}
 
