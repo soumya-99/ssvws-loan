@@ -22,5 +22,6 @@ export const ADDRESSES = {
     FETCH_SUB_PURPOSE_OF_LOAN: `${BASE_URL}/get_sub_purpose`,
     FETCH_FORMS: `${BASE_URL}/fetch_form_dtls`,
     EDIT_BASIC_DETAILS: `${BASE_URL}/edit_basic_dtls`,
-    SAVE_OCCUPATION_DETAILS: `${BASE_URL}/save_occup_dtls`
+    SAVE_OCCUPATION_DETAILS: `${BASE_URL}/save_occup_dtls`,
+    FETCH_OCCUPATION_DETAILS: `${BASE_URL}/fetch_occup_dtls`
 }

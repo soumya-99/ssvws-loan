@@ -2,16 +2,18 @@ import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import InputPaper from '../../components/InputPaper'
-import { Divider, List, RadioButton, Text } from 'react-native-paper'
+import { Divider, List } from 'react-native-paper'
 import MenuPaper from '../../components/MenuPaper'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import RadioComp from '../../components/RadioComp'
 import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
 import ButtonPaper from '../../components/ButtonPaper'
+import { loginStorage } from '../../storage/appStorage'
 
 const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
     const theme = usePaperColorScheme()
+    const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [loading, setLoading] = useState(() => false)
 
@@ -39,6 +41,40 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
             [field]: value,
         }))
     }
+
+    const fetchOccupationDetails = async () => {
+        setLoading(true)
+        await axios.get(`${ADDRESSES.FETCH_OCCUPATION_DETAILS}?form_no=${formNumber}`).then(res => {
+            if (res?.data?.msg?.length === 0) {
+                ToastAndroid.show("No data found!", ToastAndroid.SHORT)
+                return
+            }
+            console.log("FETCHHHHHH=====", res?.data)
+            if (res?.data?.suc === 1) {
+                setFormData({
+                    selfOccupation: res?.data?.msg[0]?.self_occu,
+                    selfMonthlyIncome: res?.data?.msg[0]?.self_income,
+                    spouseOccupation: res?.data?.msg[0]?.spouse_occu,
+                    spouseMonthlyIncome: res?.data?.msg[0]?.spouse_income,
+                    purposeOfLoan: res?.data?.msg[0]?.loan_purpose,
+                    purposeOfLoanName: res?.data?.msg[0]?.purpose_id,
+                    subPurposeOfLoan: res?.data?.msg[0]?.sub_pupose,
+                    subPurposeOfLoanName: res?.data?.msg[0]?.sub_purp_name,
+                    amountApplied: res?.data?.msg[0]?.applied_amt,
+                    checkOtherOngoingLoan: res?.data?.msg[0]?.other_loan_flag,
+                    otherLoanAmount: res?.data?.msg[0]?.other_loan_amt,
+                    monthlyEmi: res?.data?.msg[0]?.other_loan_emi,
+                })
+            }
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while fetching occupation details!", ToastAndroid.SHORT)
+        })
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchOccupationDetails()
+    }, [])
 
     const fetchPurposeOfLoan = async () => {
         setPurposesOfLoan([]);
@@ -80,6 +116,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
     }, [formData.purposeOfLoan])
 
     const handleFormUpdate = async () => {
+        setLoading(true)
         const creds = {
             "form_no": formNumber,
             "self_occu": formData.selfOccupation,
@@ -89,16 +126,22 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
             "loan_purpose": formData.purposeOfLoan,
             "sub_pupose": formData.subPurposeOfLoan,
             "applied_amt": formData.amountApplied,
-            "other_loan_flag": "",
-            "other_loan_amt": "",
-            "other_loan_emi": "",
-            "political_flag": "",
-            "parental_addr": "",
-            "parental_phone": "",
-            "modified_by": "",
-            "created_by": ""
+            "other_loan_flag": formData.checkOtherOngoingLoan,
+            "other_loan_amt": formData.otherLoanAmount,
+            "other_loan_emi": formData.monthlyEmi, // check
+            "modified_by": loginStore?.emp_name,
+            "created_by": loginStore?.emp_name,
         }
-        await axios.post(`${ADDRESSES.SAVE_OCCUPATION_DETAILS}`, creds)
+        await axios.post(`${ADDRESSES.SAVE_OCCUPATION_DETAILS}`, creds).then(res => {
+            console.log("occccccuuuuuppppppddddd save", res?.data)
+            if (res?.data?.suc === 1) {
+                ToastAndroid.show("Occupation details saved.", ToastAndroid.SHORT)
+            }
+        }).catch(err => {
+            console.log("OCUCUUUCUCUCUC ERRR", err)
+            ToastAndroid.show("Some error occurred while saving occupation details!", ToastAndroid.SHORT)
+        })
+        setLoading(false)
     }
 
     return (
@@ -168,19 +211,19 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
                             {
                                 optionName: "YES",
                                 optionState: formData.checkOtherOngoingLoan,
-                                currentState: "yes",
+                                currentState: "Y",
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOtherOngoingLoan", e)
                             },
                             {
                                 optionName: "NO",
                                 optionState: formData.checkOtherOngoingLoan,
-                                currentState: "no",
+                                currentState: "N",
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOtherOngoingLoan", e)
                             },
                         ]}
                     />
 
-                    {formData.checkOtherOngoingLoan === "yes" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.otherLoanAmount} onChangeText={(txt: any) => handleFormChange("otherLoanAmount", txt)} customStyle={{
+                    {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.otherLoanAmount} onChangeText={(txt: any) => handleFormChange("otherLoanAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} />}
 
@@ -189,7 +232,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
                     }} />
 
                     <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
-                        Alert.alert("Update Basic Details", "Are you sure you want to update this?", [
+                        Alert.alert("Update Occupation Details", "Are you sure you want to update this?", [
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
