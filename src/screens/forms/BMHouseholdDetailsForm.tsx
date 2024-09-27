@@ -43,7 +43,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
     useEffect(() => {
         setHouseTypes([]);
 
-        [{ type: "Asbestor", value: "Abestor" }, { type: "Concrete Roof", value: "Concrete Roof" }, { type: "Kacha", value: "Kaccha" }]?.map((item, i) => (
+        [{ type: "Asbestos", value: "Abestor" }, { type: "Concrete Roof", value: "Concrete Roof" }, { type: "Kaccha", value: "Kaccha" }]?.map((item, i) => (
             //@ts-ignore
             setHouseTypes(prev => [...prev, { title: item?.type, func: () => handleFormChange("houseType", item?.value) }])
         ))
@@ -52,13 +52,13 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
     const fetchHouseholdDetails = async () => {
         setLoading(true)
 
-        await axios.get(`${ADDRESSES.FETCH_HOUSEHOLD_DETAILS}?form_no=${formNumber}`).then(res => {
+        await axios.get(`${ADDRESSES.FETCH_HOUSEHOLD_DETAILS}?form_no=${formNumber}&branch_code=${branchCode}`).then(res => {
             console.log("HOUSEHOLD===FETCH", res?.data)
             setFormData({
                 noOfRooms: res?.data?.msg[0]?.no_of_rooms,
-                parentalAddress: res?.data?.msg[0]?.parental_addr,
+                parentalAddress: res?.data?.msg[0]?.parental_addr ?? "",
                 parentalPhoneNumber: res?.data?.msg[0]?.parental_phone,
-                houseType: res?.data?.msg[0]?.house_type,
+                houseType: res?.data?.msg[0]?.house_type ?? "",
                 checkOwnOrRent: res?.data?.msg[0]?.own_rent,
                 totalLand: res?.data?.msg[0]?.land,
                 politicallyActive: res?.data?.msg[0]?.poltical_flag,
@@ -83,6 +83,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
 
         const creds = {
             form_no: formNumber,
+            branch_code: branchCode,
             no_of_rooms: formData.noOfRooms,
             house_type: formData.houseType,
             own_rent: formData.checkOwnOrRent,

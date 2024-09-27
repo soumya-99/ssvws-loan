@@ -26,5 +26,7 @@ export const ADDRESSES = {
     FETCH_OCCUPATION_DETAILS: `${BASE_URL}/fetch_occup_dtls`,
 
     SAVE_HOUSEHOLD_DETAILS: `${BASE_URL}/save_household_dtls`,
-    FETCH_HOUSEHOLD_DETAILS: `${BASE_URL}/fetch_household_dtls`
+    FETCH_HOUSEHOLD_DETAILS: `${BASE_URL}/fetch_household_dtls`,
+    SAVE_FAMILY_DETAILS: `${BASE_URL}/save_family_dtls`,
+    FETCH_FAMILY_DETAILS: `${BASE_URL}/fetch_family_dtls`
 }

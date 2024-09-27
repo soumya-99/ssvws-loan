@@ -86,7 +86,7 @@ const BMPendingLoanFormScreen = () => {
                     {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
                     {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
                     {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
-                    {currentPosition === 3 && <BMFamilyMemberDetailsForm />}
+                    {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
 
                     <View style={{
                         flexDirection: "row",

@@ -1,24 +1,34 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
-import React, { useState } from 'react'
+import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import InputPaper from '../../components/InputPaper'
-import { Divider, IconButton, Text } from 'react-native-paper'
+import { Divider, IconButton, List, Text } from 'react-native-paper'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import RadioComp from '../../components/RadioComp'
+import ButtonPaper from '../../components/ButtonPaper'
+import axios from 'axios'
+import { ADDRESSES } from '../../config/api_list'
+import MenuPaper from '../../components/MenuPaper'
+import { loginStorage } from '../../storage/appStorage'
 
-const BMFamilyMemberDetailsForm = () => {
+const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
     const theme = usePaperColorScheme()
 
+    const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
     const [loading, setLoading] = useState(false)
+
+    const [educations, setEducations] = useState(() => [])
+    const [memberGenders, setMemberGenders] = useState(() => [])
 
     // Each form item has independent state now
     const [formArray, setFormArray] = useState([{
+        sl_no: 0,
         name: '',
         relation: '',
         age: '',
-        sex: 'm',
+        sex: '',
         education: '',
-        studyingOrWorking: 'w',
+        studyingOrWorking: '',
         monthlyIncome: ''
     }])
 
@@ -27,12 +37,13 @@ const BMFamilyMemberDetailsForm = () => {
         setFormArray(prev => [
             ...prev,
             {
+                sl_no: 0,
                 name: '',
                 relation: '',
                 age: '',
-                sex: 'm',
+                sex: '',
                 education: '',
-                studyingOrWorking: 'w',
+                studyingOrWorking: '',
                 monthlyIncome: ''
             }
         ])
@@ -48,11 +59,104 @@ const BMFamilyMemberDetailsForm = () => {
         setFormArray(updatedForm)
     }
 
+    const fetchFamilyMemberDetails = async () => {
+        setLoading(true);
+
+        try {
+            const res = await axios.get(`${ADDRESSES.FETCH_FAMILY_DETAILS}?form_no=${formNumber}&branch_code=${branchCode}`);
+            console.log(">>>>>>>>>>>>>>>>>>>>", res?.data);
+
+            if (res?.data?.suc === 1) {
+                const apiData = res?.data?.msg;
+
+                // Transform the API response to match the form structure
+                const transformedData = apiData.map((member) => ({
+                    sl_no: member.sl_no || '',
+                    name: member.name || '',
+                    relation: member.relation || '',
+                    age: member.age?.toString() || '',  // Convert to string for form input
+                    sex: member.sex || 'M',
+                    education: member.education || '',
+                    studyingOrWorking: member.studyingOrWorking || 'Working',
+                    monthlyIncome: member.monthlyIncome?.toString() || ''  // Convert to string for form input
+                }));
+
+                setFormArray(transformedData);
+            }
+        } catch (err) {
+            console.log("XXXXXXXXXXXXXXXX", err);
+        }
+
+        setLoading(false);
+    };
+
+
+    useEffect(() => {
+        fetchFamilyMemberDetails()
+    }, [])
+
+    const handleFetchEducations = async () => {
+        setLoading(true);
+        setEducations(() => []);
+        await axios.get(`${ADDRESSES.GET_EDUCATIONS}`).then(res => {
+            res?.data?.forEach(item => {
+                setEducations(prev => [
+                    ...prev,
+                    {
+                        title: item?.name,
+                        func: (formIndex) => handleInputChange(formIndex, "education", item?.id)
+                    }
+                ]);
+            });
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred {handleFetchEducations}!", ToastAndroid.SHORT);
+        });
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        handleFetchEducations()
+    }, [])
+
+    useEffect(() => {
+        setMemberGenders([
+            { title: "Male", func: (formIndex) => handleInputChange(formIndex, "sex", "M") },
+            { title: "Female", func: (formIndex) => handleInputChange(formIndex, "sex", "F") },
+            { title: "Others", func: (formIndex) => handleInputChange(formIndex, "sex", "O") }
+        ]);
+    }, []);
+
+    const handleFormUpdate = async () => {
+        setLoading(true)
+
+        const creds = {
+            form_no: formNumber,
+            branch_code: branchCode,
+            created_by: loginStore?.emp_name,
+            modified_by: loginStore?.emp_name,
+            memberdtls: formArray
+        }
+
+        console.log("YYYYYYYYYYYYYYYYYYYYY", creds)
+
+        await axios.post(`${ADDRESSES.SAVE_FAMILY_DETAILS}`, creds).then(res => {
+            console.log("UUUUUUUUUUUUUUUUUUUU", res?.data)
+            if (res?.data?.suc === 1) {
+                ToastAndroid.show("Family member details updated successfully!", ToastAndroid.SHORT)
+            }
+        }).catch(err => {
+            console.log("88888888888888888888", err)
+        })
+
+        setLoading(false)
+    }
+
     return (
         <SafeAreaView>
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background
             }}>
+                {console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^", formArray)}
                 {formArray?.map((item, i) => (
                     <View key={i} style={{ paddingTop: 10, gap: 10 }}>
                         <Text variant='titleMedium' style={{
@@ -89,7 +193,7 @@ const BMFamilyMemberDetailsForm = () => {
                             customStyle={{ backgroundColor: theme.colors.background }}
                         />
 
-                        <RadioComp
+                        {/* <RadioComp
                             title="Sex"
                             icon="gender-male-female"
                             dataArray={[
@@ -106,9 +210,24 @@ const BMFamilyMemberDetailsForm = () => {
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'sex', value)
                                 },
                             ]}
+                        /> */}
+
+                        <List.Item
+                            title="Choose Gender"
+                            description={`Gender: ${item.sex}`}
+                            left={props => <List.Icon {...props} icon="gender-male-female" />}
+                            right={props => {
+                                return <MenuPaper menuArrOfObjects={memberGenders.map(gender => ({
+                                    ...gender,
+                                    func: () => gender.func(i)  // Pass current form index (i)
+                                }))} />
+                            }}
+                            descriptionStyle={{
+                                color: theme.colors.tertiary,
+                            }}
                         />
 
-                        <InputPaper
+                        {/* <InputPaper
                             label="Education"
                             maxLength={50}
                             leftIcon='book-education-outline'
@@ -116,6 +235,21 @@ const BMFamilyMemberDetailsForm = () => {
                             value={item?.education}
                             onChangeText={(txt) => handleInputChange(i, 'education', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
+                        /> */}
+
+                        <List.Item
+                            title="Choose Education"
+                            description={`Education: ${item.education}`}
+                            left={props => <List.Icon {...props} icon="book-education-outline" />}
+                            right={props => {
+                                return <MenuPaper menuArrOfObjects={educations.map(education => ({
+                                    ...education,
+                                    func: () => education.func(i)  // Pass current form index (i)
+                                }))} />
+                            }}
+                            descriptionStyle={{
+                                color: theme.colors.tertiary,
+                            }}
                         />
 
                         <RadioComp
@@ -125,13 +259,13 @@ const BMFamilyMemberDetailsForm = () => {
                                 {
                                     optionName: "STUDY",
                                     optionState: item?.studyingOrWorking,
-                                    currentState: "s",
+                                    currentState: "Studying",
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
                                 },
                                 {
                                     optionName: "WORK",
                                     optionState: item?.studyingOrWorking,
-                                    currentState: "w",
+                                    currentState: "Working",
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
                                 },
                             ]}
@@ -159,6 +293,14 @@ const BMFamilyMemberDetailsForm = () => {
                     backgroundColor: theme.colors.tertiaryContainer,
                     marginTop: formArray?.length === 1 ? 10 : 0
                 }} />
+
+                <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                    Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
+                        { text: "No", onPress: () => null },
+                        { text: "Yes", onPress: () => handleFormUpdate() },
+                    ])
+                }} disabled={loading}
+                    loading={loading}>UPDATE</ButtonPaper>
             </ScrollView>
             {loading && <LoadingOverlay />}
         </SafeAreaView>

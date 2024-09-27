@@ -44,7 +44,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
 
     const fetchOccupationDetails = async () => {
         setLoading(true)
-        await axios.get(`${ADDRESSES.FETCH_OCCUPATION_DETAILS}?form_no=${formNumber}?branch_code=${branchCode}`).then(res => {
+        await axios.get(`${ADDRESSES.FETCH_OCCUPATION_DETAILS}?form_no=${formNumber}&branch_code=${branchCode}`).then(res => {
             if (res?.data?.msg?.length === 0) {
                 ToastAndroid.show("No data found!", ToastAndroid.SHORT)
                 return
