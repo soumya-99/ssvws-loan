@@ -1,13 +1,16 @@
 import { StyleSheet, View } from 'react-native'
-import { Text } from 'react-native-paper'
+import { IconButton, Text } from 'react-native-paper'
 import React from 'react'
 import { usePaperColorScheme } from "../theme/theme"
+import { CommonActions, useNavigation } from '@react-navigation/native'
 
 const HeadingComp = ({
     title,
-    subtitle
+    subtitle,
+    isBackEnabled = false,
 }) => {
     const theme = usePaperColorScheme()
+    const navigation = useNavigation()
 
     return (
         <View style={{
@@ -17,6 +20,11 @@ const HeadingComp = ({
             borderTopLeftRadius: 30,
             borderBottomRightRadius: 30
         }}>
+            {isBackEnabled && <View style={{
+                position: "absolute"
+            }}>
+                <IconButton icon="arrow-left" iconColor={theme.colors.onSecondaryContainer} size={20} onPress={() => navigation.dispatch(CommonActions.goBack())} />
+            </View>}
             <View style={{
                 padding: 15,
             }}>

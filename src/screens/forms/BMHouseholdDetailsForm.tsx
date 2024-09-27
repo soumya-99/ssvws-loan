@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
+import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import InputPaper from '../../components/InputPaper'
@@ -6,39 +6,34 @@ import { Divider, Icon, List, RadioButton, Text } from 'react-native-paper'
 import MenuPaper from '../../components/MenuPaper'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import RadioComp from '../../components/RadioComp'
+import ButtonPaper from '../../components/ButtonPaper'
+import axios from 'axios'
+import { ADDRESSES } from '../../config/api_list'
+import { loginStorage } from '../../storage/appStorage'
 
-const BMHouseholdDetailsForm = () => {
+const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
     const theme = usePaperColorScheme()
+    const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [loading, setLoading] = useState(() => false)
 
-    // const [noOfRooms, setNoOfRooms] = useState(() => "")
-    // const [parentalAddress, setParentalAddress] = useState(() => "")
-    // const [spouseOccupation, setSpouseOccupation] = useState(() => "")
-    // const [spouseMonthlyIncome, setSpouseMonthlyIncome] = useState(() => "")
     const [houseTypes, setHouseTypes] = useState(() => [])
-    // const [houseType, setHouseType] = useState(() => "")
-    // const [amountApplied, setAmountApplied] = useState(() => "")
-    // const [checkOwnOrRent, setCheckOwnOrRent] = useState(() => 'own')
-    // const [totalLand, setTotalLand] = useState(() => "")
-    // const [tvAvailable, setTvAvailable] = useState(() => 'yes')
-    // const [bikeAvailable, setBikeAvailable] = useState(() => "no")
-    // const [fridgeAvailable, setFridgeAvailable] = useState(() => "yes")
-    // const [washingMachineAvailable, setWashingMachineAvailable] = useState(() => "no")
 
     const [formData, setFormData] = useState({
         noOfRooms: "",
         parentalAddress: "",
+        parentalPhoneNumber: "",
         houseType: "",
-        checkOwnOrRent: "own",
+        checkOwnOrRent: "",
         totalLand: "",
-        tvAvailable: "yes",
-        bikeAvailable: "no",
-        fridgeAvailable: "yes",
-        washingMachineAvailable: "no",
+        politicallyActive: "",
+        tvAvailable: "",
+        bikeAvailable: "",
+        fridgeAvailable: "",
+        washingMachineAvailable: "",
     })
 
-    const handleFormChange = (field, value) => {
+    const handleFormChange = (field: string, value: any) => {
         setFormData((prev) => ({
             ...prev,
             [field]: value,
@@ -48,11 +43,74 @@ const BMHouseholdDetailsForm = () => {
     useEffect(() => {
         setHouseTypes([]);
 
-        [{ type: "Asbestor", value: "1" }, { type: "Roof", value: "2" }, { type: "Kacha", value: "3" }]?.map((item, i) => (
+        [{ type: "Asbestor", value: "Abestor" }, { type: "Concrete Roof", value: "Concrete Roof" }, { type: "Kacha", value: "Kaccha" }]?.map((item, i) => (
             //@ts-ignore
             setHouseTypes(prev => [...prev, { title: item?.type, func: () => handleFormChange("houseType", item?.value) }])
         ))
     }, [])
+
+    const fetchHouseholdDetails = async () => {
+        setLoading(true)
+
+        await axios.get(`${ADDRESSES.FETCH_HOUSEHOLD_DETAILS}?form_no=${formNumber}`).then(res => {
+            console.log("HOUSEHOLD===FETCH", res?.data)
+            setFormData({
+                noOfRooms: res?.data?.msg[0]?.no_of_rooms,
+                parentalAddress: res?.data?.msg[0]?.parental_addr,
+                parentalPhoneNumber: res?.data?.msg[0]?.parental_phone,
+                houseType: res?.data?.msg[0]?.house_type,
+                checkOwnOrRent: res?.data?.msg[0]?.own_rent,
+                totalLand: res?.data?.msg[0]?.land,
+                politicallyActive: res?.data?.msg[0]?.poltical_flag,
+                tvAvailable: res?.data?.msg[0]?.tv_flag,
+                bikeAvailable: res?.data?.msg[0]?.bike_flag,
+                fridgeAvailable: res?.data?.msg[0]?.fridge_flag,
+                washingMachineAvailable: res?.data?.msg[0]?.wm_flag,
+            })
+        }).catch(err => {
+            ToastAndroid.show("Something went wrong while fetching Household Details!", ToastAndroid.SHORT)
+        })
+
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchHouseholdDetails()
+    }, [])
+
+    const handleFormUpdate = async () => {
+        setLoading(true)
+
+        const creds = {
+            form_no: formNumber,
+            no_of_rooms: formData.noOfRooms,
+            house_type: formData.houseType,
+            own_rent: formData.checkOwnOrRent,
+            land: formData.totalLand,
+            tv_flag: formData.tvAvailable,
+            bike_flag: formData.bikeAvailable,
+            fridge_flag: formData.fridgeAvailable,
+            wm_flag: formData.washingMachineAvailable,
+            poltical_flag: formData.politicallyActive,
+            parental_addr: formData.parentalAddress,
+            parental_phone: formData.parentalPhoneNumber,
+            modified_by: loginStore?.emp_name,
+            created_by: loginStore?.emp_name
+        }
+
+        await axios.post(`${ADDRESSES.SAVE_HOUSEHOLD_DETAILS}`, creds).then(res => {
+            console.log("HOUSEHOLD====RES", res?.data)
+
+            if (res?.data?.suc === 1) {
+                ToastAndroid.show("Household details updated.", ToastAndroid.SHORT)
+            }
+        }).catch(err => {
+            console.log("ERRRRR=HOUSEHOLD", err)
+            ToastAndroid.show("Something went wrong while updating Household Details!", ToastAndroid.SHORT)
+        })
+
+        setLoading(false)
+    }
 
 
     return (
@@ -76,6 +134,10 @@ const BMHouseholdDetailsForm = () => {
                         minHeight: 95,
                     }} />
 
+                    <InputPaper label="Parental Phone No." maxLength={10} leftIcon='phone' keyboardType="number-pad" value={formData.parentalPhoneNumber} onChangeText={(txt: any) => handleFormChange("parentalPhoneNumber", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />
+
                     <List.Item
                         title="House Type"
                         description={`Purpose: ${formData.houseType}`}
@@ -95,13 +157,13 @@ const BMHouseholdDetailsForm = () => {
                             {
                                 optionName: "OWN",
                                 optionState: formData.checkOwnOrRent,
-                                currentState: "own",
+                                currentState: "Own",
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOwnOrRent", e)
                             },
                             {
                                 optionName: "RENT",
                                 optionState: formData.checkOwnOrRent,
-                                currentState: "rent",
+                                currentState: "Rent",
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOwnOrRent", e)
                             },
                         ]}
@@ -113,47 +175,24 @@ const BMHouseholdDetailsForm = () => {
                         backgroundColor: theme.colors.background,
                     }} />
 
-                    {/* <View style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        paddingHorizontal: 15,
-                        paddingVertical: 5,
-                    }}>
-                        <View style={{
-                            flexDirection: "row",
-                            gap: 12
-                        }}>
-                            <Icon source="home-switch-outline" size={28} color={theme.colors.secondary} />
-                            <Text variant='bodyLarge'>Own a TV?</Text>
-                        </View>
-                        <View style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 5
-                        }}>
-                            <Text>YES</Text>
-                            <RadioButton
-                                value="own"
-                                status={tvAvailable === 'yes' ? 'checked' : 'unchecked'}
-                                onPress={() => setTvAvailable('yes')}
-                            />
-                            <Text>NO</Text>
-                            <RadioButton
-                                value="rent"
-                                status={tvAvailable === 'no' ? 'checked' : 'unchecked'}
-                                onPress={() => setTvAvailable('no')}
-                            />
-                        </View>
-                    </View> */}
-
-                    {/* [{
-                        optionName: "YES",
-                        optionState: tvAvailable,
-                        currentState: "yes",
-                        optionSetStateDispathFun: setTvAvailable
-                    },] */}
-
+                    <RadioComp
+                        title="Politically Active?"
+                        icon="police-badge-outline"
+                        dataArray={[
+                            {
+                                optionName: "YES",
+                                optionState: formData.politicallyActive,
+                                currentState: "Y",
+                                optionSetStateDispathFun: (e) => handleFormChange("politicallyActive", e)
+                            },
+                            {
+                                optionName: "NO",
+                                optionState: formData.politicallyActive,
+                                currentState: "N",
+                                optionSetStateDispathFun: (e) => handleFormChange("politicallyActive", e)
+                            },
+                        ]}
+                    />
                     <RadioComp
                         title="Own a TV?"
                         icon="television-classic"
@@ -161,13 +200,13 @@ const BMHouseholdDetailsForm = () => {
                             {
                                 optionName: "YES",
                                 optionState: formData.tvAvailable,
-                                currentState: "yes",
+                                currentState: "Y",
                                 optionSetStateDispathFun: (e) => handleFormChange("tvAvailable", e)
                             },
                             {
                                 optionName: "NO",
                                 optionState: formData.tvAvailable,
-                                currentState: "no",
+                                currentState: "N",
                                 optionSetStateDispathFun: (e) => handleFormChange("tvAvailable", e)
                             },
                         ]}
@@ -179,13 +218,13 @@ const BMHouseholdDetailsForm = () => {
                             {
                                 optionName: "YES",
                                 optionState: formData.bikeAvailable,
-                                currentState: "yes",
+                                currentState: "Y",
                                 optionSetStateDispathFun: (e) => handleFormChange("bikeAvailable", e)
                             },
                             {
                                 optionName: "NO",
                                 optionState: formData.bikeAvailable,
-                                currentState: "no",
+                                currentState: "N",
                                 optionSetStateDispathFun: (e) => handleFormChange("bikeAvailable", e)
                             },
                         ]}
@@ -197,13 +236,13 @@ const BMHouseholdDetailsForm = () => {
                             {
                                 optionName: "YES",
                                 optionState: formData.fridgeAvailable,
-                                currentState: "yes",
+                                currentState: "Y",
                                 optionSetStateDispathFun: (e) => handleFormChange("fridgeAvailable", e)
                             },
                             {
                                 optionName: "NO",
                                 optionState: formData.fridgeAvailable,
-                                currentState: "no",
+                                currentState: "N",
                                 optionSetStateDispathFun: (e) => handleFormChange("fridgeAvailable", e)
                             },
                         ]}
@@ -215,18 +254,25 @@ const BMHouseholdDetailsForm = () => {
                             {
                                 optionName: "YES",
                                 optionState: formData.washingMachineAvailable,
-                                currentState: "yes",
+                                currentState: "Y",
                                 optionSetStateDispathFun: (e) => handleFormChange("washingMachineAvailable", e)
                             },
                             {
                                 optionName: "NO",
                                 optionState: formData.washingMachineAvailable,
-                                currentState: "no",
+                                currentState: "N",
                                 optionSetStateDispathFun: (e) => handleFormChange("washingMachineAvailable", e)
                             },
                         ]}
                     />
 
+                    <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                        Alert.alert("Update Household Details", "Are you sure you want to update this?", [
+                            { text: "No", onPress: () => null },
+                            { text: "Yes", onPress: () => handleFormUpdate() },
+                        ])
+                    }} disabled={loading}
+                        loading={loading}>UPDATE</ButtonPaper>
                 </View>
             </ScrollView>
             {loading && <LoadingOverlay />}

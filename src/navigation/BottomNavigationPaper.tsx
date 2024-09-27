@@ -10,7 +10,7 @@ import GroupNavigation from "./GroupNavigation"
 import BMPendingLoansNavigation from "./BMPendingLoansNavigation"
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
-// import useCurrentRouteName from "../hooks/useCurrentRoute"
+import useCurrentRouteName from "../hooks/useCurrentRoute"
 // import { loginStorage } from "../storage/appStorage"
 // import { LoginDataMessage } from "../models/api_types"
 
@@ -18,13 +18,13 @@ const Tab = createMaterialBottomTabNavigator()
 
 function BottomNavigationPaper() {
     const theme = usePaperColorScheme()
-    // const currentRoute = useCurrentRouteName()
+    const currentRoute = useCurrentRouteName()
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
-    // console.log("CURRNT ROUTE: ", currentRoute)
+    console.log("CURRNT ROUTE: ", currentRoute)
 
-    // const shouldHideTabBar = ["BottomNavigationPaper", "Home", "HomeScreen", "More", "MoreScreen", "Reports", "ReportsScreen", "Settings", "SettingsScreen", "CalculateMode", "CalculateModeScreen"].includes(currentRoute)
+    const shouldHideTabBar = ["BMPendingLoanFormScreen"].includes(currentRoute)
 
     const checkBMOrCOFlag = loginStore?.id
 
@@ -38,7 +38,7 @@ function BottomNavigationPaper() {
                 backgroundColor: theme.colors.surface,
                 borderTopWidth: 0.4,
                 borderColor: theme.colors.secondaryContainer,
-                // display: shouldHideTabBar ? "flex" : "none"
+                display: !shouldHideTabBar ? "flex" : "none"
             }}
             shifting
             compact

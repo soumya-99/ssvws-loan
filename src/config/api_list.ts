@@ -23,5 +23,8 @@ export const ADDRESSES = {
     FETCH_FORMS: `${BASE_URL}/fetch_form_dtls`,
     EDIT_BASIC_DETAILS: `${BASE_URL}/edit_basic_dtls`,
     SAVE_OCCUPATION_DETAILS: `${BASE_URL}/save_occup_dtls`,
-    FETCH_OCCUPATION_DETAILS: `${BASE_URL}/fetch_occup_dtls`
+    FETCH_OCCUPATION_DETAILS: `${BASE_URL}/fetch_occup_dtls`,
+
+    SAVE_HOUSEHOLD_DETAILS: `${BASE_URL}/save_household_dtls`,
+    FETCH_HOUSEHOLD_DETAILS: `${BASE_URL}/fetch_household_dtls`
 }

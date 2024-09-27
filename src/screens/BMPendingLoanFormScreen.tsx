@@ -53,7 +53,7 @@ const BMPendingLoanFormScreen = () => {
                 // minHeight: SCREEN_HEIGHT,
                 height: 'auto'
             }}>
-                <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber}`} />
+                <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber}`} isBackEnabled />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 10,
@@ -85,7 +85,7 @@ const BMPendingLoanFormScreen = () => {
 
                     {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
                     {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
-                    {currentPosition === 2 && <BMHouseholdDetailsForm />}
+                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
                     {currentPosition === 3 && <BMFamilyMemberDetailsForm />}
 
                     <View style={{
