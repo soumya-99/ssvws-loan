@@ -4,7 +4,7 @@ import { usePaperColorScheme } from '../theme/theme'
 import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
 import BMPendingLoanFormScreen from "./BMPendingLoanFormScreen"
-import { Divider, List, Text } from 'react-native-paper'
+import { Divider, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
 import { CommonActions, useNavigation } from '@react-navigation/native'
@@ -16,7 +16,10 @@ const BMPendingLoansScreen = () => {
 
     const [loading, setLoading] = useState(() => false)
 
+    const [search, setSearch] = useState(() => "")
     const [formsData, setFormsData] = useState(() => [])
+    const [filteredDataArray, setFilteredDataArray] = useState(() => [])
+
 
     const fetchPendingGRTForms = async () => {
         setLoading(true)
@@ -36,6 +39,10 @@ const BMPendingLoansScreen = () => {
         fetchPendingGRTForms()
     }, [])
 
+    useEffect(() => {
+        setFilteredDataArray(formsData)
+    }, [formsData])
+
     const handleFormListClick = (formNo: any, brCode: any) => {
         console.log("HIIIII")
         navigation.dispatch(CommonActions.navigate({
@@ -45,23 +52,53 @@ const BMPendingLoansScreen = () => {
                 branchCode: brCode
             }
         }))
+    }
 
+    const onChangeSearch = (query: string) => {
+        if (/^\d*$/.test(query)) {
+            setSearch(query)
+            const filteredData = formsData.filter((item) => {
+                return item?.form_no?.toString().includes(query)
+            })
+            setFilteredDataArray(filteredData)
+        } else {
+            setFilteredDataArray(formsData)
+        }
     }
 
     return (
         <SafeAreaView>
             <ScrollView style={{
                 backgroundColor: theme.colors.background,
-                // minHeight: SCREEN_HEIGHT,
+                minHeight: SCREEN_HEIGHT,
                 height: 'auto'
             }}>
                 <HeadingComp title="Pending Forms" subtitle="Choose Form" />
                 {/* <BMPendingLoanFormScreen /> */}
 
                 <View style={{
+                    paddingHorizontal: 20
+                }}>
+                    <Searchbar
+                        autoFocus
+                        placeholder={"Search by Form Number"}
+                        onChangeText={onChangeSearch}
+                        value={search}
+                        elevation={search ? 2 : 0}
+                        keyboardType={"numeric"}
+                        maxLength={18}
+                        style={{
+                            backgroundColor: theme.colors.tertiaryContainer,
+                            color: theme.colors.onTertiaryContainer,
+                        }}
+                    // loading={search ? true : false}
+                    />
+                </View>
+
+                <View style={{
                     padding: 20
                 }}>
-                    {formsData?.map((item, i) => (
+                    {filteredDataArray?.map((item, i) => (
                         <React.Fragment key={i}>
                             <List.Item
                                 titleStyle={{

@@ -54,7 +54,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
     const formattedDob = formattedDate(formData?.dob)
 
 
-    const handleFormChange = (field, value) => {
+    const handleFormChange = (field: string, value: any) => {
         setFormData((prev) => ({
             ...prev,
             [field]: value,
