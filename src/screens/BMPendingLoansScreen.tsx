@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
-import BMPendingLoanFormScreen from "./BMPendingLoanFormScreen"
 import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
