@@ -106,9 +106,6 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                     }));
                     setFormArray(transformedData);
                 }
-                // else {
-                //     handleFormAdd()
-                // }
             }
         } catch (err) {
             console.log("XXXXXXXXXXXXXXXX", err);
@@ -142,7 +139,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
 
     useEffect(() => {
         handleFetchEducations()
-    }, [formArray.every((item) => item.sex), formArray.every((item) => item.education)])
+    }, [formArray.length])
 
     useEffect(() => {
         setMemberGenders([
@@ -150,23 +147,23 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
             { title: "Female", func: (formIndex) => handleInputChange(formIndex, "sex", "F") },
             { title: "Others", func: (formIndex) => handleInputChange(formIndex, "sex", "O") }
         ]);
-    }, [formArray.every((item) => item.sex), formArray.every((item) => item.education)]);
+    }, [formArray.length]);
 
     const handleFormUpdate = async () => {
         setLoading(true)
 
-        // console.log("::::::::::::::::::::", formArray.forEach((item, i) => [...item, ]))
-
-        let formAarray_with_sl_no = formArray.map((item, index) => {
+        let formArrayWithSlNo = formArray.map((item, index) => {
             return { ...item, sl_no: index + 1 };
         });
+
+        console.log("::::::::::::::::::::", formArrayWithSlNo)
 
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
             created_by: loginStore?.emp_name,
             modified_by: loginStore?.emp_name,
-            memberdtls: formAarray_with_sl_no
+            memberdtls: formArrayWithSlNo
         }
 
         console.log("YYYYYYYYYYYYYYYYYYYYY", creds)
