@@ -11,6 +11,8 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
 import LoadingOverlay from '../components/LoadingOverlay'
+import DialogBox from '../components/DialogBox'
+import InputPaper from '../components/InputPaper'
 
 const BMPendingLoansScreen = () => {
     const theme = usePaperColorScheme()
@@ -20,10 +22,20 @@ const BMPendingLoansScreen = () => {
 
     const [loading, setLoading] = useState(() => false)
 
+    const [visible, setVisible] = useState(() => false)
+    const hideDialog = () => setVisible(() => false)
+
+    const [remarks, setRemarks] = useState(() => "")
+
     const [search, setSearch] = useState(() => "")
     const [formsData, setFormsData] = useState(() => [])
     const [filteredDataArray, setFilteredDataArray] = useState(() => [])
 
+    const [selectedForm, setSelectedForm] = useState({
+        form_no: "",
+        branch_code: "",
+        member_code: ""
+    })
 
     const fetchPendingGRTForms = async () => {
         setLoading(true)
@@ -77,6 +89,7 @@ const BMPendingLoansScreen = () => {
             form_no: formNo,
             branch_code: branchCode,
             member_code: memberCode,
+            remarks: remarks,
             deleted_by: loginStore?.emp_name
         }
         await axios.post(`${ADDRESSES.DELETE_FORM}`, creds).then(res => {
@@ -84,6 +97,7 @@ const BMPendingLoansScreen = () => {
             if (res?.data?.suc === 1) {
                 ToastAndroid.show("Form Deleted!", ToastAndroid.SHORT)
                 fetchPendingGRTForms()
+                hideDialog()
             }
         }).catch(err => {
             console.log("FORM REJ ERRRR ====", err)
@@ -91,6 +105,20 @@ const BMPendingLoansScreen = () => {
         })
 
         setLoading(false)
+    }
+
+    const onDialogSuccess = () => {
+        Alert.alert("Delete Form?", `Are you sure you want to delete form ${selectedForm?.form_no}?`, [{
+            text: "NO",
+            onPress: () => null
+        }, {
+            text: "YES",
+            onPress: () => remarks ? rejectForm(selectedForm?.form_no, selectedForm?.branch_code, selectedForm?.member_code) : ToastAndroid.show("Please write remarks!", ToastAndroid.SHORT)
+        }])
+    }
+
+    const onDialogFailure = () => {
+        hideDialog()
     }
 
     return (
@@ -147,14 +175,16 @@ const BMPendingLoansScreen = () => {
                                 left={props => <List.Icon {...props} icon="form-select" />}
                                 // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
                                 right={props => (
-                                    <IconButton icon="trash-can-outline"
-                                        onPress={() => Alert.alert("Delete Form?", `Are you sure you want to delete form ${item?.form_no}?`, [{
-                                            text: "NO",
-                                            onPress: () => null
-                                        }, {
-                                            text: "YES",
-                                            onPress: () => rejectForm(item?.form_no, item?.branch_code, item?.member_code)
-                                        }])}
+                                    <IconButton
+                                        icon="trash-can-outline"
+                                        onPress={() => {
+                                            setSelectedForm({
+                                                form_no: item?.form_no,
+                                                branch_code: item?.branch_code,
+                                                member_code: item?.member_code
+                                            });
+                                            setVisible(true);
+                                        }}
                                         size={28}
                                         iconColor={theme.colors.error}
                                         style={{
@@ -167,6 +197,23 @@ const BMPendingLoansScreen = () => {
                         </React.Fragment>
                     ))}
                 </View>
+                <DialogBox
+                    visible={visible}
+                    title="Remarks"
+                    hide={hideDialog}
+                    titleStyle={{ textAlign: "center" }}
+                    btnSuccess={"REJECT"}
+                    btnFail="CANCEL"
+                    onFailure={onDialogFailure}
+                    onSuccess={onDialogSuccess}>
+                    <View>
+                        {/* <Text variant='bodyLarge'>Reason</Text> */}
+                        <InputPaper label="Write Remarks" multiline leftIcon='comment-alert-outline' value={remarks} onChangeText={(txt: any) => setRemarks(txt)} customStyle={{
+                            backgroundColor: theme.colors.surface,
+                            minHeight: 95,
+                        }} />
+                    </View>
+                </DialogBox>
             </ScrollView>
             {loading && <LoadingOverlay />}
         </SafeAreaView>
