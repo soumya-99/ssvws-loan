@@ -10,6 +10,7 @@ import { ADDRESSES } from '../config/api_list'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
+import LoadingOverlay from '../components/LoadingOverlay'
 
 const BMPendingLoansScreen = () => {
     const theme = usePaperColorScheme()
@@ -58,15 +59,15 @@ const BMPendingLoansScreen = () => {
     }
 
     const onChangeSearch = (query: string) => {
-        if (/^\d*$/.test(query)) {
-            setSearch(query)
-            const filteredData = formsData.filter((item) => {
-                return item?.form_no?.toString().includes(query)
-            })
-            setFilteredDataArray(filteredData)
-        } else {
-            setFilteredDataArray(formsData)
-        }
+        // if (/^\d*$/.test(query)) {
+        setSearch(query)
+        const filteredData = formsData.filter((item) => {
+            return item?.client_name?.toString()?.toLowerCase().includes(query?.toLowerCase())
+        })
+        setFilteredDataArray(filteredData)
+        // } else {
+        //     setFilteredDataArray(formsData)
+        // }
     }
 
     return (
@@ -84,7 +85,7 @@ const BMPendingLoansScreen = () => {
                 }}>
                     <Searchbar
                         autoFocus
-                        placeholder={"Search by Form Number"}
+                        placeholder={"Search by Member Name"}
                         onChangeText={onChangeSearch}
                         value={search}
                         elevation={search ? 2 : 0}
@@ -112,8 +113,13 @@ const BMPendingLoansScreen = () => {
                                     color: theme.colors.secondary,
                                 }}
                                 key={i}
-                                title={`${item?.form_no}`}
-                                description={`Branch Code: ${item?.branch_code}`}
+                                title={`${item?.client_name}`}
+                                description={
+                                    <View>
+                                        <Text>Form No: {item?.form_no}</Text>
+                                        <Text>{item?.group_name} - {item?.prov_grp_code}</Text>
+                                    </View>
+                                }
                                 onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}
                                 left={props => <List.Icon {...props} icon="form-select" />}
                             //   right={props => (
@@ -133,6 +139,7 @@ const BMPendingLoansScreen = () => {
                     ))}
                 </View>
             </ScrollView>
+            {loading && <LoadingOverlay />}
         </SafeAreaView>
     )
 }
