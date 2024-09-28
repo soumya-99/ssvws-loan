@@ -142,7 +142,7 @@ const BMPendingLoansScreen = () => {
                         onChangeText={onChangeSearch}
                         value={search}
                         elevation={search ? 2 : 0}
-                        keyboardType={"numeric"}
+                        keyboardType={"default"}
                         maxLength={18}
                         style={{
                             backgroundColor: theme.colors.tertiaryContainer,

@@ -22,7 +22,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
 
     // Each form item has independent state now
     const [formArray, setFormArray] = useState([{
-        // sl_no: 0,
+        sl_no: 0,
         name: '',
         relation: '',
         age: '',
@@ -37,7 +37,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
         setFormArray(prev => [
             ...prev,
             {
-                // sl_no: prev.length + 1,
+                sl_no: prev.length + 1,
                 name: '',
                 relation: '',
                 age: '',
@@ -142,7 +142,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
 
     useEffect(() => {
         handleFetchEducations()
-    }, [formArray.every((item) => item.sex), formArray.every((item) => item.education)])
+    }, [])
 
     useEffect(() => {
         setMemberGenders([
@@ -150,23 +150,17 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
             { title: "Female", func: (formIndex) => handleInputChange(formIndex, "sex", "F") },
             { title: "Others", func: (formIndex) => handleInputChange(formIndex, "sex", "O") }
         ]);
-    }, [formArray.every((item) => item.sex), formArray.every((item) => item.education)]);
+    }, []);
 
     const handleFormUpdate = async () => {
         setLoading(true)
-
-        // console.log("::::::::::::::::::::", formArray.forEach((item, i) => [...item, ]))
-
-        let formAarray_with_sl_no = formArray.map((item, index) => {
-            return { ...item, sl_no: index + 1 };
-        });
 
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
             created_by: loginStore?.emp_name,
             modified_by: loginStore?.emp_name,
-            memberdtls: formAarray_with_sl_no
+            memberdtls: formArray
         }
 
         console.log("YYYYYYYYYYYYYYYYYYYYY", creds)
@@ -227,6 +221,25 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                             customStyle={{ backgroundColor: theme.colors.background }}
                         />
 
+                        {/* <RadioComp
+                            title="Sex"
+                            icon="gender-male-female"
+                            dataArray={[
+                                {
+                                    optionName: "MALE",
+                                    optionState: item?.sex,
+                                    currentState: "m",
+                                    optionSetStateDispathFun: (value) => handleInputChange(i, 'sex', value)
+                                },
+                                {
+                                    optionName: "FEMALE",
+                                    optionState: item?.sex,
+                                    currentState: "f",
+                                    optionSetStateDispathFun: (value) => handleInputChange(i, 'sex', value)
+                                },
+                            ]}
+                        /> */}
+
                         <List.Item
                             title="Choose Gender"
                             description={`Gender: ${item.sex}`}
@@ -242,10 +255,20 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                             }}
                         />
 
-                        {/* {console.log("====++++===+++===", educations.map(education => ({
+                        {/* <InputPaper
+                            label="Education"
+                            maxLength={50}
+                            leftIcon='book-education-outline'
+                            keyboardType="default"
+                            value={item?.education}
+                            onChangeText={(txt) => handleInputChange(i, 'education', txt)}
+                            customStyle={{ backgroundColor: theme.colors.background }}
+                        /> */}
+
+                        {console.log("====++++===+++===", educations.map(education => ({
                             ...education,
                             func: () => education.func(i)  // Pass current form index (i)
-                        })))} */}
+                        })))}
 
                         <List.Item
                             title="Choose Education"

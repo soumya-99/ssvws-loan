@@ -65,6 +65,16 @@ const GroupFormScreen = () => {
     }, [])
 
     const onDialogSuccess = () => {
+        clearStates([
+            setGroupName,
+            setGroupType,
+            setResGroupOpenDate,
+            setAddress,
+            setGroupBlock,
+            setGroupBlockName,
+            setPhoneNo,
+            setEmailId
+        ], "")
         hideDialog()
         navigation.dispatch(CommonActions.navigate({
             name: navigationRoutes.homeScreen
@@ -95,22 +105,11 @@ const GroupFormScreen = () => {
 
             setResGroupCode(res?.data?.group_code)
             setResGroupName(res?.data?.group_name)
-            setResGroupOpenDate(new Date(res?.data?.grp_open_dt).toLocaleString("en-GB"))
+            setResGroupOpenDate(new Date(res?.data?.grp_open_dt)?.toLocaleString("en-GB"))
 
             ToastAndroid.show("Group created successfully!", ToastAndroid.SHORT)
 
             setVisible(true)
-
-            clearStates([
-                setGroupName,
-                setGroupType,
-                setResGroupOpenDate,
-                setAddress,
-                setGroupBlock,
-                setGroupBlockName,
-                setPhoneNo,
-                setEmailId
-            ], "")
 
             // navigation.dispatch(CommonActions.navigate({
             //     name: navigationRoutes.homeScreen
@@ -125,16 +124,17 @@ const GroupFormScreen = () => {
         <SafeAreaView>
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background,
-                minHeight: SCREEN_HEIGHT,
-                height: "auto",
+
+                // height: "auto",
             }}>
                 <HeadingComp title="Create Group" subtitle="Fill Details" />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 5,
+                    minHeight: SCREEN_HEIGHT,
                     gap: 15,
                     // marginBottom: normalize(10)
-                    paddingBottom: 120,
+                    paddingBottom: 20,
                 }}>
                     <Divider />
 
@@ -199,7 +199,7 @@ const GroupFormScreen = () => {
 
                     <View style={{
                         flexDirection: "row",
-                        marginBottom: 10,
+                        // marginBottom: 10,
                         justifyContent: "center",
                         gap: 10
                     }}>
@@ -240,7 +240,7 @@ const GroupFormScreen = () => {
                 <View>
                     <Text variant='bodyLarge'>GROUP CODE: {resGroupCode}</Text>
                     <Text variant='bodyLarge'>GROUP NAME: {resGroupName}</Text>
-                    <Text variant='bodyLarge'>OPENING DATE: {resGroupOpenDate}</Text>
+                    <Text variant='bodyLarge'>OPENING DATETIME: {resGroupOpenDate}</Text>
                 </View>
             </DialogBox>
 

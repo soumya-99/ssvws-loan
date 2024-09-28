@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, ScrollView, Alert, ToastAndroid } from 'react-native'
+import { StyleSheet, SafeAreaView, View, ScrollView, Alert, ToastAndroid, Linking } from 'react-native'
 import { List, Divider } from "react-native-paper"
 import React, { Suspense, useEffect, useState } from 'react'
 import { formattedDate } from "../../utils/dateFormatter"
@@ -10,17 +10,28 @@ import MenuPaper from "../../components/MenuPaper"
 import axios from "axios"
 import { ADDRESSES } from '../../config/api_list'
 import { clearStates } from "../../utils/clearStates"
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../../routes/routes'
 import HeadingComp from "../../components/HeadingComp"
 import { loginStorage } from '../../storage/appStorage'
 import LoadingOverlay from "../../components/LoadingOverlay"
 import EventSource from "react-native-sse";
+import useGeoLocation from '../../hooks/useGeoLocation'
 
-const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
+interface BMBasicDetailsFormProps {
+    formNumber?: any
+    branchCode?: any
+    flag?: "CO" | "BM"
+}
+
+const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDetailsFormProps) => {
     const theme = usePaperColorScheme()
     // 110 -> Branch Code
     const navigation = useNavigation()
+    const isFocused = useIsFocused()
+
+    const { location, error } = useGeoLocation()
+    const [geolocationFetchedAddress, setGeolocationFetchedAddress] = useState(() => "")
     console.log("****************", formNumber, branchCode)
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
@@ -33,6 +44,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
     const [groupNames, setGroupNames] = useState(() => [])
     const [memberGenders, setMemberGenders] = useState(() => [])
 
+    const [memberCodeShowHide, setMemberCodeShowHide] = useState(() => false)
     const [formData, setFormData] = useState({
         clientName: "",
         clientGender: "",
@@ -56,6 +68,30 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
     // const [dob, setDob] = useState(() => new Date()) //dob
     const [openDate, setOpenDate] = useState(() => false)
     const formattedDob = formattedDate(formData?.dob)
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert("Turn on Geolocation", "Turn on Location from app settings.", [{
+                text: "Go to Settings",
+                onPress: () => { navigation.dispatch(CommonActions.goBack()); Linking.openSettings() }
+            }])
+        }
+    }, [isFocused])
+
+    console.log("LOcAtion", location)
+    console.log("LOcAtion ERRR", error)
+
+    const fetchGeoLocaltionAddress = async () => {
+        await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+            setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
+        })
+    }
+
+    useEffect(() => {
+        if (location?.latitude && location.longitude) {
+            fetchGeoLocaltionAddress()
+        }
+    }, [location])
 
     useEffect(() => {
         setMemberGenders([])
@@ -150,14 +186,15 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
             user_dt: data
         }
 
-        if (!formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber) {
-            ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
-            return
-        }
+        // if (!formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber) {
+        //     ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
+        //     return
+        // }
 
         await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
             console.log("PPPPPPPPPPPPPPPPP", res?.data)
             if (res?.data?.msg?.length > 0) {
+                setMemberCodeShowHide(true)
                 setFormData({
                     clientName: res?.data?.msg[0]?.client_name,
                     clientGender: res?.data?.msg[0]?.gender,
@@ -172,7 +209,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                     caste: res?.data?.msg[0]?.caste,
                     education: res?.data?.msg[0]?.education ?? "",
                     groupCode: res?.data?.msg[0]?.prov_grp_code,
-                    groupCodeName: res?.data?.msg[0]?.prov_grp_name,
+                    groupCodeName: res?.data?.msg[0]?.group_name,
                     dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
                 })
                 setReadonlyMemberId(res?.data?.msg[0]?.member_code)
@@ -198,6 +235,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                 console.log("LLLLLLLLLLLLLLLLL", res?.data?.msg[0]?.prov_grp_code)
                 console.log("LLLLLLLLLLLLLLLLL", res?.data)
 
+                setMemberCodeShowHide(true)
                 setFormData({
                     clientName: res?.data?.msg[0]?.client_name,
                     clientGender: res?.data?.msg[0]?.gender,
@@ -225,13 +263,46 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
     }
 
     useEffect(() => {
-        fetchBasicDetails()
+        (flag === "BM") && fetchBasicDetails()
     }, [])
 
     const handleUpdateBasicDetails = async () => {
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
+            prov_grp_code: formData.groupCode,
+            client_name: formData.clientName,
+            // no gender -> fix backend
+            gender: formData.clientGender,
+            client_mobile: formData.clientMobile,
+            gurd_name: formData.guardianName,
+            gurd_mobile: formData.guardianMobile,
+            client_addr: formData.clientAddress,
+            pin_no: formData.clientPin,
+            aadhar_no: formData.aadhaarNumber,
+            pan_no: formData.panNumber,
+            religion: formData.religion,
+            caste: formData.caste,
+            education: formData.education,
+            dob: formattedDob,
+            lat_val: location?.latitude,
+            long_val: location?.longitude,
+            gps_address: geolocationFetchedAddress,
+            modified_by: loginStore?.emp_name
+        }
+        await axios.post(`${ADDRESSES.EDIT_BASIC_DETAILS}`, creds).then(res => {
+            console.log("QQQQQQQQQQQQQQQ", res?.data)
+            ToastAndroid.show("Update Successful", ToastAndroid.SHORT)
+        }).catch(err => {
+            ToastAndroid.show("Some error while updating basic details!", ToastAndroid.SHORT)
+        })
+    }
+
+    const handleSubmitBasicDetails = async () => {
+        setLoading(true)
+        const creds = {
+            branch_code: loginStore?.brn_code,
+            gender: formData.clientGender,
             prov_grp_code: formData.groupCode,
             client_name: formData.clientName,
             client_mobile: formData.clientMobile,
@@ -245,34 +316,91 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
             caste: formData.caste,
             education: formData.education,
             dob: formattedDob,
-            modified_by: loginStore?.emp_name
+            lat_val: location?.latitude,
+            long_val: location?.longitude,
+            gps_address: geolocationFetchedAddress,
+            created_by: loginStore?.emp_name
         }
-        await axios.post(`${ADDRESSES.EDIT_BASIC_DETAILS}`, creds).then(res => {
-            console.log("QQQQQQQQQQQQQQQ", res?.data)
-            ToastAndroid.show("Update Successful", ToastAndroid.SHORT)
+
+        await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
+            console.log("-----------", res?.data)
+            Alert.alert("Success", "Basic Details Saved!")
+            setFormData({
+                clientName: "",
+                clientGender: "",
+                clientMobile: "",
+                guardianName: "",
+                guardianMobile: "",
+                clientAddress: "",
+                clientPin: "",
+                aadhaarNumber: "",
+                panNumber: "",
+                religion: "",
+                caste: "",
+                education: "",
+                groupCode: "",
+                groupCodeName: "",
+                dob: new Date(),
+            })
+            setMemberCodeShowHide(false)
         }).catch(err => {
-            ToastAndroid.show("Some error while updating basic details!", ToastAndroid.SHORT)
+            ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
         })
+        setLoading(false)
+    }
+
+    const handleResetForm = () => {
+        Alert.alert("Reset", "Are you sure about this?", [{
+            text: "No",
+            onPress: () => null
+        }, {
+            text: "Yes",
+            onPress: () => {
+                setFormData({
+                    clientName: "",
+                    clientGender: "",
+                    clientMobile: "",
+                    guardianName: "",
+                    guardianMobile: "",
+                    clientAddress: "",
+                    clientPin: "",
+                    aadhaarNumber: "",
+                    panNumber: "",
+                    religion: "",
+                    caste: "",
+                    education: "",
+                    groupCode: "",
+                    groupCodeName: "",
+                    dob: new Date()
+                })
+                setMemberCodeShowHide(false)
+                // setDob(new Date())
+            }
+        }])
+
     }
 
     const renderLoader = () => loading && <LoadingOverlay />;
 
     return (
         <SafeAreaView>
-
-            <ScrollView keyboardShouldPersistTaps="handled" style={{
-                backgroundColor: theme.colors.background
-            }}>
+            <>
                 <View style={{
                     // paddingHorizontal: 20,
                     paddingTop: 10,
-                    gap: 10
+                    gap: 10,
+                    paddingBottom: 10
                 }}>
-                    <Divider />
+                    {/* <Divider /> */}
 
-                    <InputPaper label="Member Code" maxLength={18} leftIcon='numeric' keyboardType="numeric" value={readonlyMemberId} onChangeText={(txt: any) => setReadonlyMemberId(txt)} disabled customStyle={{
+                    <InputPaper label={geolocationFetchedAddress ? `Geo Location Address` : `Turn on GPS...`} multiline leftIcon='google-maps' value={geolocationFetchedAddress} onChangeText={(txt: any) => setGeolocationFetchedAddress(txt)} disabled customStyle={{
                         backgroundColor: theme.colors.background,
+                        minHeight: 95,
                     }} />
+
+                    {memberCodeShowHide && <InputPaper label="Member Code" maxLength={18} leftIcon='numeric' keyboardType="numeric" value={readonlyMemberId} onChangeText={(txt: any) => setReadonlyMemberId(txt)} disabled customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} />}
 
                     <List.Item
                         title="Choose Group"
@@ -414,15 +542,26 @@ const BMBasicDetailsForm = ({ formNumber, branchCode }) => {
                         </ButtonPaper>
                     </View> */}
 
-                    <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
-                        Alert.alert("Update Basic Details", "Are you sure you want to update this?", [
-                            { text: "No", onPress: () => null },
-                            { text: "Yes", onPress: () => handleUpdateBasicDetails() },
-                        ])
-                    }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education}
-                        loading={loading}>UPDATE</ButtonPaper>
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        gap: 40,
+                        marginBottom: 10
+                    }}>
+                        {flag === "CO" && <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore">
+                            RESET FORM
+                        </ButtonPaper>}
+                        <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                            Alert.alert("Submit Basic Details", "Are you sure you want to update this?", [
+                                { text: "No", onPress: () => null },
+                                { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
+                            ])
+                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress}
+                            loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
+                    </View>
+
                 </View>
-            </ScrollView>
+            </>
             {/* {loading && (
                 <LoadingOverlay />
             )} */}
