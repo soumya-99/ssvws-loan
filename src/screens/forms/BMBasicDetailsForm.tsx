@@ -76,7 +76,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
                 onPress: () => { navigation.dispatch(CommonActions.goBack()); Linking.openSettings() }
             }])
         }
-    }, [isFocused])
+    }, [isFocused, []])
 
     console.log("LOcAtion", location)
     console.log("LOcAtion ERRR", error)
