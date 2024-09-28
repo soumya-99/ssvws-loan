@@ -1,10 +1,10 @@
-import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid } from 'react-native'
+import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
 import BMPendingLoanFormScreen from "./BMPendingLoanFormScreen"
-import { Divider, List, Searchbar, Text } from 'react-native-paper'
+import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
 import { CommonActions, useNavigation } from '@react-navigation/native'
@@ -70,6 +70,29 @@ const BMPendingLoansScreen = () => {
         // }
     }
 
+    const rejectForm = async (formNo, branchCode, memberCode) => {
+        setLoading(true)
+
+        const creds = {
+            form_no: formNo,
+            branch_code: branchCode,
+            member_code: memberCode,
+            deleted_by: loginStore?.emp_name
+        }
+        await axios.post(`${ADDRESSES.DELETE_FORM}`, creds).then(res => {
+            console.log("DELETE FORM ======== RESSS", res?.data)
+            if (res?.data?.suc === 1) {
+                ToastAndroid.show("Form Deleted!", ToastAndroid.SHORT)
+                fetchPendingGRTForms()
+            }
+        }).catch(err => {
+            console.log("FORM REJ ERRRR ====", err)
+            ToastAndroid.show("Some error while rejecting form!", ToastAndroid.SHORT)
+        })
+
+        setLoading(false)
+    }
+
     return (
         <SafeAreaView>
             <ScrollView style={{
@@ -122,17 +145,23 @@ const BMPendingLoansScreen = () => {
                                 }
                                 onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}
                                 left={props => <List.Icon {...props} icon="form-select" />}
-                            //   right={props => (
-                            //     <Text
-                            //       variant="bodyMedium"
-                            //       {...props}
-                            //       style={{ color: theme.colors.tertiary }}>
-                            //       ₹{item?.net_amt}
-                            //     </Text>
-                            //   )}
-                            // right={props => (
-                            //   <List.Icon {...props} icon="download" />
-                            // )}
+                                // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
+                                right={props => (
+                                    <IconButton icon="trash-can-outline"
+                                        onPress={() => Alert.alert("Delete Form?", `Are you sure you want to delete form ${item?.form_no}?`, [{
+                                            text: "NO",
+                                            onPress: () => null
+                                        }, {
+                                            text: "YES",
+                                            onPress: () => rejectForm(item?.form_no, item?.branch_code, item?.member_code)
+                                        }])}
+                                        size={28}
+                                        iconColor={theme.colors.error}
+                                        style={{
+                                            alignSelf: 'center'
+                                        }}
+                                    />
+                                )}
                             />
                             <Divider />
                         </React.Fragment>
