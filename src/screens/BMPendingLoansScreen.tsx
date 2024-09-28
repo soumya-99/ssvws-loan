@@ -97,6 +97,7 @@ const BMPendingLoansScreen = () => {
             if (res?.data?.suc === 1) {
                 ToastAndroid.show("Form Deleted!", ToastAndroid.SHORT)
                 fetchPendingGRTForms()
+                setRemarks("")
                 hideDialog()
             }
         }).catch(err => {
@@ -118,6 +119,7 @@ const BMPendingLoansScreen = () => {
     }
 
     const onDialogFailure = () => {
+        setRemarks("")
         hideDialog()
     }
 
@@ -208,7 +210,7 @@ const BMPendingLoansScreen = () => {
                     onSuccess={onDialogSuccess}>
                     <View>
                         {/* <Text variant='bodyLarge'>Reason</Text> */}
-                        <InputPaper label="Write Remarks" multiline leftIcon='comment-alert-outline' value={remarks} onChangeText={(txt: any) => setRemarks(txt)} customStyle={{
+                        <InputPaper label="Write Remarks" multiline leftIcon='comment-remove-outline' value={remarks} onChangeText={(txt: any) => setRemarks(txt)} customStyle={{
                             backgroundColor: theme.colors.surface,
                             minHeight: 95,
                         }} />
