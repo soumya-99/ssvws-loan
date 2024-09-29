@@ -189,7 +189,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
                         }}
                     />
 
-                    <List.Item
+                    {formData.purposeOfLoan && <List.Item
                         title="Sub Purpose"
                         description={`Purpose: ${formData.subPurposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="file-question-outline" />}
@@ -199,7 +199,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
                         descriptionStyle={{
                             color: theme.colors.tertiary,
                         }}
-                    />
+                    />}
 
                     <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
@@ -237,7 +237,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode }) => {
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading}
+                    }} disabled={loading || !formData.selfOccupation || !formData.selfMonthlyIncome || !formData.spouseOccupation || !formData.spouseMonthlyIncome || !formData.purposeOfLoan || !formData.subPurposeOfLoan || !formData.amountApplied || formData.checkOtherOngoingLoan === "Y" ? (!formData.otherLoanAmount || !formData.monthlyEmi) : false}
                         loading={loading}>UPDATE</ButtonPaper>
 
                 </View>

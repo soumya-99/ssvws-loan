@@ -272,7 +272,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading}
+                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.parentalPhoneNumber || !formData.houseType || !formData.checkOwnOrRent || !formData.totalLand || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable}
                         loading={loading}>UPDATE</ButtonPaper>
                 </View>
             </ScrollView>

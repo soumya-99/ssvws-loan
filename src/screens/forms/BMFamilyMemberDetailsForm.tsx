@@ -22,7 +22,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
 
     // Each form item has independent state now
     const [formArray, setFormArray] = useState([{
-        // sl_no: 0,
+        sl_no: 0,
         name: '',
         relation: '',
         age: '',
@@ -37,7 +37,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
         setFormArray(prev => [
             ...prev,
             {
-                // sl_no: prev.length + 1,
+                sl_no: 0,
                 name: '',
                 relation: '',
                 age: '',
@@ -57,17 +57,6 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
     //     const updatedForm = [...formArray]
     //     updatedForm[index][field] = value
     //     setFormArray(updatedForm)
-    // }
-
-    // const handleInputChange = (index: number, field: string, value: any) => {
-    //     // Add safeguard to ensure the form item exists
-    //     if (formArray[index]) {
-    //         const updatedForm = [...formArray];
-    //         updatedForm[index][field] = value; // Safely update the form field
-    //         setFormArray(updatedForm);
-    //     } else {
-    //         console.error(`No form item found at index ${index}`);
-    //     }
     // }
 
     const handleInputChange = (index: number, field: string, value: any) => {
@@ -152,18 +141,19 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
     const handleFormUpdate = async () => {
         setLoading(true)
 
-        let formArrayWithSlNo = formArray.map((item, index) => {
-            return { ...item, sl_no: index + 1 };
-        });
+        // let formArrayWithSlNo = formArray.map((item, index) => {
+        //     // return { ...item, sl_no: index + 1 };
+        //     return { ...item, sl_no: 0 };
+        // });
 
-        console.log("::::::::::::::::::::", formArrayWithSlNo)
+        console.log("::::::::::::::::::::", formArray)
 
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
             created_by: loginStore?.emp_name,
             modified_by: loginStore?.emp_name,
-            memberdtls: formArrayWithSlNo
+            memberdtls: formArray
         }
 
         console.log("YYYYYYYYYYYYYYYYYYYYY", creds)
