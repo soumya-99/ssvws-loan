@@ -1,5 +1,5 @@
 import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
-import { Text } from "react-native-paper"
+import { Chip, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import HeadingComp from '../../components/HeadingComp'
 import { usePaperColorScheme } from '../../theme/theme'
@@ -28,20 +28,15 @@ const GroupFormExtended = ({ fetchedData }) => {
 
     const [loading, setLoading] = useState(() => false)
 
-    const [visible, setVisible] = useState(() => false)
-    const hideDialog = () => setVisible(() => false)
 
     const [groupBlocks, setGroupBlocks] = useState(() => [])
-
-    const [resGroupCode, setResGroupCode] = useState(() => "")
-    const [resGroupName, setResGroupName] = useState(() => "")
-    // const [resGroupOpenDate, setResGroupOpenDate] = useState(() => "")
 
     const [formData, setFormData] = useState({
         groupName: "",
         groupType: "",
         groupTypeName: "",
         address: "",
+        pin: "",
         phoneNo: "",
         phoneNo2: "",
         bankName: "",
@@ -55,6 +50,8 @@ const GroupFormExtended = ({ fetchedData }) => {
         groupBlockName: "",
         groupOpenDate: new Date()?.toLocaleString("en-GB")
     })
+
+    const [memberDetailsArray, setMemberDetailsArray] = useState(() => [])
 
     const groupTypes = [
         {
@@ -96,12 +93,32 @@ const GroupFormExtended = ({ fetchedData }) => {
         }))
     }
 
+    const handleFetchMembers = async () => {
+        const creds = {
+            branch_code: loginStore?.brn_code,
+            grp_code: fetchedData?.group_code,
+            flag: fetchedData?.approval_status
+        }
+        console.log("+++++===++++++++++++++++", creds)
+        await axios.post(`${ADDRESSES.MEMBER_DETAILS}`, creds).then(res => {
+            console.log("JJJJJJJSADDDASDSAD", res?.data)
+            setMemberDetailsArray(res?.data?.msg)
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred {handleFetchMembers}!", ToastAndroid.SHORT)
+        })
+    }
+
+    useEffect(() => {
+        handleFetchMembers()
+    }, [fetchedData])
+
     useEffect(() => {
         setFormData({
             groupName: fetchedData?.group_name,
             groupType: fetchedData?.group_type,
             groupTypeName: fetchedData?.group_type === "S" ? "SHG" : fetchedData?.group_type === "J" ? "JLG" : "",
             address: fetchedData?.grp_addr,
+            pin: fetchedData?.pin_no,
             phoneNo: fetchedData?.phone1,
             phoneNo2: fetchedData?.phone2,
             bankName: fetchedData?.bank_name || "",
@@ -117,65 +134,42 @@ const GroupFormExtended = ({ fetchedData }) => {
         })
     }, [])
 
-    const onDialogSuccess = () => {
-        setFormData({
-            groupName: "",
-            groupType: "",
-            groupTypeName: "",
-            address: "",
-            phoneNo: "",
-            phoneNo2: "",
-            bankName: "",
-            bankBranchName: "",
-            ifscCode: "",
-            micr: "",
-            accNo1: "",
-            accNo2: "",
-            emailId: "",
-            groupBlock: "",
-            groupBlockName: "",
-            groupOpenDate: new Date()?.toLocaleString("en-GB")
-        })
-        hideDialog()
-        navigation.goBack()
-    }
-
     const handleSubmitGroupDetails = async () => {
         console.log("Group updated!")
         setLoading(true)
-        // const creds = {
-        //     branch_code: loginStore?.brn_code,
-        //     group_name: groupName,
-        //     group_type: groupType,
-        //     grp_addr: address,
-        //     co_id: loginStore?.emp_id,
-        //     phone1: phoneNo,
-        //     phone2: phoneNo,
-        //     email_id: emailId,
-        //     disctrict: +loginStore?.dist_code,
-        //     block: groupBlock,
-        //     created_by: loginStore?.emp_name
-        // }
+        const creds = {
+            "phone1": formData?.phoneNo,
+            "phone2": formData?.phoneNo2,
+            "email_id": formData?.emailId,
+            "grp_addr": formData?.address,
+            // "disctrict": formData?.,
+            "block": formData?.groupBlock,
+            "pin_no": formData?.pin,
+            "bank_name": formData?.bankName,
+            "branch_name": formData?.bankBranchName,
+            "ifsc": formData?.ifscCode,
+            "micr": formData?.micr,
+            "acc_no1": formData?.accNo1,
+            "acc_no2": formData?.accNo2,
+            // "ac_open_dt": fetchedData?.ac_open_dt,
+            "modified_by": loginStore?.emp_name,
+            "group_code": fetchedData?.group_code,
+            "branch_code": fetchedData?.branch_code,
+            "co_id": loginStore?.emp_id
+        }
 
         // console.log("GROUPPPP-----CREDSSSS", creds)
 
-        // await axios.post(`${ADDRESSES.SAVE_GROUP}`, creds).then(res => {
-        //     console.log("GROUP CREATION ==============", res?.data)
+        await axios.post(`${ADDRESSES.EDIT_GROUP}`, creds).then(res => {
+            console.log("GROUP EDIT ==============", res?.data)
 
-        //     setResGroupCode(res?.data?.group_code)
-        //     setResGroupName(res?.data?.group_name)
-        //     setResGroupOpenDate(new Date(res?.data?.grp_open_dt)?.toLocaleString("en-GB"))
+            ToastAndroid.show("Group updated successfully!", ToastAndroid.SHORT)
 
-        //     ToastAndroid.show("Group created successfully!", ToastAndroid.SHORT)
 
-        //     setVisible(true)
-
-        //     // navigation.dispatch(CommonActions.navigate({
-        //     //     name: navigationRoutes.homeScreen
-        //     // }))
-        // }).catch(err => {
-        //     ToastAndroid.show("Some error occurred while saving group.", ToastAndroid.SHORT)
-        // })
+            navigation.dispatch(CommonActions.goBack())
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while updating group.", ToastAndroid.SHORT)
+        })
         setLoading(false)
     }
 
@@ -211,6 +205,10 @@ const GroupFormExtended = ({ fetchedData }) => {
                     <InputPaper label="Address" multiline leftIcon='card-account-phone-outline' keyboardType="default" value={formData.address} onChangeText={(txt: any) => handleFormChange("address", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
+                    }} />
+
+                    <InputPaper label="PIN No." maxLength={10} leftIcon='map-legend' keyboardType="numeric" value={formData.pin} onChangeText={(txt: any) => handleFormChange("pin", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
                     }} />
 
                     <List.Item
@@ -263,14 +261,37 @@ const GroupFormExtended = ({ fetchedData }) => {
                         backgroundColor: theme.colors.background,
                     }} />
 
+                    <View>
+                        <Divider />
+                    </View>
+
+                    <View>
+                        <Text variant='bodyLarge' style={{
+                            marginBottom: 10
+                        }}>Members</Text>
+                        <View style={{
+                            flexDirection: "row",
+                            gap: 8,
+                            flexWrap: "wrap"
+                        }}>
+                            {memberDetailsArray?.map((item, i) => (
+                                <Chip icon="account-circle-outline" onPress={() => console.log('Pressed')}>{item?.client_name}</Chip>
+                            ))}
+                        </View>
+                    </View>
+
+                    <View>
+                        <Divider />
+                    </View>
+
                     <View style={{
                         flexDirection: "row",
                         // marginBottom: 10,
                         justifyContent: "center",
                         gap: 10
                     }}>
-                        <ButtonPaper icon="account-multiple-plus-outline" mode="contained" onPress={() => {
-                            Alert.alert(`Create group ${formData.groupName}?`, `Are you sure, you want to create this group?`, [{
+                        <ButtonPaper icon="arrow-up-bold" mode="contained" onPress={() => {
+                            Alert.alert(`Update group ${formData.groupName}?`, `Are you sure, you want to create this group?`, [{
                                 onPress: () => null,
                                 text: "No"
                             }, {
@@ -286,7 +307,7 @@ const GroupFormExtended = ({ fetchedData }) => {
                             || !formData.groupBlock
                             || !formData.phoneNo
                         } loading={loading}>
-                            ADD GROUP
+                            UPDATE GROUP
                         </ButtonPaper>
 
                         {/* disabled={!groupName || !groupType || !address || !groupBlock || !phoneNo} */}
@@ -302,7 +323,7 @@ const GroupFormExtended = ({ fetchedData }) => {
                 {/* <ButtonPaper mode='contained' onPress={() => setVisible(true)}>Click me</ButtonPaper> */}
             </ScrollView>
 
-            <DialogBox
+            {/* <DialogBox
                 visible={visible}
                 title="Group Details"
                 hide={hideDialog}
@@ -315,7 +336,7 @@ const GroupFormExtended = ({ fetchedData }) => {
                     <Text variant='bodyLarge'>GROUP NAME: {resGroupName}</Text>
                     <Text variant='bodyLarge'>OPENING DATETIME: {formData.groupOpenDate}</Text>
                 </View>
-            </DialogBox>
+            </DialogBox> */}
 
         </SafeAreaView>
     )

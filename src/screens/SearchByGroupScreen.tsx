@@ -66,6 +66,14 @@ const SearchByGroupScreen = () => {
         // }
     }
 
+    useEffect(() => {
+        setFormsData(() => [])
+    }, [isApproved])
+
+    useEffect(() => {
+        
+    }, [])
+
     const handleSearch = async () => {
         setLoading(true)
 
@@ -127,26 +135,41 @@ const SearchByGroupScreen = () => {
                             ]}
                         />
                     </View>
-                    <Searchbar
-                        autoFocus
-                        placeholder={"Search by Group Name"}
-                        onChangeText={onChangeSearch}
-                        value={search}
-                        elevation={search ? 2 : 0}
-                        keyboardType={"default"}
-                        maxLength={18}
-                        style={{
-                            backgroundColor: theme.colors.tertiaryContainer,
-                            color: theme.colors.onTertiaryContainer,
-                        }}
-                    // loading={search ? true : false}
-                    />
-
-                    <ButtonPaper icon={"text-search"} mode='elevated' onPress={handleSearch} style={{
-                        marginTop: 10
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 7
                     }}>
-                        Search
-                    </ButtonPaper>
+
+                        <Searchbar
+                            autoFocus
+                            placeholder={"Search by Group Name"}
+                            onChangeText={onChangeSearch}
+                            value={search}
+                            elevation={search ? 2 : 0}
+                            keyboardType={"default"}
+                            maxLength={18}
+                            style={{
+                                backgroundColor: theme.colors.tertiaryContainer,
+                                color: theme.colors.onTertiaryContainer,
+                                width: "84%",
+                                height: 55,
+                                alignItems: "center",
+                                alignSelf: "center"
+                            }}
+                        // loading={search ? true : false}
+                        />
+
+                        {/* <ButtonPaper icon={"text-search"} mode='elevated' onPress={handleSearch} style={{
+                            marginTop: 10
+                        }}>
+                            Search
+                        </ButtonPaper> */}
+                        <IconButton icon={"magnify"} mode='contained' onPress={handleSearch} size={28} style={{
+                            borderTopLeftRadius: 10
+                        }} />
+                    </View>
                 </View>
 
                 <View style={{
