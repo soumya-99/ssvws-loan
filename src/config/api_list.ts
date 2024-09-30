@@ -29,5 +29,6 @@ export const ADDRESSES = {
     FETCH_HOUSEHOLD_DETAILS: `${BASE_URL}/fetch_household_dtls`,
     SAVE_FAMILY_DETAILS: `${BASE_URL}/save_family_dtls`,
     FETCH_FAMILY_DETAILS: `${BASE_URL}/fetch_family_dtls`,
-    DELETE_FORM: `${BASE_URL}/delete_form`
+    DELETE_FORM: `${BASE_URL}/delete_form`,
+    SEARCH_GROUP: `${BASE_URL}/search_group`
 }

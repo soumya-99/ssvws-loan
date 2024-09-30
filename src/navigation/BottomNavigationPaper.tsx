@@ -8,6 +8,7 @@ import HomeNavigation from "./HomeNavigation"
 import GRTNavigation from "./GRTNavigation"
 import GroupNavigation from "./GroupNavigation"
 import BMPendingLoansNavigation from "./BMPendingLoansNavigation"
+import SearchNavigation from "./SearchNavigation"
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
 import useCurrentRouteName from "../hooks/useCurrentRoute"
@@ -76,6 +77,23 @@ function BottomNavigationPaper() {
                                     />
                                 ) : (
                                     <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
+                                ),
+                        }}
+                    />
+                    <Tab.Screen
+                        name={navigationRoutes.searchNavigation}
+                        component={SearchNavigation}
+                        options={{
+                            tabBarLabel: "Search",
+                            tabBarIcon: ({ color, focused }) =>
+                                !focused ? (
+                                    <MaterialCommunityIcons
+                                        name="database-search-outline"
+                                        color={color}
+                                        size={26}
+                                    />
+                                ) : (
+                                    <MaterialCommunityIcons name="database-search" color={color} size={26} />
                                 ),
                         }}
                     />

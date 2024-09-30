@@ -14,9 +14,12 @@ interface RadioCompProps {
     title: string
     icon?: string
     dataArray: Array<DataArrayProps>
+
+    color?: string
+    radioButtonColor?: string
 }
 
-const RadioComp = ({ title, icon, dataArray }: RadioCompProps) => {
+const RadioComp = ({ title, icon, dataArray, color, radioButtonColor }: RadioCompProps) => {
     const theme = usePaperColorScheme()
 
     return (
@@ -31,7 +34,7 @@ const RadioComp = ({ title, icon, dataArray }: RadioCompProps) => {
                 flexDirection: "row",
                 gap: 12
             }}>
-                <Icon source={icon} size={25} color={theme.colors.secondary} />
+                <Icon source={icon} size={25} color={color ?? theme.colors.secondary} />
                 <Text variant='bodyLarge'>{title}</Text>
             </View>
             <View style={{
@@ -46,8 +49,12 @@ const RadioComp = ({ title, icon, dataArray }: RadioCompProps) => {
                             alignItems: "center",
                             gap: 5
                         }}>
-                            <Text>{item?.optionName}</Text>
+                            <Text style={{
+                                color: color ?? theme.colors.secondary,
+                                fontSize: 17
+                            }}>{item?.optionName}</Text>
                             <RadioButton
+                                color={radioButtonColor ?? theme.colors.primary}
                                 value={item?.optionState}
                                 status={item?.optionState === item?.currentState ? 'checked' : 'unchecked'}
                                 onPress={() => item?.optionSetStateDispathFun(item?.currentState)}

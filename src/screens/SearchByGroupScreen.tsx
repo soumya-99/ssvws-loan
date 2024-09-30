@@ -1,0 +1,214 @@
+import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { usePaperColorScheme } from '../theme/theme'
+import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
+import HeadingComp from '../components/HeadingComp'
+import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
+import axios from 'axios'
+import { ADDRESSES } from '../config/api_list'
+import { CommonActions, useNavigation } from '@react-navigation/native'
+import navigationRoutes from '../routes/routes'
+import { loginStorage } from '../storage/appStorage'
+import LoadingOverlay from '../components/LoadingOverlay'
+import DialogBox from '../components/DialogBox'
+import InputPaper from '../components/InputPaper'
+import RadioComp from '../components/RadioComp'
+import ButtonPaper from '../components/ButtonPaper'
+
+const SearchByGroupScreen = () => {
+    const theme = usePaperColorScheme()
+    const navigation = useNavigation()
+
+    const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
+
+    const [loading, setLoading] = useState(() => false)
+
+    const [visible, setVisible] = useState(() => false)
+    const hideDialog = () => setVisible(() => false)
+
+    const [remarks, setRemarks] = useState(() => "")
+
+    const [search, setSearch] = useState(() => "")
+    const [formsData, setFormsData] = useState<any[]>(() => [])
+    const [filteredDataArray, setFilteredDataArray] = useState<any[]>(() => [])
+    const [isApproved, setIsApproved] = useState<string>(() => "U")
+
+    const [selectedForm, setSelectedForm] = useState({
+        form_no: "",
+        branch_code: "",
+        member_code: ""
+    })
+
+    useEffect(() => {
+        setFilteredDataArray(formsData)
+    }, [formsData])
+
+    const handleFormListClick = (formNo: any, brCode: any) => {
+        console.log("HIIIII")
+        navigation.dispatch(CommonActions.navigate({
+            name: navigationRoutes.bmPendingLoanFormScreen,
+            params: {
+                formNumber: formNo,
+                branchCode: brCode
+            }
+        }))
+    }
+
+    const onChangeSearch = (query: string) => {
+        // if (/^\d*$/.test(query)) {
+        setSearch(query)
+        // const filteredData = formsData.filter((item) => {
+        //     return item?.client_name?.toString()?.toLowerCase().includes(query?.toLowerCase())
+        // })
+        // setFilteredDataArray(filteredData)
+        // } else {
+        //     setFilteredDataArray(formsData)
+        // }
+    }
+
+    const handleSearch = async () => {
+        setLoading(true)
+
+        const creds = {
+            branch_code: loginStore?.brn_code,
+            co_id: loginStore?.emp_id,
+            flag: isApproved,
+            group_name: search
+        }
+
+        await axios.post(`${ADDRESSES.SEARCH_GROUP}`, creds).then(res => {
+            if (res?.data?.suc === 1) {
+                setFormsData(res?.data?.msg)
+                console.log("===++=++====", res?.data)
+            }
+        }).catch(err => {
+            ToastAndroid.show("Some error while searching groups!", ToastAndroid.SHORT)
+        })
+        setLoading(false)
+    }
+
+    return (
+        <SafeAreaView>
+            <ScrollView style={{
+                backgroundColor: theme.colors.background,
+                minHeight: SCREEN_HEIGHT,
+                height: 'auto',
+            }} keyboardShouldPersistTaps="handled">
+                <HeadingComp title="Existing Groups" subtitle="Find group" isBackEnabled />
+                <View style={{
+                    paddingHorizontal: 20
+                }}>
+                    <View style={{
+                        padding: 10,
+                        backgroundColor: theme.colors.errorContainer,
+                        borderTopLeftRadius: 20,
+                        borderBottomRightRadius: 20,
+                        // alignItems: "center",
+                        marginBottom: 10
+                    }}>
+                        <RadioComp
+                            color={theme.colors.onErrorContainer}
+                            radioButtonColor={theme.colors.error}
+                            title=""
+                            icon="progress-question"
+                            dataArray={[
+                                {
+                                    optionName: "Un-approved",
+                                    optionState: isApproved,
+                                    currentState: "U",
+                                    optionSetStateDispathFun: (value) => setIsApproved(value)
+                                },
+                                {
+                                    optionName: "Approved",
+                                    optionState: isApproved,
+                                    currentState: "A",
+                                    optionSetStateDispathFun: (value) => setIsApproved(value)
+                                }
+                            ]}
+                        />
+                    </View>
+                    <Searchbar
+                        autoFocus
+                        placeholder={"Search by Group Name"}
+                        onChangeText={onChangeSearch}
+                        value={search}
+                        elevation={search ? 2 : 0}
+                        keyboardType={"default"}
+                        maxLength={18}
+                        style={{
+                            backgroundColor: theme.colors.tertiaryContainer,
+                            color: theme.colors.onTertiaryContainer,
+                        }}
+                    // loading={search ? true : false}
+                    />
+
+                    <ButtonPaper icon={"text-search"} mode='elevated' onPress={handleSearch} style={{
+                        marginTop: 10
+                    }}>
+                        Search
+                    </ButtonPaper>
+                </View>
+
+                <View style={{
+                    padding: 20,
+                    paddingBottom: 120
+                }}>
+                    {formsData?.map((item, i) => (
+                        <React.Fragment key={i}>
+                            <List.Item
+                                titleStyle={{
+                                    color: theme.colors.primary,
+                                }}
+                                descriptionStyle={{
+                                    color: theme.colors.secondary,
+                                }}
+                                key={i}
+                                title={`${item?.group_name}`}
+                                description={
+                                    <View>
+                                        <Text>Group Code: {item?.group_code}</Text>
+                                        {/* <Text>{item?.group_name} - {item?.prov_grp_code}</Text> */}
+                                    </View>
+                                }
+                                onPress={() => {
+                                    navigation.dispatch(CommonActions.navigate({
+                                        name: navigationRoutes.coGroupFormExtendedScreen,
+                                        params: {
+                                            group_details: item
+                                        }
+                                    }))
+                                }}
+                                left={props => <List.Icon {...props} icon="form-select" />}
+                            // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
+                            // right={props => (
+                            //     <IconButton
+                            //         icon="trash-can-outline"
+                            //         onPress={() => {
+                            //             // setSelectedForm({
+                            //             //     form_no: item?.form_no,
+                            //             //     branch_code: item?.branch_code,
+                            //             //     member_code: item?.member_code
+                            //             // });
+                            //             setVisible(true);
+                            //         }}
+                            //         size={28}
+                            //         iconColor={theme.colors.error}
+                            //         style={{
+                            //             alignSelf: 'center'
+                            //         }}
+                            //     />
+                            // )}
+                            />
+                            <Divider />
+                        </React.Fragment>
+                    ))}
+                </View>
+            </ScrollView>
+            {loading && <LoadingOverlay />}
+        </SafeAreaView>
+    )
+}
+
+export default SearchByGroupScreen
+
+const styles = StyleSheet.create({})
