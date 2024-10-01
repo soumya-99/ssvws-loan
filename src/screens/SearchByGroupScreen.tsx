@@ -30,29 +30,13 @@ const SearchByGroupScreen = () => {
 
     const [search, setSearch] = useState(() => "")
     const [formsData, setFormsData] = useState<any[]>(() => [])
-    const [filteredDataArray, setFilteredDataArray] = useState<any[]>(() => [])
+    // const [filteredDataArray, setFilteredDataArray] = useState<any[]>(() => [])
     const [isApproved, setIsApproved] = useState<string>(() => "U")
 
-    const [selectedForm, setSelectedForm] = useState({
-        form_no: "",
-        branch_code: "",
-        member_code: ""
-    })
 
-    useEffect(() => {
-        setFilteredDataArray(formsData)
-    }, [formsData])
-
-    const handleFormListClick = (formNo: any, brCode: any) => {
-        console.log("HIIIII")
-        navigation.dispatch(CommonActions.navigate({
-            name: navigationRoutes.bmPendingLoanFormScreen,
-            params: {
-                formNumber: formNo,
-                branchCode: brCode
-            }
-        }))
-    }
+    // useEffect(() => {
+    //     setFilteredDataArray(formsData)
+    // }, [formsData])
 
     const onChangeSearch = (query: string) => {
         // if (/^\d*$/.test(query)) {
@@ -71,7 +55,7 @@ const SearchByGroupScreen = () => {
     }, [isApproved])
 
     useEffect(() => {
-        
+
     }, [])
 
     const handleSearch = async () => {
@@ -139,7 +123,7 @@ const SearchByGroupScreen = () => {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        gap: 7
+                        gap: 5
                     }}>
 
                         <Searchbar
@@ -153,7 +137,7 @@ const SearchByGroupScreen = () => {
                             style={{
                                 backgroundColor: theme.colors.tertiaryContainer,
                                 color: theme.colors.onTertiaryContainer,
-                                width: "84%",
+                                width: "85%",
                                 height: 55,
                                 alignItems: "center",
                                 alignSelf: "center"
@@ -166,7 +150,7 @@ const SearchByGroupScreen = () => {
                         }}>
                             Search
                         </ButtonPaper> */}
-                        <IconButton icon={"magnify"} mode='contained' onPress={handleSearch} size={28} style={{
+                        <IconButton icon={"magnify"} mode='contained' onPress={handleSearch} size={30} style={{
                             borderTopLeftRadius: 10
                         }} />
                     </View>

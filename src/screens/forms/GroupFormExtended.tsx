@@ -266,8 +266,9 @@ const GroupFormExtended = ({ fetchedData }) => {
                     </View>
 
                     <View>
-                        <Text variant='bodyLarge' style={{
-                            marginBottom: 10
+                        <Text variant='labelLarge' style={{
+                            marginBottom: 10,
+                            color: theme.colors.primary
                         }}>Members</Text>
                         <View style={{
                             flexDirection: "row",
@@ -275,7 +276,7 @@ const GroupFormExtended = ({ fetchedData }) => {
                             flexWrap: "wrap"
                         }}>
                             {memberDetailsArray?.map((item, i) => (
-                                <Chip icon="account-circle-outline" onPress={() => console.log('Pressed')}>{item?.client_name}</Chip>
+                                <Chip key={i} icon="account-circle-outline" onPress={() => console.log('Pressed', item)}>{item?.client_name}</Chip>
                             ))}
                         </View>
                     </View>
