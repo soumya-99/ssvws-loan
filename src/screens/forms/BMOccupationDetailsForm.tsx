@@ -11,7 +11,7 @@ import { ADDRESSES } from '../../config/api_list'
 import ButtonPaper from '../../components/ButtonPaper'
 import { loginStorage } from '../../storage/appStorage'
 
-const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
+const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
@@ -159,19 +159,19 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
 
                     <InputPaper label="Self Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.selfOccupation} onChangeText={(txt: any) => handleFormChange("selfOccupation", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO"} />
+                    }} disabled={flag === "CO" || approvalStatus === "A"} />
 
                     <InputPaper label="Self Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.selfMonthlyIncome} onChangeText={(txt: any) => handleFormChange("selfMonthlyIncome", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO"} />
+                    }} disabled={flag === "CO" || approvalStatus === "A"} />
 
                     <InputPaper label="Spouse Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.spouseOccupation} onChangeText={(txt: any) => handleFormChange("spouseOccupation", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO"} />
+                    }} disabled={flag === "CO" || approvalStatus === "A"} />
 
                     <InputPaper label="Spouse Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.spouseMonthlyIncome} onChangeText={(txt: any) => handleFormChange("spouseMonthlyIncome", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO"} />
+                    }} disabled={flag === "CO" || approvalStatus === "A"} />
 
                     {/* <InputPaper label="Purpose of Loan" multiline leftIcon='form-textbox' value={purposeOfLoan} onChangeText={(txt: any) => setPurposeOfLoan(txt)} customStyle={{
                         backgroundColor: theme.colors.background,
@@ -182,7 +182,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                         description={`Purpose: ${formData.purposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="progress-question" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={purposesOfLoan} disabled={flag === "CO"} />
+                            return <MenuPaper menuArrOfObjects={purposesOfLoan} disabled={flag === "CO" || approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -194,7 +194,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                         description={`Purpose: ${formData.subPurposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="file-question-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={subPurposesOfLoan} disabled={flag === "CO"} />
+                            return <MenuPaper menuArrOfObjects={subPurposesOfLoan} disabled={flag === "CO" || approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -203,7 +203,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
 
                     <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO"} />
+                    }} disabled={flag === "CO" || approvalStatus === "A"} />
 
                     <RadioComp
                         title="Other Loans?"
@@ -222,23 +222,23 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOtherOngoingLoan", e)
                             },
                         ]}
-                        disabled={flag === "CO"}
+                        disabled={flag === "CO" || approvalStatus === "A"}
                     />
 
                     {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.otherLoanAmount} onChangeText={(txt: any) => handleFormChange("otherLoanAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO"} />}
+                    }} disabled={flag === "CO" || approvalStatus === "A"} />}
 
                     {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={formData.monthlyEmi} onChangeText={(txt: any) => handleFormChange("monthlyEmi", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO"} />}
+                    }} disabled={flag === "CO" || approvalStatus === "A"} />}
 
                     <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
                         Alert.alert("Update Occupation Details", "Are you sure you want to update this?", [
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.selfOccupation || !formData.selfMonthlyIncome || !formData.spouseOccupation || !formData.spouseMonthlyIncome || !formData.purposeOfLoan || !formData.subPurposeOfLoan || !formData.amountApplied || formData.checkOtherOngoingLoan === "Y" ? (!formData.otherLoanAmount || !formData.monthlyEmi) || flag === "CO" : false}
+                    }} disabled={loading || !formData.selfOccupation || !formData.selfMonthlyIncome || !formData.spouseOccupation || !formData.spouseMonthlyIncome || !formData.purposeOfLoan || !formData.subPurposeOfLoan || !formData.amountApplied || formData.checkOtherOngoingLoan === "Y" ? (!formData.otherLoanAmount || !formData.monthlyEmi) || flag === "CO" || approvalStatus === "A" : false}
                         loading={loading}>UPDATE</ButtonPaper>
 
                 </View>

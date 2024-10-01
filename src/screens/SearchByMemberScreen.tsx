@@ -6,7 +6,7 @@ import HeadingComp from '../components/HeadingComp'
 import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
 import LoadingOverlay from '../components/LoadingOverlay'
@@ -18,36 +18,18 @@ import ButtonPaper from '../components/ButtonPaper'
 const SearchByMemberScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
+    const isFocused = useIsFocused()
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [loading, setLoading] = useState(() => false)
 
-    const [visible, setVisible] = useState(() => false)
-    const hideDialog = () => setVisible(() => false)
-
-    const [remarks, setRemarks] = useState(() => "")
-
     const [search, setSearch] = useState(() => "")
     const [formsData, setFormsData] = useState<any[]>(() => [])
-    // const [filteredDataArray, setFilteredDataArray] = useState<any[]>(() => [])
     const [isApproved, setIsApproved] = useState<string>(() => "U")
 
-
-    // useEffect(() => {
-    //     setFilteredDataArray(formsData)
-    // }, [formsData])
-
     const onChangeSearch = (query: string) => {
-        // if (/^\d*$/.test(query)) {
         setSearch(query)
-        // const filteredData = formsData.filter((item) => {
-        //     return item?.client_name?.toString()?.toLowerCase().includes(query?.toLowerCase())
-        // })
-        // setFilteredDataArray(filteredData)
-        // } else {
-        //     setFilteredDataArray(formsData)
-        // }
     }
 
     useEffect(() => {
@@ -55,8 +37,8 @@ const SearchByMemberScreen = () => {
     }, [isApproved])
 
     useEffect(() => {
-
-    }, [])
+        setSearch("")
+    }, [isFocused])
 
     const handleSearch = async () => {
         setLoading(true)
@@ -103,7 +85,7 @@ const SearchByMemberScreen = () => {
                             color={theme.colors.onErrorContainer}
                             radioButtonColor={theme.colors.error}
                             title=""
-                            icon="progress-question"
+                            icon="inbox-multiple"
                             dataArray={[
                                 {
                                     optionName: "Un-approved",
@@ -143,15 +125,10 @@ const SearchByMemberScreen = () => {
                                 alignItems: "center",
                                 alignSelf: "center"
                             }}
-                        // loading={search ? true : false}
+                            loading={loading ? true : false}
                         />
 
-                        {/* <ButtonPaper icon={"text-search"} mode='elevated' onPress={handleSearch} style={{
-                            marginTop: 10
-                        }}>
-                            Search
-                        </ButtonPaper> */}
-                        <IconButton icon={"magnify"} mode='contained' onPress={() => search && handleSearch()} size={30} style={{
+                        <IconButton icon={"magnify"} mode='contained' onPress={() => search && handleSearch()} size={32} style={{
                             borderTopLeftRadius: 10
                         }} />
                     </View>
@@ -185,7 +162,8 @@ const SearchByMemberScreen = () => {
                                             member_details: item,
                                             formNumber: item?.form_no,
                                             branchCode: item?.branch_code,
-                                            userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : ""
+                                            userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : "",
+                                            approvalFlag: isApproved
                                         }
                                     }))
                                 }}
@@ -215,7 +193,7 @@ const SearchByMemberScreen = () => {
                     ))}
                 </View>
             </ScrollView>
-            {loading && <LoadingOverlay />}
+            {/* {loading && <LoadingOverlay />} */}
         </SafeAreaView>
     )
 }

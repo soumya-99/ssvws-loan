@@ -83,10 +83,10 @@ const MemberDetailsAllFormScreen = () => {
                         }
                     />
 
-                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={"BM"} approvalStatus={params?.member_details?.approval_status} />}
-                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} />}
-                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} />}
-                    {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} />}
+                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={"BM"} approvalStatus={params?.approvalFlag} />}
+                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.approvalFlag} />}
+                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.approvalFlag} />}
+                    {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.approvalFlag} />}
 
                     <View style={{
                         flexDirection: "row",

@@ -17,7 +17,7 @@ import { clearStates } from '../../utils/clearStates'
 import DialogBox from "../../components/DialogBox"
 // import LoadingOverlay from '../components/LoadingOverlay'
 
-const GroupFormExtended = ({ fetchedData }) => {
+const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
 
@@ -186,14 +186,14 @@ const GroupFormExtended = ({ fetchedData }) => {
 
                     <InputPaper label="Group Name" leftIcon='account-group-outline' keyboardType="default" value={formData.groupName} onChangeText={(txt: any) => handleFormChange("groupName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <List.Item
                         title="Choose Group Type"
                         description={`Group Type: ${formData.groupTypeName}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={groupTypes} />
+                            return <MenuPaper menuArrOfObjects={groupTypes} disabled={approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -205,18 +205,18 @@ const GroupFormExtended = ({ fetchedData }) => {
                     <InputPaper label="Address" multiline leftIcon='card-account-phone-outline' keyboardType="default" value={formData.address} onChangeText={(txt: any) => handleFormChange("address", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="PIN No." maxLength={10} leftIcon='map-legend' keyboardType="numeric" value={formData.pin} onChangeText={(txt: any) => handleFormChange("pin", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <List.Item
                         title="Choose Block"
                         description={`Group Block: ${formData.groupBlockName}`}
                         left={props => <List.Icon {...props} icon="map-marker-distance" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={groupBlocks} />
+                            return <MenuPaper menuArrOfObjects={groupBlocks} disabled={approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -227,39 +227,39 @@ const GroupFormExtended = ({ fetchedData }) => {
 
                     <InputPaper label="Mobile No. 1" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.phoneNo} onChangeText={(txt: any) => handleFormChange("phoneNo", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Mobile No. 2" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.phoneNo2} onChangeText={(txt: any) => handleFormChange("phoneNo2", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Email Id." leftIcon='email-outline' keyboardType="email-address" value={formData.emailId} onChangeText={(txt: any) => handleFormChange("emailId", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Bank Name" leftIcon='bank-outline' keyboardType="default" value={formData.bankName} onChangeText={(txt: any) => handleFormChange("bankName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Bank Branch" leftIcon='bank-transfer-in' keyboardType="default" value={formData.bankBranchName} onChangeText={(txt: any) => handleFormChange("bankBranchName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="IFSC Code" leftIcon='numeric' keyboardType="default" value={formData.ifscCode} onChangeText={(txt: any) => handleFormChange("ifscCode", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="MICR Code" leftIcon='nfc' keyboardType="default" value={formData.micr} onChangeText={(txt: any) => handleFormChange("micr", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Account No. 1" maxLength={10} leftIcon='numeric-1-circle-outline' keyboardType="numeric" value={formData.accNo1} onChangeText={(txt: any) => handleFormChange("accNo1", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Account No. 2" maxLength={10} leftIcon='numeric-2-circle-outline' keyboardType="numeric" value={formData.accNo2} onChangeText={(txt: any) => handleFormChange("accNo2", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <View>
                         <Divider />
@@ -286,7 +286,8 @@ const GroupFormExtended = ({ fetchedData }) => {
                                             userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : ""
                                         }
                                     }))
-                                }}>{item?.client_name}</Chip>
+                                }}
+                                    disabled={approvalStatus === "A"}>{item?.client_name}</Chip>
                             ))}
                         </View>
                     </View>
@@ -317,6 +318,13 @@ const GroupFormExtended = ({ fetchedData }) => {
                             || !formData.address
                             || !formData.groupBlock
                             || !formData.phoneNo
+                            || !formData.pin
+                            || !formData.bankName
+                            || !formData.bankBranchName
+                            || !formData.accNo1
+                            || !formData.accNo2
+                            || !formData.ifscCode
+                            || approvalStatus === "A"
                         } loading={loading}>
                             UPDATE GROUP
                         </ButtonPaper>

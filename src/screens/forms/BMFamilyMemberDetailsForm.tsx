@@ -11,7 +11,7 @@ import { ADDRESSES } from '../../config/api_list'
 import MenuPaper from '../../components/MenuPaper'
 import { loginStorage } from '../../storage/appStorage'
 
-const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
+const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
@@ -192,7 +192,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                             value={item?.name}
                             onChangeText={(txt) => handleInputChange(i, 'name', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO"}
+                            disabled={flag === "CO" || approvalStatus === "A"}
                         />
 
                         <InputPaper
@@ -203,7 +203,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                             value={item?.relation}
                             onChangeText={(txt) => handleInputChange(i, 'relation', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO"}
+                            disabled={flag === "CO" || approvalStatus === "A"}
                         />
 
                         <InputPaper
@@ -214,7 +214,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                             value={item?.age}
                             onChangeText={(txt) => handleInputChange(i, 'age', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO"}
+                            disabled={flag === "CO" || approvalStatus === "A"}
                         />
 
                         <List.Item
@@ -225,7 +225,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                                 return <MenuPaper menuArrOfObjects={memberGenders.map(gender => ({
                                     ...gender,
                                     func: () => gender.func(i)  // Pass current form index (i)
-                                }))} disabled={flag === "CO"} />
+                                }))} disabled={flag === "CO" || approvalStatus === "A"} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -245,7 +245,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                                 return <MenuPaper menuArrOfObjects={educations.map(education => ({
                                     ...education,
                                     func: () => education.func(i)  // Pass current form index (i)
-                                }))} disabled={flag === "CO"} />
+                                }))} disabled={flag === "CO" || approvalStatus === "A"} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -269,7 +269,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
                                 },
                             ]}
-                            disabled={flag === "CO"}
+                            disabled={flag === "CO" || approvalStatus === "A"}
                         />
 
                         <InputPaper
@@ -280,7 +280,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                             value={item?.monthlyIncome}
                             onChangeText={(txt) => handleInputChange(i, 'monthlyIncome', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO"}
+                            disabled={flag === "CO" || approvalStatus === "A"}
                         />
 
                         {formArray?.length > 1 && <IconButton icon="minus" iconColor={theme.colors.onErrorContainer} onPress={() => handleFormRemove(i)} style={{
@@ -294,14 +294,14 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
                     alignSelf: "flex-end",
                     backgroundColor: theme.colors.tertiaryContainer,
                     marginTop: formArray?.length === 1 ? 10 : 0
-                }} disabled={flag === "CO"} />
+                }} disabled={flag === "CO" || approvalStatus === "A"} />
 
                 <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
                     Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
                         { text: "No", onPress: () => null },
                         { text: "Yes", onPress: () => handleFormUpdate() },
                     ])
-                }} disabled={loading || flag === "CO"}
+                }} disabled={loading || flag === "CO" || approvalStatus === "A"}
                     loading={loading}>UPDATE</ButtonPaper>
             </ScrollView>
             {loading && <LoadingOverlay />}

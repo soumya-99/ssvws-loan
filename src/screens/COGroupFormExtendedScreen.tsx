@@ -1,8 +1,7 @@
 import { StyleSheet, SafeAreaView, View, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import HeadingComp from "../components/HeadingComp"
-import BMBasicDetailsForm from './forms/BMBasicDetailsForm'
 import GroupFormExtended from './forms/GroupFormExtended'
 import { useRoute } from '@react-navigation/native'
 import { SCREEN_HEIGHT } from 'react-native-normalize'
@@ -28,7 +27,7 @@ const COGroupFormExtendedScreen = () => {
                     height: "auto",
                     paddingHorizontal: 20,
                 }}>
-                    <GroupFormExtended fetchedData={params.group_details} />
+                    <GroupFormExtended fetchedData={params.group_details} approvalStatus={params?.approvalFlag} />
                 </View>
             </ScrollView>
         </SafeAreaView>
