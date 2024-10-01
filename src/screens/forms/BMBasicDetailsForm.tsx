@@ -187,36 +187,68 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             user_dt: data
         }
 
-        // if (!formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber) {
-        //     ToastAndroid.show("Fill Mobile, PAN and Aadhaar.", ToastAndroid.SHORT)
-        //     return
-        // }
+        if (flag === "M" && !formData.clientMobile) {
+            return
+        }
+
+        if (flag === "P" && !formData.panNumber) {
+            return
+        }
+
+        if (flag === "A" && !formData.aadhaarNumber) {
+            return
+        }
 
         await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
             console.log("PPPPPPPPPPPPPPPPP", res?.data)
-            if (res?.data?.msg?.length > 0) {
-                setMemberCodeShowHide(true)
-                setFormData({
-                    clientName: res?.data?.msg[0]?.client_name,
-                    clientGender: res?.data?.msg[0]?.gender,
-                    clientMobile: res?.data?.msg[0]?.client_mobile,
-                    guardianName: res?.data?.msg[0]?.gurd_name,
-                    guardianMobile: res?.data?.msg[0]?.gurd_mobile,
-                    clientAddress: res?.data?.msg[0]?.client_addr,
-                    clientPin: res?.data?.msg[0]?.pin_no,
-                    aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
-                    panNumber: res?.data?.msg[0]?.pan_no,
-                    religion: res?.data?.msg[0]?.religion,
-                    caste: res?.data?.msg[0]?.caste,
-                    education: res?.data?.msg[0]?.education ?? "",
-                    groupCode: res?.data?.msg[0]?.prov_grp_code,
-                    groupCodeName: res?.data?.msg[0]?.group_name,
-                    dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
-                })
-                setReadonlyMemberId(res?.data?.msg[0]?.member_code)
-            } else {
-                ToastAndroid.show("New client.", ToastAndroid.SHORT)
+            if (res?.data?.suc === 1) {
+                if (res?.data?.msg?.length > 0) {
+                    setMemberCodeShowHide(true)
+                    setFormData({
+                        clientName: res?.data?.msg[0]?.client_name,
+                        clientGender: res?.data?.msg[0]?.gender,
+                        clientMobile: res?.data?.msg[0]?.client_mobile,
+                        guardianName: res?.data?.msg[0]?.gurd_name,
+                        guardianMobile: res?.data?.msg[0]?.gurd_mobile,
+                        clientAddress: res?.data?.msg[0]?.client_addr,
+                        clientPin: res?.data?.msg[0]?.pin_no,
+                        aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
+                        panNumber: res?.data?.msg[0]?.pan_no,
+                        religion: res?.data?.msg[0]?.religion,
+                        caste: res?.data?.msg[0]?.caste,
+                        education: res?.data?.msg[0]?.education ?? "",
+                        groupCode: res?.data?.msg[0]?.prov_grp_code,
+                        groupCodeName: res?.data?.msg[0]?.group_name,
+                        dob: res?.data?.msg[0]?.dob ? new Date(res.data.msg[0].dob) : new Date()
+                    })
+                    setReadonlyMemberId(res?.data?.msg[0]?.member_code)
+                }
+            } else if (res?.data?.suc === 0) {
+                Alert.alert("On-going Loan", `${res?.data?.status}`, [{
+                    text: "OK",
+                    onPress: () => {
+                        setFormData({
+                            clientName: "",
+                            clientGender: "",
+                            clientMobile: "",
+                            guardianName: "",
+                            guardianMobile: "",
+                            clientAddress: "",
+                            clientPin: "",
+                            aadhaarNumber: "",
+                            panNumber: "",
+                            religion: "",
+                            caste: "",
+                            education: "",
+                            groupCode: "",
+                            groupCodeName: "",
+                            dob: new Date()
+                        })
+                        setMemberCodeShowHide(false)
+                    }
+                }])
             }
+
         }).catch(err => {
             ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
         })

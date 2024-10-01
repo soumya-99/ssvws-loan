@@ -38,6 +38,7 @@ const SearchByMemberScreen = () => {
 
     useEffect(() => {
         setSearch("")
+        setFormsData(() => [])
     }, [isFocused])
 
     const handleSearch = async () => {
@@ -74,7 +75,7 @@ const SearchByMemberScreen = () => {
                     paddingHorizontal: 20
                 }}>
                     <View style={{
-                        padding: 10,
+                        padding: 5,
                         backgroundColor: theme.colors.errorContainer,
                         borderTopLeftRadius: 20,
                         borderBottomRightRadius: 20,
@@ -116,19 +117,19 @@ const SearchByMemberScreen = () => {
                             value={search}
                             elevation={search ? 2 : 0}
                             keyboardType={"default"}
-                            maxLength={18}
+                            maxLength={30}
                             style={{
                                 backgroundColor: theme.colors.tertiaryContainer,
                                 color: theme.colors.onTertiaryContainer,
-                                width: "85%",
-                                height: 55,
+                                width: "84%",
+                                paddingVertical: 1,
                                 alignItems: "center",
                                 alignSelf: "center"
                             }}
                             loading={loading ? true : false}
                         />
 
-                        <IconButton icon={"magnify"} mode='contained' onPress={() => search && handleSearch()} size={32} style={{
+                        <IconButton icon={"magnify"} mode='contained' onPress={() => search && handleSearch()} size={35} style={{
                             borderTopLeftRadius: 10
                         }} />
                     </View>
