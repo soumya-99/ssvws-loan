@@ -32,5 +32,6 @@ export const ADDRESSES = {
     DELETE_FORM: `${BASE_URL}/delete_form`,
     SEARCH_GROUP: `${BASE_URL}/search_group`,
     EDIT_GROUP: `${BASE_URL}/edit_group`,
-    MEMBER_DETAILS: `${BASE_URL}/member_dt`
+    MEMBER_DETAILS: `${BASE_URL}/member_dt`,
+    SEARCH_MEMBER: `${BASE_URL}/search_member`
 }

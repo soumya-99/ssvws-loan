@@ -276,7 +276,17 @@ const GroupFormExtended = ({ fetchedData }) => {
                             flexWrap: "wrap"
                         }}>
                             {memberDetailsArray?.map((item, i) => (
-                                <Chip key={i} icon="account-circle-outline" onPress={() => console.log('Pressed', item)}>{item?.client_name}</Chip>
+                                <Chip key={i} icon="account-circle-outline" onPress={() => {
+                                    navigation.dispatch(CommonActions.navigate({
+                                        name: navigationRoutes.memberDetailsAllFormScreen,
+                                        params: {
+                                            member_details: item,
+                                            formNumber: item?.form_no,
+                                            branchCode: item?.branch_code,
+                                            userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : ""
+                                        }
+                                    }))
+                                }}>{item?.client_name}</Chip>
                             ))}
                         </View>
                     </View>

@@ -11,6 +11,7 @@ type MenuPaperTypes = {
     customStyle?: {}
     menuStyle?: {}
     mode?: "text" | "outlined" | "contained" | "elevated" | "contained-tonal"
+    disabled?: boolean
 }
 
 export default function MenuPaper({
@@ -20,6 +21,7 @@ export default function MenuPaper({
     textColor,
     menuStyle,
     mode,
+    disabled
 }: MenuPaperTypes) {
     const [visible, setVisible] = useState(false)
     const openMenu = () => setVisible(true)
@@ -37,6 +39,7 @@ export default function MenuPaper({
                     icon="chevron-down-circle-outline"
                     onPress={openMenu}
                     // textColor={textColor}
+                    disabled={disabled}
                     style={customStyle}
                     mode={mode}
                     textColor={textColor}>

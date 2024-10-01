@@ -25,7 +25,7 @@ function BottomNavigationPaper() {
 
     console.log("CURRNT ROUTE: ", currentRoute)
 
-    const shouldHideTabBar = ["BMPendingLoanFormScreen"].includes(currentRoute)
+    const shouldHideTabBar = ["BMPendingLoanFormScreen", "SearchByGroupScreen", "COGroupFormExtendedScreen", "SearchByMemberScreen", "MemberDetailsAllFormScreen"].includes(currentRoute)
 
     const checkBMOrCOFlag = loginStore?.id
 
@@ -80,7 +80,7 @@ function BottomNavigationPaper() {
                                 ),
                         }}
                     />
-                    <Tab.Screen
+                    {/* <Tab.Screen
                         name={navigationRoutes.searchNavigation}
                         component={SearchNavigation}
                         options={{
@@ -96,7 +96,7 @@ function BottomNavigationPaper() {
                                     <MaterialCommunityIcons name="database-search" color={color} size={26} />
                                 ),
                         }}
-                    />
+                    /> */}
                     <Tab.Screen
                         name={navigationRoutes.groupNavigation}
                         component={GroupNavigation}
@@ -137,40 +137,25 @@ function BottomNavigationPaper() {
                 )
                     : (null)
             }
-            {/* <Tab.Screen
-                name="Reports"
-                component={ReportsNavigation}
+
+            <Tab.Screen
+                name={navigationRoutes.searchNavigation}
+                component={SearchNavigation}
                 options={{
-                    tabBarLabel: "Reports",
+                    tabBarLabel: "Search",
                     tabBarIcon: ({ color, focused }) =>
                         !focused ? (
-                            <MaterialCommunityIcons name="chart-bar-stacked" color={color} size={26} />
-                        ) : (
                             <MaterialCommunityIcons
-                                name="chart-bar"
+                                name="database-search-outline"
                                 color={color}
                                 size={26}
                             />
+                        ) : (
+                            <MaterialCommunityIcons name="database-search" color={color} size={26} />
                         ),
                 }}
             />
-            <Tab.Screen
-                name="More"
-                component={MoreNavigation}
-                options={{
-                    tabBarLabel: "More",
-                    tabBarIcon: ({ color, focused }) =>
-                        !focused ? (
-                            <MaterialCommunityIcons name="menu" color={color} size={26} />
-                        ) : (
-                            <MaterialCommunityIcons
-                                name="menu-open"
-                                color={color}
-                                size={26}
-                            />
-                        ),
-                }}
-            /> */}
+
             <Tab.Screen
                 name={navigationRoutes.settingsNavigation}
                 component={SettingsNavigation}

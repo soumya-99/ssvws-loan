@@ -35,6 +35,7 @@ export default function CollectionButton({
                 justifyContent: "center",
                 alignItems: "center",
                 borderTopRightRadius: 20,
+                borderTopLeftRadius: 20,
                 borderBottomLeftRadius: 20,
                 backgroundColor: color,
             }}>

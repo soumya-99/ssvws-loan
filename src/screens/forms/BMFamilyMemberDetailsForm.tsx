@@ -11,7 +11,7 @@ import { ADDRESSES } from '../../config/api_list'
 import MenuPaper from '../../components/MenuPaper'
 import { loginStorage } from '../../storage/appStorage'
 
-const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
+const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
     const theme = usePaperColorScheme()
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
@@ -192,6 +192,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                             value={item?.name}
                             onChangeText={(txt) => handleInputChange(i, 'name', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
+                            disabled={flag === "CO"}
                         />
 
                         <InputPaper
@@ -202,6 +203,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                             value={item?.relation}
                             onChangeText={(txt) => handleInputChange(i, 'relation', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
+                            disabled={flag === "CO"}
                         />
 
                         <InputPaper
@@ -212,6 +214,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                             value={item?.age}
                             onChangeText={(txt) => handleInputChange(i, 'age', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
+                            disabled={flag === "CO"}
                         />
 
                         <List.Item
@@ -222,7 +225,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                                 return <MenuPaper menuArrOfObjects={memberGenders.map(gender => ({
                                     ...gender,
                                     func: () => gender.func(i)  // Pass current form index (i)
-                                }))} />
+                                }))} disabled={flag === "CO"} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -242,7 +245,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                                 return <MenuPaper menuArrOfObjects={educations.map(education => ({
                                     ...education,
                                     func: () => education.func(i)  // Pass current form index (i)
-                                }))} />
+                                }))} disabled={flag === "CO"} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -266,6 +269,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
                                 },
                             ]}
+                            disabled={flag === "CO"}
                         />
 
                         <InputPaper
@@ -276,6 +280,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                             value={item?.monthlyIncome}
                             onChangeText={(txt) => handleInputChange(i, 'monthlyIncome', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
+                            disabled={flag === "CO"}
                         />
 
                         {formArray?.length > 1 && <IconButton icon="minus" iconColor={theme.colors.onErrorContainer} onPress={() => handleFormRemove(i)} style={{
@@ -289,14 +294,14 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode }) => {
                     alignSelf: "flex-end",
                     backgroundColor: theme.colors.tertiaryContainer,
                     marginTop: formArray?.length === 1 ? 10 : 0
-                }} />
+                }} disabled={flag === "CO"} />
 
                 <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
                     Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
                         { text: "No", onPress: () => null },
                         { text: "Yes", onPress: () => handleFormUpdate() },
                     ])
-                }} disabled={loading}
+                }} disabled={loading || flag === "CO"}
                     loading={loading}>UPDATE</ButtonPaper>
             </ScrollView>
             {loading && <LoadingOverlay />}

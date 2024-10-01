@@ -17,9 +17,10 @@ interface RadioCompProps {
 
     color?: string
     radioButtonColor?: string
+    disabled?: boolean
 }
 
-const RadioComp = ({ title, icon, dataArray, color, radioButtonColor }: RadioCompProps) => {
+const RadioComp = ({ title, icon, dataArray, color, radioButtonColor, disabled }: RadioCompProps) => {
     const theme = usePaperColorScheme()
 
     return (
@@ -54,6 +55,7 @@ const RadioComp = ({ title, icon, dataArray, color, radioButtonColor }: RadioCom
                                 fontSize: 17
                             }}>{item?.optionName}</Text>
                             <RadioButton
+                                disabled={disabled}
                                 color={radioButtonColor ?? theme.colors.primary}
                                 value={item?.optionState}
                                 status={item?.optionState === item?.currentState ? 'checked' : 'unchecked'}

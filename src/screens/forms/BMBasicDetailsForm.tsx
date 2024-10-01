@@ -22,9 +22,10 @@ interface BMBasicDetailsFormProps {
     formNumber?: any
     branchCode?: any
     flag?: "CO" | "BM"
+    approvalStatus?: "U" | "A"
 }
 
-const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDetailsFormProps) => {
+const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }: BMBasicDetailsFormProps) => {
     const theme = usePaperColorScheme()
     // 110 -> Branch Code
     const navigation = useNavigation()
@@ -32,7 +33,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
 
     const { location, error } = useGeoLocation()
     const [geolocationFetchedAddress, setGeolocationFetchedAddress] = useState(() => "")
-    console.log("****************", formNumber, branchCode)
+    console.log("****************", formNumber, branchCode, flag, approvalStatus)
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
@@ -407,7 +408,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
                         description={`${formData.groupCodeName} - ${formData.groupCode}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={groupNames} />
+                            return <MenuPaper menuArrOfObjects={groupNames} disabled={approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -416,26 +417,26 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
 
                     <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => fetchClientDetails("P", formData.panNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Member Name" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <List.Item
                         title="Choose Gender"
                         description={`Gender: ${formData.clientGender}`}
                         left={props => <List.Icon {...props} icon="gender-male-female" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={memberGenders} />
+                            return <MenuPaper menuArrOfObjects={memberGenders} disabled={approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -444,26 +445,27 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
 
                     <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Guardian Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.guardianMobile} onChangeText={(txt: any) => handleFormChange("guardianMobile", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="Member Address" multiline leftIcon='card-account-phone-outline' value={formData.clientAddress} onChangeText={(txt: any) => handleFormChange("clientAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <InputPaper label="PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={approvalStatus === "A"} />
 
                     <ButtonPaper
                         textColor={theme.colors.primary}
                         onPress={() => setOpenDate(true)}
                         mode="text"
-                        icon="baby-face-outline">
+                        icon="baby-face-outline"
+                        disabled={approvalStatus === "A"}>
                         CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
@@ -486,7 +488,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
                         description={`Religion: ${formData.religion}`}
                         left={props => <List.Icon {...props} icon="peace" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={religions} />
+                            return <MenuPaper menuArrOfObjects={religions} disabled={approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -498,7 +500,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
                         description={`Caste: ${formData.caste}`}
                         left={props => <List.Icon {...props} icon="account-question-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={castes} />
+                            return <MenuPaper menuArrOfObjects={castes} disabled={approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -510,7 +512,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
                         description={`Education: ${formData.education}`}
                         left={props => <List.Icon {...props} icon="book-education-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={educations} />
+                            return <MenuPaper menuArrOfObjects={educations} disabled={approvalStatus === "A"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -548,7 +550,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
                         gap: 40,
                         marginBottom: 10
                     }}>
-                        {flag === "CO" && <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore">
+                        {flag === "CO" && <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore" disabled={approvalStatus === "A"}>
                             RESET FORM
                         </ButtonPaper>}
                         <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
@@ -556,7 +558,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM" }: BMBasicDeta
                                 { text: "No", onPress: () => null },
                                 { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
                             ])
-                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress}
+                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || approvalStatus === "A"}
                             loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
                     </View>
 

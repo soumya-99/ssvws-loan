@@ -11,7 +11,7 @@ import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
 
-const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
+const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM" }) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
@@ -128,23 +128,23 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
 
                     <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={flag === "CO"} />
 
                     <InputPaper label="Parental Address" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
-                    }} />
+                    }} disabled={flag === "CO"} />
 
                     <InputPaper label="Parental Phone No." maxLength={10} leftIcon='phone' keyboardType="number-pad" value={formData.parentalPhoneNumber} onChangeText={(txt: any) => handleFormChange("parentalPhoneNumber", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={flag === "CO"} />
 
                     <List.Item
                         title="House Type"
                         description={`Purpose: ${formData.houseType}`}
                         left={props => <List.Icon {...props} icon="office-building-cog-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={houseTypes} />
+                            return <MenuPaper menuArrOfObjects={houseTypes} disabled={flag === "CO"} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -168,13 +168,14 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOwnOrRent", e)
                             },
                         ]}
+                        disabled={flag === "CO"}
                     />
 
                     <Divider />
 
                     <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} />
+                    }} disabled={flag === "CO"} />
 
                     <RadioComp
                         title="Politically Active?"
@@ -193,6 +194,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("politicallyActive", e)
                             },
                         ]}
+                        disabled={flag === "CO"}
                     />
                     <RadioComp
                         title="Own a TV?"
@@ -211,6 +213,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("tvAvailable", e)
                             },
                         ]}
+                        disabled={flag === "CO"}
                     />
                     <RadioComp
                         title="Own a Bike?"
@@ -229,6 +232,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("bikeAvailable", e)
                             },
                         ]}
+                        disabled={flag === "CO"}
                     />
                     <RadioComp
                         title="Own a Fridge?"
@@ -247,6 +251,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("fridgeAvailable", e)
                             },
                         ]}
+                        disabled={flag === "CO"}
                     />
                     <RadioComp
                         title="Washing Machine?"
@@ -265,6 +270,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("washingMachineAvailable", e)
                             },
                         ]}
+                        disabled={flag === "CO"}
                     />
 
                     <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
@@ -272,7 +278,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode }) => {
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.parentalPhoneNumber || !formData.houseType || !formData.checkOwnOrRent || !formData.totalLand || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable}
+                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.parentalPhoneNumber || !formData.houseType || !formData.checkOwnOrRent || !formData.totalLand || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || flag === "CO"}
                         loading={loading}>UPDATE</ButtonPaper>
                 </View>
             </ScrollView>

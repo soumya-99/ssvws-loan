@@ -44,6 +44,11 @@ const SearchScreen = () => {
                             text="Search By Member"
                             color={theme.colors.secondaryContainer}
                             textColor={theme.colors.onSecondaryContainer}
+                            onPress={() => {
+                                navigation.dispatch(CommonActions.navigate({
+                                    name: navigationRoutes.searchByMemberScreen
+                                }))
+                            }}
                         />
                     </CollectionButtonsWrapper>
                 </View>

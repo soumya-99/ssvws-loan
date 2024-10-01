@@ -15,7 +15,7 @@ import InputPaper from '../components/InputPaper'
 import RadioComp from '../components/RadioComp'
 import ButtonPaper from '../components/ButtonPaper'
 
-const SearchByGroupScreen = () => {
+const SearchByMemberScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
 
@@ -63,19 +63,19 @@ const SearchByGroupScreen = () => {
 
         const creds = {
             branch_code: loginStore?.brn_code,
-            co_id: loginStore?.emp_id,
-            user_type: loginStore?.id, // newly added
             flag: isApproved,
-            group_name: search
+            search: search
         }
 
-        await axios.post(`${ADDRESSES.SEARCH_GROUP}`, creds).then(res => {
+        console.log(">>>>>>>>>>>>>>", creds)
+
+        await axios.post(`${ADDRESSES.SEARCH_MEMBER}`, creds).then(res => {
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
                 console.log("===++=++====", res?.data)
             }
         }).catch(err => {
-            ToastAndroid.show("Some error while searching groups!", ToastAndroid.SHORT)
+            ToastAndroid.show("Some error while searching members!", ToastAndroid.SHORT)
         })
         setLoading(false)
     }
@@ -87,7 +87,7 @@ const SearchByGroupScreen = () => {
                 minHeight: SCREEN_HEIGHT,
                 height: 'auto',
             }} keyboardShouldPersistTaps="handled">
-                <HeadingComp title="Existing Groups" subtitle="Find group" isBackEnabled />
+                <HeadingComp title="Existing Members" subtitle="Find member by" isBackEnabled />
                 <View style={{
                     paddingHorizontal: 20
                 }}>
@@ -129,7 +129,7 @@ const SearchByGroupScreen = () => {
 
                         <Searchbar
                             autoFocus
-                            placeholder={"Search by Group Name"}
+                            placeholder={"Name/PAN/Aadhaar/Phone"}
                             onChangeText={onChangeSearch}
                             value={search}
                             elevation={search ? 2 : 0}
@@ -171,18 +171,21 @@ const SearchByGroupScreen = () => {
                                     color: theme.colors.secondary,
                                 }}
                                 key={i}
-                                title={`${item?.group_name}`}
+                                title={`${item?.client_name}`}
                                 description={
                                     <View>
-                                        <Text>Group Code: {item?.group_code}</Text>
-                                        {/* <Text>{item?.group_name} - {item?.prov_grp_code}</Text> */}
+                                        <Text>Member Code: {item?.member_code}</Text>
+                                        <Text>{item?.group_name} - {item?.prov_grp_code}</Text>
                                     </View>
                                 }
                                 onPress={() => {
                                     navigation.dispatch(CommonActions.navigate({
-                                        name: navigationRoutes.coGroupFormExtendedScreen,
+                                        name: navigationRoutes.memberDetailsAllFormScreen,
                                         params: {
-                                            group_details: item
+                                            member_details: item,
+                                            formNumber: item?.form_no,
+                                            branchCode: item?.branch_code,
+                                            userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : ""
                                         }
                                     }))
                                 }}
@@ -217,6 +220,6 @@ const SearchByGroupScreen = () => {
     )
 }
 
-export default SearchByGroupScreen
+export default SearchByMemberScreen
 
 const styles = StyleSheet.create({})
