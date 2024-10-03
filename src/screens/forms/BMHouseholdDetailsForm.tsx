@@ -55,17 +55,17 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
         await axios.get(`${ADDRESSES.FETCH_HOUSEHOLD_DETAILS}?form_no=${formNumber}&branch_code=${branchCode}`).then(res => {
             console.log("HOUSEHOLD===FETCH", res?.data)
             setFormData({
-                noOfRooms: res?.data?.msg[0]?.no_of_rooms,
-                parentalAddress: res?.data?.msg[0]?.parental_addr ?? "",
-                parentalPhoneNumber: res?.data?.msg[0]?.parental_phone,
-                houseType: res?.data?.msg[0]?.house_type ?? "",
-                checkOwnOrRent: res?.data?.msg[0]?.own_rent,
-                totalLand: res?.data?.msg[0]?.land,
-                politicallyActive: res?.data?.msg[0]?.poltical_flag,
-                tvAvailable: res?.data?.msg[0]?.tv_flag,
-                bikeAvailable: res?.data?.msg[0]?.bike_flag,
-                fridgeAvailable: res?.data?.msg[0]?.fridge_flag,
-                washingMachineAvailable: res?.data?.msg[0]?.wm_flag,
+                noOfRooms: res?.data?.msg[0]?.no_of_rooms || "",
+                parentalAddress: res?.data?.msg[0]?.parental_addr || "",
+                parentalPhoneNumber: res?.data?.msg[0]?.parental_phone || "",
+                houseType: res?.data?.msg[0]?.house_type || "",
+                checkOwnOrRent: res?.data?.msg[0]?.own_rent || "",
+                totalLand: res?.data?.msg[0]?.land || "",
+                politicallyActive: res?.data?.msg[0]?.poltical_flag || "",
+                tvAvailable: res?.data?.msg[0]?.tv_flag || "",
+                bikeAvailable: res?.data?.msg[0]?.bike_flag || "",
+                fridgeAvailable: res?.data?.msg[0]?.fridge_flag || "",
+                washingMachineAvailable: res?.data?.msg[0]?.wm_flag || "",
             })
         }).catch(err => {
             ToastAndroid.show("Something went wrong while fetching Household Details!", ToastAndroid.SHORT)

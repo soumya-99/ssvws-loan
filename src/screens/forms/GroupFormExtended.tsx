@@ -114,23 +114,23 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
 
     useEffect(() => {
         setFormData({
-            groupName: fetchedData?.group_name,
-            groupType: fetchedData?.group_type,
+            groupName: fetchedData?.group_name || "",
+            groupType: fetchedData?.group_type || "",
             groupTypeName: fetchedData?.group_type === "S" ? "SHG" : fetchedData?.group_type === "J" ? "JLG" : "",
-            address: fetchedData?.grp_addr,
-            pin: fetchedData?.pin_no,
-            phoneNo: fetchedData?.phone1,
-            phoneNo2: fetchedData?.phone2,
+            address: fetchedData?.grp_addr || "",
+            pin: fetchedData?.pin_no || "",
+            phoneNo: fetchedData?.phone1 || "",
+            phoneNo2: fetchedData?.phone2 || "",
             bankName: fetchedData?.bank_name || "",
-            bankBranchName: fetchedData?.branch_name,
-            ifscCode: fetchedData?.ifsc,
-            micr: fetchedData?.micr,
-            accNo1: fetchedData?.acc_no1,
-            accNo2: fetchedData?.acc_no2,
-            emailId: fetchedData?.email_id,
-            groupBlock: fetchedData?.block,
-            groupBlockName: fetchedData?.block_name,
-            groupOpenDate: new Date(fetchedData?.grp_open_dt)?.toLocaleString("en-GB")
+            bankBranchName: fetchedData?.branch_name || "",
+            ifscCode: fetchedData?.ifsc || "",
+            micr: fetchedData?.micr || "",
+            accNo1: fetchedData?.acc_no1 || "",
+            accNo2: fetchedData?.acc_no2 || "",
+            emailId: fetchedData?.email_id || "",
+            groupBlock: fetchedData?.block || "",
+            groupBlockName: fetchedData?.block_name || "",
+            groupOpenDate: new Date(fetchedData?.grp_open_dt)?.toLocaleString("en-GB") || new Date().toLocaleString()
         })
     }, [])
 

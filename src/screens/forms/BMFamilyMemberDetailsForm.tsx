@@ -20,7 +20,6 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
     const [educations, setEducations] = useState(() => [])
     const [memberGenders, setMemberGenders] = useState(() => [])
 
-    // Each form item has independent state now
     const [formArray, setFormArray] = useState([{
         sl_no: 0,
         name: '',
@@ -32,7 +31,6 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         monthlyIncome: ''
     },])
 
-    // Function to handle adding a new form
     const handleFormAdd = () => {
         setFormArray(prev => [
             ...prev,
@@ -53,15 +51,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         setFormArray(prev => prev.filter((_, i) => i !== index))
     }
 
-    // const handleInputChange = (index: number, field: string, value: any) => {
-    //     const updatedForm = [...formArray]
-    //     updatedForm[index][field] = value
-    //     setFormArray(updatedForm)
-    // }
-
     const handleInputChange = (index: number, field: string, value: any) => {
-        // Add check to ensure formArray[index] exists
-        // if (index >= 0 && index < formArray.length) {
         if (formArray[index]) {
             const updatedForm = [...formArray];
             updatedForm[index][field] = value;
@@ -82,7 +72,6 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                 const apiData = res?.data?.msg || [];
 
                 if (apiData?.length > 0) {
-                    // Transform the API response to match the form structure
                     const transformedData = apiData.map((member, index) => ({
                         sl_no: member.sl_no || index + 1,
                         name: member.name || '',
@@ -140,11 +129,6 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
 
     const handleFormUpdate = async () => {
         setLoading(true)
-
-        // let formArrayWithSlNo = formArray.map((item, index) => {
-        //     // return { ...item, sl_no: index + 1 };
-        //     return { ...item, sl_no: 0 };
-        // });
 
         console.log("::::::::::::::::::::", formArray)
 

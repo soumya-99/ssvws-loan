@@ -206,23 +206,27 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 if (res?.data?.msg?.length > 0) {
                     setMemberCodeShowHide(true)
                     setFormData({
-                        clientName: res?.data?.msg[0]?.client_name,
-                        clientGender: res?.data?.msg[0]?.gender,
-                        clientMobile: res?.data?.msg[0]?.client_mobile,
-                        guardianName: res?.data?.msg[0]?.gurd_name,
-                        guardianMobile: res?.data?.msg[0]?.gurd_mobile,
-                        clientAddress: res?.data?.msg[0]?.client_addr,
-                        clientPin: res?.data?.msg[0]?.pin_no,
-                        aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
-                        panNumber: res?.data?.msg[0]?.pan_no,
-                        religion: res?.data?.msg[0]?.religion,
-                        caste: res?.data?.msg[0]?.caste,
+                        clientName: res?.data?.msg[0]?.client_name || "",
+                        clientGender: res?.data?.msg[0]?.gender || "",
+                        clientMobile: res?.data?.msg[0]?.client_mobile || "",
+                        guardianName: res?.data?.msg[0]?.gurd_name || "",
+                        guardianMobile: res?.data?.msg[0]?.gurd_mobile || "",
+                        clientAddress: res?.data?.msg[0]?.client_addr || "",
+                        clientPin: res?.data?.msg[0]?.pin_no || "",
+                        aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
+                        panNumber: res?.data?.msg[0]?.pan_no || "",
+                        religion: res?.data?.msg[0]?.religion || "",
+                        caste: res?.data?.msg[0]?.caste || "",
                         education: res?.data?.msg[0]?.education ?? "",
-                        groupCode: res?.data?.msg[0]?.prov_grp_code,
-                        groupCodeName: res?.data?.msg[0]?.group_name,
+                        groupCode: res?.data?.msg[0]?.prov_grp_code || "",
+                        groupCodeName: res?.data?.msg[0]?.group_name || "",
                         dob: res?.data?.msg[0]?.dob ? new Date(res.data.msg[0].dob) : new Date()
                     })
-                    setReadonlyMemberId(res?.data?.msg[0]?.member_code)
+                    setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
+
+                    if (approvalStatus === "A") {
+                        setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address || "")
+                    }
                 }
             } else if (res?.data?.suc === 0) {
                 Alert.alert("On-going Loan", `${res?.data?.status}`, [{
@@ -271,26 +275,26 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
                 setMemberCodeShowHide(true)
                 setFormData({
-                    clientName: res?.data?.msg[0]?.client_name,
-                    clientGender: res?.data?.msg[0]?.gender,
-                    clientMobile: res?.data?.msg[0]?.client_mobile,
-                    guardianName: res?.data?.msg[0]?.gurd_name,
-                    guardianMobile: res?.data?.msg[0]?.gurd_mobile,
-                    clientAddress: res?.data?.msg[0]?.client_addr,
-                    clientPin: res?.data?.msg[0]?.pin_no,
-                    aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
-                    panNumber: res?.data?.msg[0]?.pan_no,
-                    religion: res?.data?.msg[0]?.religion,
-                    caste: res?.data?.msg[0]?.caste,
-                    education: res?.data?.msg[0]?.education ?? "",
-                    groupCode: res?.data?.msg[0]?.prov_grp_code,
-                    groupCodeName: res?.data?.msg[0]?.prov_grp_name,
+                    clientName: res?.data?.msg[0]?.client_name || "",
+                    clientGender: res?.data?.msg[0]?.gender || "",
+                    clientMobile: res?.data?.msg[0]?.client_mobile || "",
+                    guardianName: res?.data?.msg[0]?.gurd_name || "",
+                    guardianMobile: res?.data?.msg[0]?.gurd_mobile || "",
+                    clientAddress: res?.data?.msg[0]?.client_addr || "",
+                    clientPin: res?.data?.msg[0]?.pin_no || "",
+                    aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
+                    panNumber: res?.data?.msg[0]?.pan_no || "",
+                    religion: res?.data?.msg[0]?.religion || "",
+                    caste: res?.data?.msg[0]?.caste || "",
+                    education: res?.data?.msg[0]?.education || "",
+                    groupCode: res?.data?.msg[0]?.prov_grp_code || "",
+                    groupCodeName: res?.data?.msg[0]?.prov_grp_name || "",
                     dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
                 })
-                setReadonlyMemberId(res?.data?.msg[0]?.member_code)
+                setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
                 if (approvalStatus === "A") {
-                    setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address)
+                    setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address || "")
                 }
             }
         }).catch(err => {

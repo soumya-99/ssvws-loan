@@ -52,18 +52,18 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
             console.log("FETCHHHHHH=====", res?.data)
             if (res?.data?.suc === 1) {
                 setFormData({
-                    selfOccupation: res?.data?.msg[0]?.self_occu,
-                    selfMonthlyIncome: res?.data?.msg[0]?.self_income,
-                    spouseOccupation: res?.data?.msg[0]?.spouse_occu,
-                    spouseMonthlyIncome: res?.data?.msg[0]?.spouse_income,
-                    purposeOfLoan: res?.data?.msg[0]?.loan_purpose,
-                    purposeOfLoanName: res?.data?.msg[0]?.purpose_id,
-                    subPurposeOfLoan: res?.data?.msg[0]?.sub_pupose,
-                    subPurposeOfLoanName: res?.data?.msg[0]?.sub_purp_name,
-                    amountApplied: res?.data?.msg[0]?.applied_amt,
-                    checkOtherOngoingLoan: res?.data?.msg[0]?.other_loan_flag,
-                    otherLoanAmount: res?.data?.msg[0]?.other_loan_amt,
-                    monthlyEmi: res?.data?.msg[0]?.other_loan_emi,
+                    selfOccupation: res?.data?.msg[0]?.self_occu || "",
+                    selfMonthlyIncome: res?.data?.msg[0]?.self_income || "",
+                    spouseOccupation: res?.data?.msg[0]?.spouse_occu || "",
+                    spouseMonthlyIncome: res?.data?.msg[0]?.spouse_income || "",
+                    purposeOfLoan: res?.data?.msg[0]?.loan_purpose || "",
+                    purposeOfLoanName: res?.data?.msg[0]?.purpose_id || "",
+                    subPurposeOfLoan: res?.data?.msg[0]?.sub_pupose || "",
+                    subPurposeOfLoanName: res?.data?.msg[0]?.sub_purp_name || "",
+                    amountApplied: res?.data?.msg[0]?.applied_amt || "",
+                    checkOtherOngoingLoan: res?.data?.msg[0]?.other_loan_flag || "",
+                    otherLoanAmount: res?.data?.msg[0]?.other_loan_amt || "",
+                    monthlyEmi: res?.data?.msg[0]?.other_loan_emi || "",
                 })
             }
         }).catch(err => {
