@@ -176,7 +176,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={item?.name}
                             onChangeText={(txt) => handleInputChange(i, 'name', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus === "A"}
+                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         />
 
                         <InputPaper
@@ -187,7 +187,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={item?.relation}
                             onChangeText={(txt) => handleInputChange(i, 'relation', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus === "A"}
+                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         />
 
                         <InputPaper
@@ -198,7 +198,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={item?.age}
                             onChangeText={(txt) => handleInputChange(i, 'age', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus === "A"}
+                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         />
 
                         <List.Item
@@ -209,7 +209,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                 return <MenuPaper menuArrOfObjects={memberGenders.map(gender => ({
                                     ...gender,
                                     func: () => gender.func(i)  // Pass current form index (i)
-                                }))} disabled={flag === "CO" || approvalStatus === "A"} />
+                                }))} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -229,7 +229,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                 return <MenuPaper menuArrOfObjects={educations.map(education => ({
                                     ...education,
                                     func: () => education.func(i)  // Pass current form index (i)
-                                }))} disabled={flag === "CO" || approvalStatus === "A"} />
+                                }))} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -253,7 +253,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
                                 },
                             ]}
-                            disabled={flag === "CO" || approvalStatus === "A"}
+                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         />
 
                         <InputPaper
@@ -264,13 +264,13 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={item?.monthlyIncome}
                             onChangeText={(txt) => handleInputChange(i, 'monthlyIncome', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus === "A"}
+                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         />
 
                         {formArray?.length > 1 && <IconButton icon="minus" iconColor={theme.colors.onErrorContainer} onPress={() => handleFormRemove(i)} style={{
                             alignSelf: "flex-end",
                             backgroundColor: theme.colors.errorContainer
-                        }} disabled={flag === "CO" || approvalStatus === "A"} />}
+                        }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />}
                     </View>
                 ))}
 
@@ -278,14 +278,14 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                     alignSelf: "flex-end",
                     backgroundColor: theme.colors.tertiaryContainer,
                     marginTop: formArray?.length === 1 ? 10 : 0
-                }} disabled={flag === "CO" || approvalStatus === "A"} />
+                }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                 <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
                     Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
                         { text: "No", onPress: () => null },
                         { text: "Yes", onPress: () => handleFormUpdate() },
                     ])
-                }} disabled={loading || flag === "CO" || approvalStatus === "A"}
+                }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                     loading={loading}>UPDATE</ButtonPaper>
             </ScrollView>
             {loading && <LoadingOverlay />}

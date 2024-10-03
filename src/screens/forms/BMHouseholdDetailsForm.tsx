@@ -128,23 +128,23 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
 
                     <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO" || approvalStatus === "A"} />
+                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="Parental Address" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
-                    }} disabled={flag === "CO" || approvalStatus === "A"} />
+                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="Parental Phone No." maxLength={10} leftIcon='phone' keyboardType="number-pad" value={formData.parentalPhoneNumber} onChangeText={(txt: any) => handleFormChange("parentalPhoneNumber", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO" || approvalStatus === "A"} />
+                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <List.Item
                         title="House Type"
                         description={`Purpose: ${formData.houseType}`}
                         left={props => <List.Icon {...props} icon="office-building-cog-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={houseTypes} disabled={flag === "CO" || approvalStatus === "A"} />
+                            return <MenuPaper menuArrOfObjects={houseTypes} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -168,14 +168,14 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOwnOrRent", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus === "A"}
+                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                     />
 
                     <Divider />
 
                     <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO" || approvalStatus === "A"} />
+                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <RadioComp
                         title="Politically Active?"
@@ -194,7 +194,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("politicallyActive", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus === "A"}
+                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                     />
                     <RadioComp
                         title="Own a TV?"
@@ -213,7 +213,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("tvAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus === "A"}
+                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                     />
                     <RadioComp
                         title="Own a Bike?"
@@ -232,7 +232,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("bikeAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus === "A"}
+                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                     />
                     <RadioComp
                         title="Own a Fridge?"
@@ -251,7 +251,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("fridgeAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus === "A"}
+                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                     />
                     <RadioComp
                         title="Washing Machine?"
@@ -270,7 +270,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("washingMachineAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus === "A"}
+                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                     />
 
                     <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
@@ -278,7 +278,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.parentalPhoneNumber || !formData.houseType || !formData.checkOwnOrRent || !formData.totalLand || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || flag === "CO" || approvalStatus === "A"}
+                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.parentalPhoneNumber || !formData.houseType || !formData.checkOwnOrRent || !formData.totalLand || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         loading={loading}>UPDATE</ButtonPaper>
                 </View>
             </ScrollView>

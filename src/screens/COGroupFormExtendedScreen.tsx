@@ -26,8 +26,9 @@ const COGroupFormExtendedScreen = () => {
                     minHeight: SCREEN_HEIGHT,
                     height: "auto",
                     paddingHorizontal: 20,
+                    paddingBottom: 30
                 }}>
-                    <GroupFormExtended fetchedData={params.group_details} approvalStatus={params?.approvalFlag} />
+                    <GroupFormExtended fetchedData={params.group_details} approvalStatus={params?.group_details?.approval_status} />
                 </View>
             </ScrollView>
         </SafeAreaView>

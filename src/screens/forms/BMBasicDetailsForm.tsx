@@ -18,7 +18,7 @@ interface BMBasicDetailsFormProps {
     formNumber?: any
     branchCode?: any
     flag?: "CO" | "BM"
-    approvalStatus?: "U" | "A"
+    approvalStatus?: "U" | "A" | "S"
 }
 
 const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }: BMBasicDetailsFormProps) => {
@@ -220,7 +220,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     })
                     setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
-                    if (approvalStatus === "A") {
+                    if (approvalStatus !== "U") {
                         setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address || "")
                     }
                 }
@@ -289,7 +289,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 })
                 setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
-                if (approvalStatus === "A") {
+                if (approvalStatus !== "U") {
                     setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address || "")
                 }
             }
@@ -323,9 +323,9 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             caste: formData.caste,
             education: formData.education,
             dob: formattedDob,
-            lat_val: location?.latitude,
-            long_val: location?.longitude,
-            gps_address: geolocationFetchedAddress,
+            bm_lat_val: location?.latitude,
+            bm_long_val: location?.longitude,
+            bm_gps_address: geolocationFetchedAddress,
             modified_by: loginStore?.emp_name
         }
         await axios.post(`${ADDRESSES.EDIT_BASIC_DETAILS}`, creds).then(res => {
@@ -354,9 +354,9 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             caste: formData.caste,
             education: formData.education,
             dob: formattedDob,
-            lat_val: location?.latitude,
-            long_val: location?.longitude,
-            gps_address: geolocationFetchedAddress,
+            co_lat_val: location?.latitude,
+            co_long_val: location?.longitude,
+            co_gps_address: geolocationFetchedAddress,
             created_by: loginStore?.emp_name
         }
 
@@ -431,7 +431,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 }}>
                     {/* <Divider /> */}
 
-                    <InputPaper label={approvalStatus === "U" && geolocationFetchedAddress ? `Geo Location Address` : approvalStatus === "A" ? "No fetched address found." : `Fetching GPS Address...`} multiline leftIcon='google-maps' value={geolocationFetchedAddress || ""} onChangeText={(txt: any) => setGeolocationFetchedAddress(txt)} disabled customStyle={{
+                    <InputPaper label={approvalStatus === "U" && geolocationFetchedAddress ? `Geo Location Address` : (approvalStatus === "A" || approvalStatus === "S") ? "No fetched address found." : `Fetching GPS Address...`} multiline leftIcon='google-maps' value={geolocationFetchedAddress || ""} onChangeText={(txt: any) => setGeolocationFetchedAddress(txt)} disabled customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} />
@@ -445,7 +445,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         description={`${formData.groupCodeName} - ${formData.groupCode}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={groupNames} disabled={approvalStatus === "A"} />
+                            return <MenuPaper menuArrOfObjects={groupNames} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -454,26 +454,26 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
                     <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => fetchClientDetails("P", formData.panNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="Member Name" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <List.Item
                         title="Choose Gender"
                         description={`Gender: ${formData.clientGender}`}
                         left={props => <List.Icon {...props} icon="gender-male-female" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={memberGenders} disabled={approvalStatus === "A"} />
+                            return <MenuPaper menuArrOfObjects={memberGenders} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -482,27 +482,27 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
                     <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="Guardian Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.guardianMobile} onChangeText={(txt: any) => handleFormChange("guardianMobile", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="Member Address" multiline leftIcon='card-account-phone-outline' value={formData.clientAddress} onChangeText={(txt: any) => handleFormChange("clientAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus === "A"} />
+                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <ButtonPaper
                         textColor={theme.colors.primary}
                         onPress={() => setOpenDate(true)}
                         mode="text"
                         icon="baby-face-outline"
-                        disabled={approvalStatus === "A"}>
+                        disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code}>
                         CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
@@ -525,7 +525,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         description={`Religion: ${formData.religion}`}
                         left={props => <List.Icon {...props} icon="peace" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={religions} disabled={approvalStatus === "A"} />
+                            return <MenuPaper menuArrOfObjects={religions} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -537,7 +537,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         description={`Caste: ${formData.caste}`}
                         left={props => <List.Icon {...props} icon="account-question-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={castes} disabled={approvalStatus === "A"} />
+                            return <MenuPaper menuArrOfObjects={castes} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -549,7 +549,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         description={`Education: ${formData.education}`}
                         left={props => <List.Icon {...props} icon="book-education-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={educations} disabled={approvalStatus === "A"} />
+                            return <MenuPaper menuArrOfObjects={educations} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -587,7 +587,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         gap: 40,
                         marginBottom: 10
                     }}>
-                        {flag === "CO" && <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore" disabled={approvalStatus === "A"}>
+                        {flag === "CO" && <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore" disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code}>
                             RESET FORM
                         </ButtonPaper>}
                         <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
@@ -595,7 +595,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                                 { text: "No", onPress: () => null },
                                 { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
                             ])
-                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || approvalStatus === "A"}
+                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                             loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
                     </View>
 

@@ -52,7 +52,7 @@ const MemberDetailsAllFormScreen = () => {
                 // minHeight: SCREEN_HEIGHT,
                 height: 'auto'
             }}>
-                <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber}`} isBackEnabled />
+                <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber} / Branch - ${params?.branchCode}`} isBackEnabled />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 10,
@@ -82,10 +82,10 @@ const MemberDetailsAllFormScreen = () => {
                         }
                     />
 
-                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={"BM"} approvalStatus={params?.approvalFlag} />}
-                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.approvalFlag} />}
-                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.approvalFlag} />}
-                    {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.approvalFlag} />}
+                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={"BM"} approvalStatus={params?.member_details?.approval_status} />}
+                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
+                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
+                    {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
 
                     <View style={{
                         flexDirection: "row",

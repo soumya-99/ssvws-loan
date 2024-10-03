@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
-import { Divider, Icon, IconButton, List, Searchbar, Text } from 'react-native-paper'
+import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
@@ -28,9 +28,9 @@ const SearchByMemberScreen = () => {
         setSearch(query)
     }
 
-    // useEffect(() => {
-    //     setFormsData(() => [])
-    // }, [isApproved])
+    useEffect(() => {
+        setFormsData(() => [])
+    }, [isApproved])
 
     useEffect(() => {
         setSearch("")
@@ -41,8 +41,8 @@ const SearchByMemberScreen = () => {
         setLoading(true)
 
         const creds = {
-            // branch_code: loginStore?.brn_code,
-            // flag: isApproved,
+            branch_code: loginStore?.brn_code,
+            flag: isApproved,
             search: search
         }
 
@@ -70,11 +70,12 @@ const SearchByMemberScreen = () => {
                 <View style={{
                     paddingHorizontal: 20
                 }}>
-                    {/* <View style={{
+                    <View style={{
                         padding: 5,
                         backgroundColor: theme.colors.errorContainer,
                         borderTopLeftRadius: 20,
                         borderBottomRightRadius: 20,
+                        // alignItems: "center",
                         marginBottom: 10
                     }}>
                         <RadioComp
@@ -97,7 +98,7 @@ const SearchByMemberScreen = () => {
                                 }
                             ]}
                         />
-                    </View> */}
+                    </View>
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
@@ -144,14 +145,11 @@ const SearchByMemberScreen = () => {
                                     color: theme.colors.secondary,
                                 }}
                                 key={i}
-                                title={`${item?.client_name} (${item?.member_code})`}
+                                title={`${item?.client_name}`}
                                 description={
                                     <View>
-                                        {/* <Text>Member Code: {item?.member_code}</Text> */}
+                                        <Text>Member Code: {item?.member_code}</Text>
                                         <Text>{item?.group_name} - {item?.prov_grp_code}</Text>
-                                        <Text style={{
-                                            color: item?.branch_code !== loginStore?.brn_code ? theme.colors.error : theme.colors.green
-                                        }}>Branch - {item?.branch_code}</Text>
                                     </View>
                                 }
                                 onPress={() => {
@@ -162,23 +160,30 @@ const SearchByMemberScreen = () => {
                                             formNumber: item?.form_no,
                                             branchCode: item?.branch_code,
                                             userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : "",
-                                            // approvalFlag: isApproved
+                                            approvalFlag: isApproved
                                         }
                                     }))
                                 }}
                                 left={props => <List.Icon {...props} icon="form-select" />}
-                                // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
-                                right={props => (
-                                    <View style={{
-                                        alignSelf: 'center'
-                                    }}>
-                                        <Icon
-                                            source={item?.approval_status === "U" ? "alpha-u-circle-outline" : item?.approval_status === "A" ? "alpha-a-circle-outline" : item?.approval_status === "S" ? "alpha-s-circle-outline" : "Err"}
-                                            size={28}
-                                            color={item?.approval_status === "U" ? theme.colors.error : theme.colors.green}
-                                        />
-                                    </View>
-                                )}
+                            // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
+                            // right={props => (
+                            //     <IconButton
+                            //         icon="trash-can-outline"
+                            //         onPress={() => {
+                            //             // setSelectedForm({
+                            //             //     form_no: item?.form_no,
+                            //             //     branch_code: item?.branch_code,
+                            //             //     member_code: item?.member_code
+                            //             // });
+                            //             setVisible(true);
+                            //         }}
+                            //         size={28}
+                            //         iconColor={theme.colors.error}
+                            //         style={{
+                            //             alignSelf: 'center'
+                            //         }}
+                            //     />
+                            // )}
                             />
                             <Divider />
                         </React.Fragment>

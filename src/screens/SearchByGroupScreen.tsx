@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
-import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
+import { Divider, Icon, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
@@ -22,15 +22,15 @@ const SearchByGroupScreen = () => {
 
     const [search, setSearch] = useState(() => "")
     const [formsData, setFormsData] = useState<any[]>(() => [])
-    const [isApproved, setIsApproved] = useState<string>(() => "U")
+    // const [isApproved, setIsApproved] = useState<string>(() => "U")
 
     const onChangeSearch = (query: string) => {
         setSearch(query)
     }
 
-    useEffect(() => {
-        setFormsData(() => [])
-    }, [isApproved])
+    // useEffect(() => {
+    //     setFormsData(() => [])
+    // }, [isApproved])
 
     useEffect(() => {
         setSearch("")
@@ -41,10 +41,10 @@ const SearchByGroupScreen = () => {
         setLoading(true)
 
         const creds = {
-            branch_code: loginStore?.brn_code,
+            // branch_code: loginStore?.brn_code,
             co_id: loginStore?.emp_id,
             user_type: loginStore?.id, // newly added
-            flag: isApproved,
+            // flag: isApproved,
             group_name: search
         }
 
@@ -70,12 +70,11 @@ const SearchByGroupScreen = () => {
                 <View style={{
                     paddingHorizontal: 20
                 }}>
-                    <View style={{
+                    {/* <View style={{
                         padding: 5,
                         backgroundColor: theme.colors.errorContainer,
                         borderTopLeftRadius: 20,
                         borderBottomRightRadius: 20,
-                        // alignItems: "center",
                         marginBottom: 10
                     }}>
                         <RadioComp
@@ -98,7 +97,7 @@ const SearchByGroupScreen = () => {
                                 }
                             ]}
                         />
-                    </View>
+                    </View> */}
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-evenly",
@@ -123,6 +122,10 @@ const SearchByGroupScreen = () => {
                                 alignSelf: "center"
                             }}
                             loading={loading ? true : false}
+                            onClearIconPress={() => {
+                                setSearch(() => "")
+                                setFormsData(() => [])
+                            }}
                         />
 
                         {/* <ButtonPaper icon={"text-search"} mode='elevated' onPress={handleSearch} style={{
@@ -154,7 +157,9 @@ const SearchByGroupScreen = () => {
                                 description={
                                     <View>
                                         <Text>Group Code: {item?.group_code}</Text>
-                                        {/* <Text>{item?.group_name} - {item?.prov_grp_code}</Text> */}
+                                        <Text style={{
+                                            color: item?.branch_code !== loginStore?.brn_code ? theme.colors.error : theme.colors.green
+                                        }}>Branch - {item?.branch_code}</Text>
                                     </View>
                                 }
                                 onPress={() => {
@@ -162,30 +167,23 @@ const SearchByGroupScreen = () => {
                                         name: navigationRoutes.coGroupFormExtendedScreen,
                                         params: {
                                             group_details: item,
-                                            approvalFlag: isApproved
+                                            // approvalFlag: isApproved
                                         }
                                     }))
                                 }}
                                 left={props => <List.Icon {...props} icon="form-select" />}
-                            // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
-                            // right={props => (
-                            //     <IconButton
-                            //         icon="trash-can-outline"
-                            //         onPress={() => {
-                            //             // setSelectedForm({
-                            //             //     form_no: item?.form_no,
-                            //             //     branch_code: item?.branch_code,
-                            //             //     member_code: item?.member_code
-                            //             // });
-                            //             setVisible(true);
-                            //         }}
-                            //         size={28}
-                            //         iconColor={theme.colors.error}
-                            //         style={{
-                            //             alignSelf: 'center'
-                            //         }}
-                            //     />
-                            // )}
+                                // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
+                                right={props => (
+                                    <View style={{
+                                        alignSelf: 'center'
+                                    }}>
+                                        <Icon
+                                            source={item?.approval_status === "U" ? "alpha-u-circle-outline" : "alpha-a-circle-outline"}
+                                            size={28}
+                                            color={item?.approval_status === "U" ? theme.colors.error : theme.colors.green}
+                                        />
+                                    </View>
+                                )}
                             />
                             <Divider />
                         </React.Fragment>
