@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, View, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import HeadingComp from "../components/HeadingComp"
 import BMBasicDetailsForm from './forms/BMBasicDetailsForm'

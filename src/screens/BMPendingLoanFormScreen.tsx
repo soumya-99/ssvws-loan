@@ -1,7 +1,6 @@
-import { StyleSheet, Text, SafeAreaView, ScrollView, View } from 'react-native'
+import { StyleSheet, SafeAreaView, ScrollView, View } from 'react-native'
 import React, { useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
-import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
 import StepIndicator from 'react-native-step-indicator'
 import HeadingComp from '../components/HeadingComp'
 import ButtonPaper from '../components/ButtonPaper'

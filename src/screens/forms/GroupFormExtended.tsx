@@ -1,7 +1,6 @@
 import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
 import { Chip, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
-import HeadingComp from '../../components/HeadingComp'
 import { usePaperColorScheme } from '../../theme/theme'
 import { Divider, List } from 'react-native-paper'
 import InputPaper from '../../components/InputPaper'
@@ -12,9 +11,6 @@ import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../../routes/routes'
-import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
-import { clearStates } from '../../utils/clearStates'
-import DialogBox from "../../components/DialogBox"
 // import LoadingOverlay from '../components/LoadingOverlay'
 
 const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {

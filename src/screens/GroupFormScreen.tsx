@@ -166,20 +166,6 @@ const GroupFormScreen = () => {
                         description={`Group Block: ${groupBlockName}`}
                         left={props => <List.Icon {...props} icon="map-marker-distance" />}
                         right={props => {
-                            // return (
-                            //     <>
-                            //         <InputPaper
-                            //             keyboardType="default"
-                            //             label="Search"
-                            //             mode="outlined"
-                            //             value={searchBlock}
-                            //             onChangeText={(txt: string) => setSearchBlock(txt)}
-                            //             customStyle={{ height: normalize(35), width: normalize(100) }}
-                            //             // maxLength={3}
-                            //             onFocus={() => <MenuPaper menuArrOfObjects={groupBlocks} />}
-                            //         />
-                            //     </>
-                            // )
                             return <MenuPaper menuArrOfObjects={groupBlocks} />
                         }}
                         descriptionStyle={{
@@ -216,17 +202,8 @@ const GroupFormScreen = () => {
                             ADD GROUP
                         </ButtonPaper>
 
-                        {/* disabled={!groupName || !groupType || !address || !groupBlock || !phoneNo} */}
-
-                        {/* <ButtonPaper icon="arrow-right-bottom-bold" mode="contained-tonal" onPress={() => navigation.dispatch(CommonActions.navigate({
-                            name: "GRT"
-                        }))}>
-                            GO TO GRT
-                        </ButtonPaper> */}
                     </View>
-
                 </View>
-                {/* <ButtonPaper mode='contained' onPress={() => setVisible(true)}>Click me</ButtonPaper> */}
             </ScrollView>
 
             <DialogBox

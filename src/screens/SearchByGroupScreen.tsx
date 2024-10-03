@@ -1,7 +1,7 @@
-import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid, Alert } from 'react-native'
+import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
-import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
+import { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
 import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
@@ -9,11 +9,7 @@ import { ADDRESSES } from '../config/api_list'
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
-import LoadingOverlay from '../components/LoadingOverlay'
-import DialogBox from '../components/DialogBox'
-import InputPaper from '../components/InputPaper'
 import RadioComp from '../components/RadioComp'
-import ButtonPaper from '../components/ButtonPaper'
 
 const SearchByGroupScreen = () => {
     const theme = usePaperColorScheme()

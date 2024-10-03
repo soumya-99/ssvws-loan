@@ -1,6 +1,6 @@
-import { StyleSheet, SafeAreaView, View, ScrollView, Alert, ToastAndroid, Linking } from 'react-native'
-import { List, Divider } from "react-native-paper"
-import React, { Suspense, useEffect, useState } from 'react'
+import { StyleSheet, SafeAreaView, View, Alert, ToastAndroid, Linking } from 'react-native'
+import { List } from "react-native-paper"
+import React, { useEffect, useState } from 'react'
 import { formattedDate } from "../../utils/dateFormatter"
 import InputPaper from "../../components/InputPaper"
 import ButtonPaper from "../../components/ButtonPaper"
@@ -9,13 +9,9 @@ import DatePicker from "react-native-date-picker"
 import MenuPaper from "../../components/MenuPaper"
 import axios from "axios"
 import { ADDRESSES } from '../../config/api_list'
-import { clearStates } from "../../utils/clearStates"
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
-import navigationRoutes from '../../routes/routes'
-import HeadingComp from "../../components/HeadingComp"
 import { loginStorage } from '../../storage/appStorage'
 import LoadingOverlay from "../../components/LoadingOverlay"
-import EventSource from "react-native-sse";
 import useGeoLocation from '../../hooks/useGeoLocation'
 
 interface BMBasicDetailsFormProps {
@@ -72,7 +68,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
     useEffect(() => {
         if (error) {
-            Alert.alert("Turn on Geolocation", "Turn on Location from app settings.", [{
+            Alert.alert("Turn on Geolocation", "Give access to Location or Turn on GPS from app settings.", [{
                 text: "Go to Settings",
                 onPress: () => { navigation.dispatch(CommonActions.goBack()); Linking.openSettings() }
             }])

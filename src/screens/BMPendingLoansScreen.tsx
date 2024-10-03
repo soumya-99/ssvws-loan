@@ -1,7 +1,7 @@
 import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
-import normalize, { SCREEN_HEIGHT } from 'react-native-normalize'
+import { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
 import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'

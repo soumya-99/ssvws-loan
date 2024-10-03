@@ -2,7 +2,7 @@ import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import InputPaper from '../../components/InputPaper'
-import { Divider, Icon, List, RadioButton, Text } from 'react-native-paper'
+import { Divider, List } from 'react-native-paper'
 import MenuPaper from '../../components/MenuPaper'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import RadioComp from '../../components/RadioComp'

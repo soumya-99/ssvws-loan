@@ -1,4 +1,4 @@
-import { PixelRatio, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import React, { useContext, useState } from 'react'
 import ButtonPaper from '../components/ButtonPaper'
