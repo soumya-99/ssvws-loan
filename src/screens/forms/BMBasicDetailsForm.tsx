@@ -221,7 +221,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
                     if (approvalStatus !== "U") {
-                        setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address || "")
+                        setGeolocationFetchedAddress(res?.data?.msg[0]?.co_gps_address || "")
                     }
                 }
             } else if (res?.data?.suc === 0) {
@@ -290,7 +290,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
                 if (approvalStatus !== "U") {
-                    setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address || "")
+                    setGeolocationFetchedAddress(res?.data?.msg[0]?.co_gps_address || "")
                 }
             }
         }).catch(err => {

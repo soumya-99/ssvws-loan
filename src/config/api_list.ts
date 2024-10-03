@@ -33,5 +33,6 @@ export const ADDRESSES = {
     SEARCH_GROUP: `${BASE_URL}/search_group`,
     EDIT_GROUP: `${BASE_URL}/edit_group`,
     MEMBER_DETAILS: `${BASE_URL}/member_dt`,
-    SEARCH_MEMBER: `${BASE_URL}/search_member`
+    SEARCH_MEMBER: `${BASE_URL}/search_member`,
+    FINAL_SUBMIT: `${BASE_URL}/final_submit`
 }

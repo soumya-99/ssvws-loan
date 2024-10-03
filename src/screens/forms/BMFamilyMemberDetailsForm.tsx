@@ -10,9 +10,11 @@ import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
 import MenuPaper from '../../components/MenuPaper'
 import { loginStorage } from '../../storage/appStorage'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 
 const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
+    const navigation = useNavigation()
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
     const [loading, setLoading] = useState(false)
@@ -154,6 +156,25 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         setLoading(false)
     }
 
+    const handleFinalSubmit = async () => {
+        setLoading(true)
+        await handleFormUpdate()
+
+        const creds = {
+            modified_by: loginStore?.emp_name,
+            form_no: formNumber,
+            branch_code: branchCode
+        }
+
+        await axios.post(`${ADDRESSES.FINAL_SUBMIT}`, creds).then(res => {
+            ToastAndroid.show("Form sent to MIS Assistant.", ToastAndroid.SHORT)
+            navigation.dispatch(CommonActions.goBack())
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while submitting the final data.", ToastAndroid.SHORT)
+        })
+        setLoading(false)
+    }
+
     console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^", formArray)
 
     return (
@@ -280,13 +301,28 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                     marginTop: formArray?.length === 1 ? 10 : 0
                 }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
-                <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
-                    Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
-                        { text: "No", onPress: () => null },
-                        { text: "Yes", onPress: () => handleFormUpdate() },
-                    ])
-                }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
-                    loading={loading}>UPDATE</ButtonPaper>
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                    paddingTop: 10,
+                    paddingBottom: 10
+                }}>
+                    <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                        Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
+                            { text: "No", onPress: () => null },
+                            { text: "Yes", onPress: () => handleFormUpdate() },
+                        ])
+                    }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        loading={loading}>UPDATE</ButtonPaper>
+
+                    <ButtonPaper mode='contained-tonal' icon="send-circle-outline" onPress={() => {
+                        Alert.alert("Final Submit", "Are you sure you want to finalize the whole form and send to MIS Assistant? Make sure you updated all the details properly. The action is not revertable.", [
+                            { text: "No", onPress: () => null },
+                            { text: "Yes", onPress: () => handleFinalSubmit() },
+                        ])
+                    }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        loading={loading}>FINAL SUBMIT</ButtonPaper>
+                </View>
             </ScrollView>
             {loading && <LoadingOverlay />}
         </SafeAreaView>
