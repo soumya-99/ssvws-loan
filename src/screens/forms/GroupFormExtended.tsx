@@ -322,7 +322,7 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
                             || !formData.bankName
                             || !formData.bankBranchName
                             || !formData.accNo1
-                            || !formData.accNo2
+                            // || !formData.accNo2
                             || !formData.ifscCode
                             || approvalStatus === "A"
                         } loading={loading}>
