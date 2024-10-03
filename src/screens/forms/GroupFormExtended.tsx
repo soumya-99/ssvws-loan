@@ -253,11 +253,11 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A"} />
 
-                    <InputPaper label="Account No. 1" maxLength={10} leftIcon='numeric-1-circle-outline' keyboardType="numeric" value={formData.accNo1} onChangeText={(txt: any) => handleFormChange("accNo1", txt)} customStyle={{
+                    <InputPaper label="Account No. 1" maxLength={20} leftIcon='numeric-1-circle-outline' keyboardType="numeric" value={formData.accNo1} onChangeText={(txt: any) => handleFormChange("accNo1", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A"} />
 
-                    <InputPaper label="Account No. 2" maxLength={10} leftIcon='numeric-2-circle-outline' keyboardType="numeric" value={formData.accNo2} onChangeText={(txt: any) => handleFormChange("accNo2", txt)} customStyle={{
+                    <InputPaper label="Account No. 2" maxLength={20} leftIcon='numeric-2-circle-outline' keyboardType="numeric" value={formData.accNo2} onChangeText={(txt: any) => handleFormChange("accNo2", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A"} />
 

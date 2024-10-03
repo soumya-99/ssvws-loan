@@ -83,6 +83,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     console.log("LOcAtion ERRR", error)
 
     const fetchGeoLocaltionAddress = async () => {
+        console.log("REVERSE GEO ENCODING API CALLING...")
         await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
             setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
         })
