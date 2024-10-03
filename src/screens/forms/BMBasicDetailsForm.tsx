@@ -90,7 +90,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     }
 
     useEffect(() => {
-        if (location?.latitude && location.longitude) {
+        if (location?.latitude && location.longitude && approvalStatus === "U") {
             fetchGeoLocaltionAddress()
         }
     }, [location])
@@ -288,6 +288,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
                 })
                 setReadonlyMemberId(res?.data?.msg[0]?.member_code)
+
+                if (approvalStatus === "A") {
+                    setGeolocationFetchedAddress(res?.data?.msg[0]?.gps_address)
+                }
             }
         }).catch(err => {
             ToastAndroid.show("Some error while fetching basic details!", ToastAndroid.SHORT)
@@ -427,7 +431,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 }}>
                     {/* <Divider /> */}
 
-                    <InputPaper label={geolocationFetchedAddress ? `Geo Location Address` : `Turn on GPS...`} multiline leftIcon='google-maps' value={geolocationFetchedAddress} onChangeText={(txt: any) => setGeolocationFetchedAddress(txt)} disabled customStyle={{
+                    <InputPaper label={approvalStatus === "U" && geolocationFetchedAddress ? `Geo Location Address` : approvalStatus === "A" ? "No fetched address found." : `Fetching GPS Address...`} multiline leftIcon='google-maps' value={geolocationFetchedAddress || ""} onChangeText={(txt: any) => setGeolocationFetchedAddress(txt)} disabled customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} />
