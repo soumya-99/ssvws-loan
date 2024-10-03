@@ -286,7 +286,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         {formArray?.length > 1 && <IconButton icon="minus" iconColor={theme.colors.onErrorContainer} onPress={() => handleFormRemove(i)} style={{
                             alignSelf: "flex-end",
                             backgroundColor: theme.colors.errorContainer
-                        }} />}
+                        }} disabled={flag === "CO" || approvalStatus === "A"} />}
                     </View>
                 ))}
 
