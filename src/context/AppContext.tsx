@@ -30,7 +30,8 @@ const AppContext = ({ children }) => {
                 setIsLogin(false)
             }
         }).catch(err => {
-            ToastAndroid.show(`Something went wrong while logging in as CO.`, ToastAndroid.SHORT)
+            console.log(">>>>>", err)
+            ToastAndroid.show(`Something went wrong while logging in.`, ToastAndroid.SHORT)
         })
     }
 

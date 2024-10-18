@@ -49,7 +49,7 @@ const LoginScreen = () => {
                                 color: theme.colors.primary
                             }}>Login</Text>
                         </View>
-                        <InputPaper label='Username' onChangeText={(e: string) => setUsername(e)} value={username} customStyle={{
+                        <InputPaper label='Employee ID' onChangeText={(e: string) => setUsername(e)} value={username} customStyle={{
                             backgroundColor: theme.colors.background
                         }} />
                         <InputPaper label='Password' onChangeText={(e: string) => setPassword(e)} value={password} secureTextEntry customStyle={{
