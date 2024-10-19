@@ -283,7 +283,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
         const creds = {
             branch_code: branchCode,
-            form_no: formNumber
+            form_no: formNumber,
+            approval_status: approvalStatus
         }
 
         await axios.post(`${ADDRESSES.FETCH_BASIC_DETAILS}`, creds).then(res => {

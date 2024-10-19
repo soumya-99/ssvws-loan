@@ -144,30 +144,29 @@ const SearchByMemberScreen = () => {
                                     color: theme.colors.secondary,
                                 }}
                                 key={i}
-                                title={`${item?.client_name} - ${item?.member_code}`}
+                                title={`${item?.client_name} (${item?.member_code})`}
                                 description={
                                     <View>
                                         {/* <Text>Member Code: {item?.member_code}</Text> */}
-                                        <Text>PAN - {item?.pan_no || "Nil"}</Text>
+                                        <Text>{item?.group_name} - {item?.prov_grp_code}</Text>
                                         <Text style={{
                                             color: item?.branch_code !== loginStore?.brn_code ? theme.colors.error : theme.colors.green
-                                        }}>Aadhaar - {item?.aadhar_no || "Nil"}</Text>
+                                        }}>Branch - {item?.branch_code}</Text>
                                     </View>
                                 }
                                 onPress={() => {
                                     navigation.dispatch(CommonActions.navigate({
-                                        name: navigationRoutes.availableFormsScreen,
+                                        name: navigationRoutes.memberDetailsAllFormScreen,
                                         params: {
                                             member_details: item,
-                                            member_code: item?.member_code
-                                            // formNumber: item?.form_no,
-                                            // branchCode: item?.branch_code,
-                                            // userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : "",
+                                            formNumber: item?.form_no,
+                                            branchCode: item?.branch_code,
+                                            userFlag: loginStore?.id === 1 ? "CO" : loginStore?.id === 2 ? "BM" : "",
                                             // approvalFlag: isApproved
                                         }
                                     }))
                                 }}
-                                left={props => <List.Icon {...props} icon="account-arrow-right-outline" />}
+                                left={props => <List.Icon {...props} icon="form-select" />}
                                 // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
                                 right={props => (
                                     <View style={{

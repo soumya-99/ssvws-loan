@@ -13,6 +13,7 @@ const navigationRoutes = {
     searchByGroupScreen: "SearchByGroupScreen",
     coGroupFormExtendedScreen: "COGroupFormExtendedScreen",
     searchByMemberScreen: "SearchByMemberScreen",
+    availableFormsScreen: "AvailableFormsScreen",
     memberDetailsAllFormScreen: "MemberDetailsAllFormScreen",
     searchScreen: "SearchScreen",
     settingsNavigation: "SettingsNavigation",

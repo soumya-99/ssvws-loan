@@ -28,7 +28,7 @@ const SearchScreen = () => {
                     gap: 10
                 }}>
                     <CollectionButtonsWrapper>
-                        {/* <CollectionButton
+                        <CollectionButton
                             icon={"clipboard-text-search-outline"}
                             text="Search By Group"
                             color={theme.colors.tertiaryContainer}
@@ -38,7 +38,7 @@ const SearchScreen = () => {
                                     name: navigationRoutes.searchByGroupScreen
                                 }))
                             }}
-                        /> */}
+                        />
                         <CollectionButton
                             icon={"account-search-outline"}
                             text="Search By Member"
