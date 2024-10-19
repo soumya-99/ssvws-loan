@@ -109,7 +109,7 @@ const AvailableFormsScreen = () => {
                                                 // approvalFlag: isApproved
                                             }
                                         }))
-                                        : Alert.alert("Message", "GRT Form is not filled by BM yet.", [{
+                                        : Alert.alert("Message", "GRT Form is not filled by the Branch Manager yet.", [{
                                             text: "OK",
                                             onPress: () => null
                                         }])
