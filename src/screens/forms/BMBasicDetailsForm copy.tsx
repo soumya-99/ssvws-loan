@@ -38,7 +38,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     const [religions, setReligions] = useState(() => [])
     const [castes, setCastes] = useState(() => [])
     const [educations, setEducations] = useState(() => [])
-    // const [groupNames, setGroupNames] = useState(() => [])
+    const [groupNames, setGroupNames] = useState(() => [])
     const [memberGenders, setMemberGenders] = useState(() => [])
 
     const [memberCodeShowHide, setMemberCodeShowHide] = useState(() => false)
@@ -47,20 +47,16 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         clientGender: "",
         clientMobile: "",
         guardianName: "",
-        clientEmail: "",
         guardianMobile: "",
         clientAddress: "",
         clientPin: "",
         aadhaarNumber: "",
         panNumber: "",
         religion: "",
-        otherReligion: "",
         caste: "",
-        otherCaste: "",
         education: "",
-        otherEducation: "",
-        // groupCode: "",
-        // groupCodeName: "",
+        groupCode: "",
+        groupCodeName: "",
         dob: new Date()
     })
 
@@ -69,15 +65,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     // const [dob, setDob] = useState(() => new Date()) //dob
     const [openDate, setOpenDate] = useState(() => false)
     const formattedDob = formattedDate(formData?.dob)
-
-    const isToday = (someDate: Date) => {
-        const today = new Date()
-        return (
-            someDate.getDate() === today.getDate() &&
-            someDate.getMonth() === today.getMonth() &&
-            someDate.getFullYear() === today.getFullYear()
-        )
-    }
 
     useEffect(() => {
         if (error) {
@@ -121,25 +108,25 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         }))
     }
 
-    // const handleFetchGroupNames = async () => {
-    //     setLoading(true)
-    //     setGroupNames(() => [])
-    //     await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`).then(res => {
-    //         // setGroupNamesAndCodesTemp(res?.data?.msg)
-    //         console.log("XXXXXXXXXXXXXXXXXX", res?.data?.msg)
+    const handleFetchGroupNames = async () => {
+        setLoading(true)
+        setGroupNames(() => [])
+        await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`).then(res => {
+            // setGroupNamesAndCodesTemp(res?.data?.msg)
+            console.log("XXXXXXXXXXXXXXXXXX", res?.data?.msg)
 
-    //         res?.data?.msg?.map((item, i) => {
-    //             return (
-    //                 //@ts-ignore
-    //                 setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { handleFormChange("groupCode", item?.group_code); handleFormChange("groupCodeName", item?.group_name) } }])
-    //             )
-    //         })
+            res?.data?.msg?.map((item, i) => {
+                return (
+                    //@ts-ignore
+                    setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { handleFormChange("groupCode", item?.group_code); handleFormChange("groupCodeName", item?.group_name) } }])
+                )
+            })
 
-    //     }).catch(err => {
-    //         ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT)
-    //     })
-    //     setLoading(false)
-    // }
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT)
+        })
+        setLoading(false)
+    }
 
     const handleFetchReligions = async () => {
         setLoading(true)
@@ -159,7 +146,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         setLoading(true)
         setCastes(() => [])
         await axios.get(`${ADDRESSES.GET_CASTES}`).then(res => {
-            console.log(">>>>>>>><<<<<<<<<", res?.data)
             res?.data?.map((item, i) => (
                 //@ts-ignore
                 setCastes(prev => [...prev, { title: item?.name, func: () => handleFormChange("caste", item?.id) }])
@@ -185,7 +171,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     }
 
     useEffect(() => {
-        // handleFetchGroupNames()
+        handleFetchGroupNames()
         handleFetchReligions()
         handleFetchCastes()
         handleFetchEducations()
@@ -217,7 +203,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     setMemberCodeShowHide(true)
                     setFormData({
                         clientName: res?.data?.msg[0]?.client_name || "",
-                        clientEmail: res?.data?.msg[0]?.email_id || "",
                         clientGender: res?.data?.msg[0]?.gender || "",
                         clientMobile: res?.data?.msg[0]?.client_mobile || "",
                         guardianName: res?.data?.msg[0]?.gurd_name || "",
@@ -227,13 +212,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
                         panNumber: res?.data?.msg[0]?.pan_no || "",
                         religion: res?.data?.msg[0]?.religion || "",
-                        otherReligion: res?.data?.msg[0]?.other_religion || "",
                         caste: res?.data?.msg[0]?.caste || "",
-                        otherCaste: res?.data?.msg[0]?.other_caste || "",
                         education: res?.data?.msg[0]?.education ?? "",
-                        otherEducation: res?.data?.msg[0]?.other_education || "",
-                        // groupCode: res?.data?.msg[0]?.prov_grp_code || "",
-                        // groupCodeName: res?.data?.msg[0]?.group_name || "",
+                        groupCode: res?.data?.msg[0]?.prov_grp_code || "",
+                        groupCodeName: res?.data?.msg[0]?.group_name || "",
                         dob: res?.data?.msg[0]?.dob ? new Date(res.data.msg[0].dob) : new Date()
                     })
                     setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
@@ -248,7 +230,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     onPress: () => {
                         setFormData({
                             clientName: "",
-                            clientEmail: "",
                             clientGender: "",
                             clientMobile: "",
                             guardianName: "",
@@ -258,13 +239,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                             aadhaarNumber: "",
                             panNumber: "",
                             religion: "",
-                            otherReligion: "",
                             caste: "",
-                            otherCaste: "",
                             education: "",
-                            otherEducation: "",
-                            // groupCode: "",
-                            // groupCodeName: "",
+                            groupCode: "",
+                            groupCodeName: "",
                             dob: new Date()
                         })
                         setMemberCodeShowHide(false)
@@ -294,7 +272,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 setMemberCodeShowHide(true)
                 setFormData({
                     clientName: res?.data?.msg[0]?.client_name || "",
-                    clientEmail: "",
                     clientGender: res?.data?.msg[0]?.gender || "",
                     clientMobile: res?.data?.msg[0]?.client_mobile || "",
                     guardianName: res?.data?.msg[0]?.gurd_name || "",
@@ -304,13 +281,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
                     panNumber: res?.data?.msg[0]?.pan_no || "",
                     religion: res?.data?.msg[0]?.religion || "",
-                    otherReligion: "",
                     caste: res?.data?.msg[0]?.caste || "",
-                    otherCaste: "",
                     education: res?.data?.msg[0]?.education || "",
-                    otherEducation: "",
-                    // groupCode: res?.data?.msg[0]?.prov_grp_code || "",
-                    // groupCodeName: res?.data?.msg[0]?.prov_grp_name || "",
+                    groupCode: res?.data?.msg[0]?.prov_grp_code || "",
+                    groupCodeName: res?.data?.msg[0]?.prov_grp_name || "",
                     dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
                 })
                 setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
@@ -334,7 +308,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
-            // prov_grp_code: formData.groupCode,
+            prov_grp_code: formData.groupCode,
             client_name: formData.clientName,
             // no gender -> fix backend
             gender: formData.clientGender,
@@ -346,11 +320,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             aadhar_no: formData.aadhaarNumber,
             pan_no: formData.panNumber,
             religion: formData.religion,
-            other_religion: formData.otherReligion,
             caste: formData.caste,
-            other_caste: formData.otherCaste,
             education: formData.education,
-            other_education: formData.otherEducation,
             dob: formattedDob,
             bm_lat_val: location?.latitude,
             bm_long_val: location?.longitude,
@@ -368,13 +339,11 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     const handleSubmitBasicDetails = async () => {
         setLoading(true)
         const creds = {
-            member_code: readonlyMemberId || 0,
             branch_code: loginStore?.brn_code,
-            prov_grp_code: "",
             gender: formData.clientGender,
+            prov_grp_code: formData.groupCode,
             client_name: formData.clientName,
             client_mobile: formData.clientMobile,
-            email_id: formData.clientEmail,
             gurd_name: formData.guardianName,
             gurd_mobile: formData.guardianMobile,
             client_addr: formData.clientAddress,
@@ -382,26 +351,20 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             aadhar_no: formData.aadhaarNumber,
             pan_no: formData.panNumber,
             religion: formData.religion,
-            other_religion: formData.otherReligion,
             caste: formData.caste,
-            other_caste: formData.otherCaste,
             education: formData.education,
-            other_education: formData.otherEducation,
             dob: formattedDob,
             co_lat_val: location?.latitude,
             co_long_val: location?.longitude,
             co_gps_address: geolocationFetchedAddress,
-            created_by: loginStore?.emp_name,
+            created_by: loginStore?.emp_name
         }
-
-        console.log("YYYYYYYYYYY", creds)
 
         await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
             console.log("-----------", res?.data)
             Alert.alert("Success", "Basic Details Saved!")
             setFormData({
                 clientName: "",
-                clientEmail: "",
                 clientGender: "",
                 clientMobile: "",
                 guardianName: "",
@@ -411,13 +374,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 aadhaarNumber: "",
                 panNumber: "",
                 religion: "",
-                otherReligion: "",
                 caste: "",
-                otherCaste: "",
                 education: "",
-                otherEducation: "",
-                // groupCode: "",
-                // groupCodeName: "",
+                groupCode: "",
+                groupCodeName: "",
                 dob: new Date(),
             })
             setMemberCodeShowHide(false)
@@ -436,7 +396,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             onPress: () => {
                 setFormData({
                     clientName: "",
-                    clientEmail: "",
                     clientGender: "",
                     clientMobile: "",
                     guardianName: "",
@@ -446,13 +405,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     aadhaarNumber: "",
                     panNumber: "",
                     religion: "",
-                    otherReligion: "",
                     caste: "",
-                    otherCaste: "",
                     education: "",
-                    otherEducation: "",
-                    // groupCode: "",
-                    // groupCodeName: "",
+                    groupCode: "",
+                    groupCodeName: "",
                     dob: new Date()
                 })
                 setMemberCodeShowHide(false)
@@ -484,7 +440,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         backgroundColor: theme.colors.background,
                     }} />}
 
-                    {/* <List.Item
+                    <List.Item
                         title="Choose Group"
                         description={`${formData.groupCodeName} - ${formData.groupCode}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
@@ -494,13 +450,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         descriptionStyle={{
                             color: theme.colors.tertiary,
                         }}
-                    /> */}
+                    />
 
                     <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
-                    <InputPaper label="Aadhaar No." maxLength={15} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
+                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
@@ -509,10 +465,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
                     <InputPaper label="Member Name" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
-
-                    <InputPaper label="Member Email" leftIcon='email-outline' keyboardType="email-address" value={formData.clientEmail} onChangeText={(txt: any) => handleFormChange("clientEmail", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
@@ -548,14 +500,12 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     <ButtonPaper
                         textColor={theme.colors.primary}
                         onPress={() => setOpenDate(true)}
-                        mode="elevated"
+                        mode="text"
                         icon="baby-face-outline"
                         disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code}>
-                        {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
-                        CHOOSE D.O.B. {isToday(formData.dob) ? "(BIRTH DATE)" : formData.dob?.toLocaleDateString("en-GB")}
+                        CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
-                        // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
                         modal
                         mode="date"
                         // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
@@ -582,10 +532,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    {formData.religion === "Others" && <InputPaper label="Other Religion Name" leftIcon='hands-pray' value={formData.otherReligion} onChangeText={(txt: any) => handleFormChange("otherReligion", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />}
-
                     <List.Item
                         title="Choose Caste"
                         description={`Caste: ${formData.caste}`}
@@ -598,10 +544,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    {formData.caste === "Others" && <InputPaper label="Other Caste Name" leftIcon='human-handsup' value={formData.otherCaste} onChangeText={(txt: any) => handleFormChange("otherCaste", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />}
-
                     <List.Item
                         title="Choose Education"
                         description={`Education: ${formData.education}`}
@@ -613,10 +555,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                             color: theme.colors.tertiary,
                         }}
                     />
-
-                    {formData.education === "Others" && <InputPaper label="Other Education Name" leftIcon='school-outline' value={formData.otherEducation} onChangeText={(txt: any) => handleFormChange("otherEducation", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />}
 
                     {/* <View style={{
                         flexDirection: "row",
@@ -657,7 +595,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                                 { text: "No", onPress: () => null },
                                 { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
                             ])
-                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.guardianMobile || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                             loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
                     </View>
 

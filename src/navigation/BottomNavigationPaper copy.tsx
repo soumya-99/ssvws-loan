@@ -97,7 +97,7 @@ function BottomNavigationPaper() {
                                 ),
                         }}
                     /> */}
-                    {/* <Tab.Screen
+                    <Tab.Screen
                         name={navigationRoutes.groupNavigation}
                         component={GroupNavigation}
                         options={{
@@ -113,7 +113,7 @@ function BottomNavigationPaper() {
                                     <MaterialCommunityIcons name="account-multiple-plus" color={color} size={26} />
                                 ),
                         }}
-                    /> */}
+                    />
                 </>
             )
                 : checkBMOrCOFlag === 2 ? (
