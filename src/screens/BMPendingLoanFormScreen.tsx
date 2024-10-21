@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, ScrollView, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import StepIndicator from 'react-native-step-indicator'
 import HeadingComp from '../components/HeadingComp'
@@ -45,6 +45,10 @@ const BMPendingLoanFormScreen = () => {
         currentStepLabelColor: theme.colors.green,
     }
 
+    const handleNext = () => {
+        setCurrentPosition((prev) => prev + 1);
+    };
+
     return (
         <SafeAreaView>
             <ScrollView style={{
@@ -82,17 +86,18 @@ const BMPendingLoanFormScreen = () => {
                         }
                     />
 
-                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
-                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
-                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
+                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
+                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
+                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
                     {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />}
+
 
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-around"
                     }}>
                         <ButtonPaper mode='outlined' icon="arrow-left-thick" onPress={() => setCurrentPosition(prev => prev - 1)} disabled={currentPosition === 0}>PREVIOUS</ButtonPaper>
-                        <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={() => setCurrentPosition(prev => prev + 1)} disabled={currentPosition === 3}>NEXT</ButtonPaper>
+                        <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={handleNext} disabled={currentPosition === 3}>NEXT</ButtonPaper>
                     </View>
                 </View>
             </ScrollView>

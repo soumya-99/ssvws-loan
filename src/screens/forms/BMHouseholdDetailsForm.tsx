@@ -11,7 +11,7 @@ import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
 
-const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
+const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit }) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
@@ -104,6 +104,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
 
             if (res?.data?.suc === 1) {
                 ToastAndroid.show("Household details updated.", ToastAndroid.SHORT)
+                onSubmit()
             }
         }).catch(err => {
             console.log("ERRRRR=HOUSEHOLD", err)

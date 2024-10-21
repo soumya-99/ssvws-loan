@@ -19,9 +19,10 @@ interface BMBasicDetailsFormProps {
     branchCode?: any
     flag?: "CO" | "BM"
     approvalStatus?: "U" | "A" | "S"
+    onSubmit?: any
 }
 
-const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }: BMBasicDetailsFormProps) => {
+const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit }: BMBasicDetailsFormProps) => {
     const theme = usePaperColorScheme()
     // 110 -> Branch Code
     const navigation = useNavigation()
@@ -364,6 +365,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         await axios.post(`${ADDRESSES.EDIT_BASIC_DETAILS}`, creds).then(res => {
             console.log("QQQQQQQQQQQQQQQ", res?.data)
             ToastAndroid.show("Update Successful", ToastAndroid.SHORT)
+            onSubmit()
         }).catch(err => {
             ToastAndroid.show("Some error while updating basic details!", ToastAndroid.SHORT)
         })
@@ -425,6 +427,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 dob: new Date(),
             })
             setMemberCodeShowHide(false)
+            onSubmit()
         }).catch(err => {
             ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
         })
@@ -466,7 +469,44 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
     }
 
-    const renderLoader = () => loading && <LoadingOverlay />;
+    // const renderLoader = () => loading && <LoadingOverlay />;
+
+    // const validateForm = () => {
+    //     const isValid = loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || approvalStatus !== "U" || branchCode !== loginStore?.brn_code; // Add your validation logic here
+
+    //     setIsFormValid(isValid); // Inform parent if the form is valid or not
+    //     console.log("KKSKSKSKKSKSKS", isValid)
+    //     return isValid
+    // };
+
+    // const handleSubmit = () => {
+    //     // Alert.alert("Submit Basic Details", "Are you sure you want to update this?", [
+    //     //     { text: "No", onPress: () => null },
+    //     //     { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
+    //     // ])
+    //     if (validateForm()) {
+    //         if (flag === "BM") {
+    //             handleUpdateBasicDetails()
+    //         } else {
+    //             handleSubmitBasicDetails()
+    //         }
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     if (onSubmitRef) {
+    //         onSubmitRef.current = handleSubmit;
+    //     }
+
+    //     // Trigger validation on mount and whenever formData changes
+    //     validateForm();
+    // }, [formData]);
+
+    // useEffect(() => {
+    //     if (onSubmitRef) {
+    //         onSubmitRef.current = handleSubmit;
+    //     }
+    // }, [onSubmitRef]);
 
     return (
         <SafeAreaView>

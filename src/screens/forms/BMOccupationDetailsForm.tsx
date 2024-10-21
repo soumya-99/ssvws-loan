@@ -11,7 +11,7 @@ import { ADDRESSES } from '../../config/api_list'
 import ButtonPaper from '../../components/ButtonPaper'
 import { loginStorage } from '../../storage/appStorage'
 
-const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
+const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit }) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
@@ -137,6 +137,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
             console.log("occccccuuuuuppppppddddd save", res?.data)
             if (res?.data?.suc === 1) {
                 ToastAndroid.show("Occupation details saved.", ToastAndroid.SHORT)
+                onSubmit()
             }
         }).catch(err => {
             console.log("OCUCUUUCUCUCUC ERRR", err)
