@@ -295,7 +295,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 setMemberCodeShowHide(true)
                 setFormData({
                     clientName: res?.data?.msg[0]?.client_name || "",
-                    clientEmail: "",
+                    clientEmail: res?.data?.msg[0]?.email_id || "",
                     clientGender: res?.data?.msg[0]?.gender || "",
                     clientMobile: res?.data?.msg[0]?.client_mobile || "",
                     guardianName: res?.data?.msg[0]?.gurd_name || "",
@@ -305,11 +305,11 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
                     panNumber: res?.data?.msg[0]?.pan_no || "",
                     religion: res?.data?.msg[0]?.religion || "",
-                    otherReligion: "",
+                    otherReligion: res?.data?.msg[0]?.other_religion || "",
                     caste: res?.data?.msg[0]?.caste || "",
-                    otherCaste: "",
+                    otherCaste: res?.data?.msg[0]?.other_caste || "",
                     education: res?.data?.msg[0]?.education || "",
-                    otherEducation: "",
+                    otherEducation: res?.data?.msg[0]?.other_education || "",
                     // groupCode: res?.data?.msg[0]?.prov_grp_code || "",
                     // groupCodeName: res?.data?.msg[0]?.prov_grp_name || "",
                     dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
@@ -335,11 +335,14 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
+            member_code: readonlyMemberId,
+            prov_grp_code: "",
             // prov_grp_code: formData.groupCode,
             client_name: formData.clientName,
             // no gender -> fix backend
             gender: formData.clientGender,
             client_mobile: formData.clientMobile,
+            email_id: formData.clientEmail,
             gurd_name: formData.guardianName,
             gurd_mobile: formData.guardianMobile,
             client_addr: formData.clientAddress,
@@ -356,7 +359,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             bm_lat_val: location?.latitude,
             bm_long_val: location?.longitude,
             bm_gps_address: geolocationFetchedAddress,
-            modified_by: loginStore?.emp_name
+            modified_by: loginStore?.emp_name,
         }
         await axios.post(`${ADDRESSES.EDIT_BASIC_DETAILS}`, creds).then(res => {
             console.log("QQQQQQQQQQQQQQQ", res?.data)

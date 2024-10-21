@@ -10,8 +10,10 @@ const AppContext = ({ children }) => {
     const appState = useRef(AppState.currentState)
 
     const [isLogin, setIsLogin] = useState<boolean>(() => false)
+    const [isLoading, setIsLoading] = useState<boolean>(() => false)
 
     const handleLogin = async (username: string, password: string) => {
+        setIsLoading(true)
         const creds = {
             emp_id: username,
             password: password
@@ -33,6 +35,7 @@ const AppContext = ({ children }) => {
             console.log(">>>>>", err)
             ToastAndroid.show(`Something went wrong while logging in.`, ToastAndroid.SHORT)
         })
+        setIsLoading(false)
     }
 
     const isLoggedIn = () => {
@@ -61,6 +64,7 @@ const AppContext = ({ children }) => {
     return (
         <AppStore.Provider value={{
             isLogin,
+            isLoading,
             handleLogin,
             handleLogout
         }}>

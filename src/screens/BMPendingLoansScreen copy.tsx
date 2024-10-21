@@ -40,7 +40,6 @@ const BMPendingLoansScreen = () => {
         setLoading(true)
 
         await axios.get(`${ADDRESSES.FETCH_FORMS}?branch_code=${loginStore?.brn_code}`).then(res => {
-            // console.log(":::;;;:::", res?.data)
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
             }
@@ -82,7 +81,7 @@ const BMPendingLoansScreen = () => {
         // }
     }
 
-    const rejectForm = async (formNo: any, branchCode: any, memberCode: any) => {
+    const rejectForm = async (formNo, branchCode, memberCode) => {
         setLoading(true)
 
         const creds = {
@@ -170,7 +169,7 @@ const BMPendingLoansScreen = () => {
                                 description={
                                     <View>
                                         <Text>Form No: {item?.form_no}</Text>
-                                        <Text>GRT Date - {item?.grt_date ? new Date(item?.grt_date).toLocaleDateString("en-GB") : "No Date"}</Text>
+                                        <Text>{item?.group_name} - {item?.prov_grp_code}</Text>
                                     </View>
                                 }
                                 onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}

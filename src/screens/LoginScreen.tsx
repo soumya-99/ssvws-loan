@@ -12,6 +12,7 @@ const LoginScreen = () => {
 
     const {
         handleLogin,
+        isLoading
     } = useContext<any>(AppStore)
 
     const [username, setUsername] = useState(() => "")
@@ -59,7 +60,7 @@ const LoginScreen = () => {
                         {/* @ts-ignore */}
                         <ButtonPaper mode='elevated' onPress={login} icon="login" style={{
                             marginTop: normalize(20)
-                        }}>
+                        }} loading={isLoading} disabled={isLoading}>
                             Login
                         </ButtonPaper>
                     </View>

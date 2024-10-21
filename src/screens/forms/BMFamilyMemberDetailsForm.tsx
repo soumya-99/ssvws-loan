@@ -11,6 +11,8 @@ import { ADDRESSES } from '../../config/api_list'
 import MenuPaper from '../../components/MenuPaper'
 import { loginStorage } from '../../storage/appStorage'
 import { CommonActions, useNavigation } from '@react-navigation/native'
+import { formattedDate } from '../../utils/dateFormatter'
+import DatePicker from 'react-native-date-picker'
 
 const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
@@ -22,15 +24,29 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
     const [educations, setEducations] = useState(() => [])
     const [memberGenders, setMemberGenders] = useState(() => [])
 
+    const [openDate, setOpenDate] = useState(() => false)
+    // const formattedDob = formattedDate(formData?.dob)
+
+    const isToday = (someDate: Date) => {
+        const today = new Date()
+        return (
+            someDate.getDate() === today.getDate() &&
+            someDate.getMonth() === today.getMonth() &&
+            someDate.getFullYear() === today.getFullYear()
+        )
+    }
+
     const [formArray, setFormArray] = useState([{
         sl_no: 0,
         name: '',
         relation: '',
+        familyDob: new Date(),
         age: '',
         sex: '',
         education: '',
         studyingOrWorking: '',
-        monthlyIncome: ''
+        monthlyIncome: '',
+        openDate: false
     },])
 
     const handleFormAdd = () => {
@@ -40,11 +56,13 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                 sl_no: 0,
                 name: '',
                 relation: '',
+                familyDob: new Date(),
                 age: '',
                 sex: '',
                 education: '',
                 studyingOrWorking: '',
-                monthlyIncome: ''
+                monthlyIncome: '',
+                openDate: false
             }
         ])
     }
@@ -63,6 +81,18 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         }
     };
 
+    const handleOpenDate = (index) => {
+        const updatedForm = [...formArray];
+        updatedForm[index].openDate = true; // Open only for the specific item
+        setFormArray(updatedForm);
+    };
+
+    const handleCloseDate = (index) => {
+        const updatedForm = [...formArray];
+        updatedForm[index].openDate = false; // Close the modal for the specific item
+        setFormArray(updatedForm);
+    };
+
     const fetchFamilyMemberDetails = async () => {
         setLoading(true);
 
@@ -75,14 +105,15 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
 
                 if (apiData?.length > 0) {
                     const transformedData = apiData.map((member, index) => ({
-                        sl_no: member.sl_no || index + 1,
-                        name: member.name || '',
-                        relation: member.relation || '',
-                        age: member.age?.toString() || '',
-                        sex: member.sex || '',
-                        education: member.education || '',
-                        studyingOrWorking: member.studyingOrWorking || '',
-                        monthlyIncome: member.monthlyIncome?.toString() || ''
+                        sl_no: member?.sl_no || index + 1,
+                        name: member?.name || '',
+                        relation: member?.relation || '',
+                        familyDob: new Date(member?.family_dob) || new Date(),
+                        age: member?.age?.toString() || '',
+                        sex: member?.sex || '',
+                        education: member?.education || '',
+                        studyingOrWorking: member?.studyingOrWorking || '',
+                        monthlyIncome: member?.monthlyIncome?.toString() || ''
                     }));
                     setFormArray(transformedData);
                 }
@@ -132,14 +163,20 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
     const handleFormUpdate = async () => {
         setLoading(true)
 
+        const updatedFormArray = formArray.map(({ openDate, ...item }) => ({
+            ...item,
+            familyDob: formattedDate(item.familyDob),
+        }))
+
         console.log("::::::::::::::::::::", formArray)
+        console.log(";;;;;;;;;;;;;;;;;;;;", updatedFormArray)
 
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
             created_by: loginStore?.emp_name,
             modified_by: loginStore?.emp_name,
-            memberdtls: formArray
+            memberdtls: updatedFormArray
         }
 
         console.log("YYYYYYYYYYYYYYYYYYYYY", creds)
@@ -209,6 +246,32 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             onChangeText={(txt) => handleInputChange(i, 'relation', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
                             disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        />
+                        <ButtonPaper
+                            textColor={theme.colors.primary}
+                            onPress={() => handleOpenDate(i)}
+                            mode="elevated"
+                            icon="baby-face-outline"
+                            disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            style={{
+                                width: "98%",
+                                alignSelf: "center"
+                            }}>
+                            {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
+                            CHOOSE D.O.B. {isToday(item.familyDob) ? "(BIRTH DATE)" : item.familyDob?.toLocaleDateString("en-GB")}
+                        </ButtonPaper>
+                        <DatePicker
+                            // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
+                            modal
+                            mode="date"
+                            // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
+                            open={item.openDate}
+                            date={item.familyDob}
+                            onConfirm={date => {
+                                handleCloseDate(i)
+                                handleInputChange(i, 'familyDob', date)
+                            }}
+                            onCancel={() => handleCloseDate(i)}
                         />
 
                         <InputPaper
