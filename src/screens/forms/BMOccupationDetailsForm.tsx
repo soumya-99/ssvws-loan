@@ -238,7 +238,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.selfOccupation || !formData.selfMonthlyIncome || !formData.spouseOccupation || !formData.spouseMonthlyIncome || !formData.purposeOfLoan || !formData.subPurposeOfLoan || !formData.amountApplied || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code || formData.checkOtherOngoingLoan === "Y" && (!formData.otherLoanAmount || !formData.monthlyEmi)}
+                    }} disabled={loading || !formData.selfOccupation || !formData.selfMonthlyIncome || !formData.purposeOfLoan || !formData.subPurposeOfLoan || !formData.amountApplied || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code || formData.checkOtherOngoingLoan === "Y" && (!formData.otherLoanAmount || !formData.monthlyEmi)}
                         loading={loading}>UPDATE</ButtonPaper>
 
                 </View>

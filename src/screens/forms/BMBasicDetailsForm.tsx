@@ -504,7 +504,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 
-                    <InputPaper label="Aadhaar No." maxLength={15} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
+                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
 

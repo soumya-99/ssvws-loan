@@ -13,6 +13,7 @@ import { loginStorage } from '../../storage/appStorage'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { formattedDate } from '../../utils/dateFormatter'
 import DatePicker from 'react-native-date-picker'
+import { calculateAge } from "../../utils/calculateAge"
 
 const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
@@ -45,7 +46,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         sex: '',
         education: '',
         studyingOrWorking: '',
-        monthlyIncome: '',
+        monthlyIncome: '0',
         openDate: false
     },])
 
@@ -61,7 +62,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                 sex: '',
                 education: '',
                 studyingOrWorking: '',
-                monthlyIncome: '',
+                monthlyIncome: '0',
                 openDate: false
             }
         ])
@@ -279,10 +280,10 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             maxLength={3}
                             leftIcon='account-clock-outline'
                             keyboardType="numeric"
-                            value={item?.age}
+                            value={calculateAge(item?.familyDob) || item?.age}
                             onChangeText={(txt) => handleInputChange(i, 'age', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            disabled={calculateAge(item?.familyDob) > 0 || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         />
 
                         <List.Item
@@ -321,7 +322,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         />
 
                         <RadioComp
-                            title="Study/Work"
+                            title=""
                             icon="office-building-cog-outline"
                             dataArray={[
                                 {
@@ -334,6 +335,12 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                     optionName: "WORK",
                                     optionState: item?.studyingOrWorking,
                                     currentState: "Working",
+                                    optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
+                                },
+                                {
+                                    optionName: "NONE",
+                                    optionState: item?.studyingOrWorking,
+                                    currentState: "None",
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
                                 },
                             ]}
@@ -349,6 +356,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             onChangeText={(txt) => handleInputChange(i, 'monthlyIncome', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
                             disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            selectTextOnFocus
                         />
 
                         {formArray?.length > 1 && <IconButton icon="minus" iconColor={theme.colors.onErrorContainer} onPress={() => handleFormRemove(i)} style={{
@@ -366,17 +374,17 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
 
                 <View style={{
                     flexDirection: "row",
-                    justifyContent: "space-evenly",
+                    justifyContent: "center",
                     paddingTop: 10,
                     paddingBottom: 10
                 }}>
-                    <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                    {/* <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
                         Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
                     }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
-                        loading={loading}>UPDATE</ButtonPaper>
+                        loading={loading}>UPDATE</ButtonPaper> */}
 
                     <ButtonPaper mode='contained-tonal' icon="send-circle-outline" onPress={() => {
                         Alert.alert("Final Submit", "Are you sure you want to finalize the whole form and send to MIS Assistant? Make sure you updated all the details properly. The action is not revertable.", [
@@ -384,7 +392,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             { text: "Yes", onPress: () => handleFinalSubmit() },
                         ])
                     }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
-                        loading={loading}>FINAL SUBMIT</ButtonPaper>
+                        loading={loading}>SEND</ButtonPaper>
                 </View>
             </ScrollView>
             {loading && <LoadingOverlay />}

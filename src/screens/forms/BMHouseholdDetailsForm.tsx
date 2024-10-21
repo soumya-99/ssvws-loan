@@ -278,7 +278,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.parentalPhoneNumber || !formData.houseType || !formData.checkOwnOrRent || !formData.totalLand || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.houseType || !formData.checkOwnOrRent || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
                         loading={loading}>UPDATE</ButtonPaper>
                 </View>
             </ScrollView>
