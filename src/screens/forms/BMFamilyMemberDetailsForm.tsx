@@ -14,6 +14,7 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 import { formattedDate } from '../../utils/dateFormatter'
 import DatePicker from 'react-native-date-picker'
 import { calculateAge } from "../../utils/calculateAge"
+import { disableConditionExceptBasicDetails } from '../../utils/disableCondition'
 
 const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
@@ -235,7 +236,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={item?.name}
                             onChangeText={(txt) => handleInputChange(i, 'name', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                         />
 
                         <InputPaper
@@ -246,14 +247,14 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={item?.relation}
                             onChangeText={(txt) => handleInputChange(i, 'relation', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                         />
                         <ButtonPaper
                             textColor={theme.colors.primary}
                             onPress={() => handleOpenDate(i)}
                             mode="elevated"
                             icon="baby-face-outline"
-                            disabled={approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                             style={{
                                 width: "98%",
                                 alignSelf: "center"
@@ -283,7 +284,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={calculateAge(item?.familyDob) || item?.age}
                             onChangeText={(txt) => handleInputChange(i, 'age', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={calculateAge(item?.familyDob) > 0 || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            disabled={calculateAge(item?.familyDob) > 0 || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                         />
 
                         <List.Item
@@ -294,7 +295,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                 return <MenuPaper menuArrOfObjects={memberGenders.map(gender => ({
                                     ...gender,
                                     func: () => gender.func(i)  // Pass current form index (i)
-                                }))} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                                }))} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -314,7 +315,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                 return <MenuPaper menuArrOfObjects={educations.map(education => ({
                                     ...education,
                                     func: () => education.func(i)  // Pass current form index (i)
-                                }))} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                                }))} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
                             }}
                             descriptionStyle={{
                                 color: theme.colors.tertiary,
@@ -344,7 +345,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                     optionSetStateDispathFun: (value) => handleInputChange(i, 'studyingOrWorking', value)
                                 },
                             ]}
-                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                         />
 
                         <InputPaper
@@ -355,14 +356,14 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             value={item?.monthlyIncome}
                             onChangeText={(txt) => handleInputChange(i, 'monthlyIncome', txt)}
                             customStyle={{ backgroundColor: theme.colors.background }}
-                            disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                            disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                             selectTextOnFocus
                         />
 
                         {formArray?.length > 1 && <IconButton icon="minus" iconColor={theme.colors.onErrorContainer} onPress={() => handleFormRemove(i)} style={{
                             alignSelf: "flex-end",
                             backgroundColor: theme.colors.errorContainer
-                        }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />}
+                        }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />}
                     </View>
                 ))}
 
@@ -370,7 +371,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                     alignSelf: "flex-end",
                     backgroundColor: theme.colors.tertiaryContainer,
                     marginTop: formArray?.length === 1 ? 10 : 0
-                }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                 <View style={{
                     flexDirection: "row",
@@ -383,7 +384,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                    }} disabled={loading || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                         loading={loading}>UPDATE</ButtonPaper> */}
 
                     <ButtonPaper mode='contained-tonal' icon="send-circle-outline" onPress={() => {
@@ -391,7 +392,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFinalSubmit() },
                         ])
-                    }} disabled={loading || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                    }} disabled={loading || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                         loading={loading}>SEND</ButtonPaper>
                 </View>
             </ScrollView>

@@ -10,6 +10,7 @@ import ButtonPaper from '../../components/ButtonPaper'
 import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
+import { disableConditionExceptBasicDetails } from '../../utils/disableCondition'
 
 const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit }) => {
     const theme = usePaperColorScheme()
@@ -129,23 +130,23 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
 
                     <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                    }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <InputPaper label="Parental Address" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
-                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                    }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <InputPaper label="Parental Phone No." maxLength={10} leftIcon='phone' keyboardType="number-pad" value={formData.parentalPhoneNumber} onChangeText={(txt: any) => handleFormChange("parentalPhoneNumber", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                    }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <List.Item
                         title="House Type"
                         description={`Purpose: ${formData.houseType}`}
                         left={props => <List.Icon {...props} icon="office-building-cog-outline" />}
                         right={props => {
-                            return <MenuPaper menuArrOfObjects={houseTypes} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                            return <MenuPaper menuArrOfObjects={houseTypes} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
                         }}
                         descriptionStyle={{
                             color: theme.colors.tertiary,
@@ -169,14 +170,14 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("checkOwnOrRent", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
 
                     <Divider />
 
                     <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code} />
+                    }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <RadioComp
                         title="Politically Active?"
@@ -195,7 +196,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("politicallyActive", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
                         title="Own a TV?"
@@ -214,7 +215,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("tvAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
                         title="Own a Bike?"
@@ -233,7 +234,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("bikeAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
                         title="Own a Fridge?"
@@ -252,7 +253,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("fridgeAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
                         title="Washing Machine?"
@@ -271,7 +272,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                                 optionSetStateDispathFun: (e) => handleFormChange("washingMachineAvailable", e)
                             },
                         ]}
-                        disabled={flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                        disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
 
                     <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
@@ -279,7 +280,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.houseType || !formData.checkOwnOrRent || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || flag === "CO" || approvalStatus !== "U" || branchCode !== loginStore?.brn_code}
+                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.houseType || !formData.checkOwnOrRent || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                         loading={loading}>UPDATE</ButtonPaper>
                 </View>
             </ScrollView>
