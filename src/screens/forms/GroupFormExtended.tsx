@@ -148,7 +148,7 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
             "acc_no1": formData?.accNo1,
             "acc_no2": formData?.accNo2,
             // "ac_open_dt": fetchedData?.ac_open_dt,
-            "modified_by": loginStore?.emp_name,
+            "modified_by": loginStore?.emp_id,
             "group_code": fetchedData?.group_code,
             "branch_code": fetchedData?.branch_code,
             "co_id": loginStore?.emp_id

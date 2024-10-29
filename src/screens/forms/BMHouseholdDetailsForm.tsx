@@ -12,7 +12,15 @@ import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
 import { disableConditionExceptBasicDetails } from '../../utils/disableCondition'
 
-const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit }) => {
+interface BMOccupationDetailsFormProps {
+    formNumber?: any
+    branchCode?: any
+    flag?: "CO" | "BM"
+    approvalStatus?: "U" | "A" | "S"
+    onSubmit?: any
+}
+
+const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit = () => null }: BMOccupationDetailsFormProps) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
@@ -96,8 +104,8 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
             poltical_flag: formData.politicallyActive,
             parental_addr: formData.parentalAddress,
             parental_phone: formData.parentalPhoneNumber,
-            modified_by: loginStore?.emp_name,
-            created_by: loginStore?.emp_name
+            modified_by: loginStore?.emp_id,
+            created_by: loginStore?.emp_id
         }
 
         await axios.post(`${ADDRESSES.SAVE_HOUSEHOLD_DETAILS}`, creds).then(res => {

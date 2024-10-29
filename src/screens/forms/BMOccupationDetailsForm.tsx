@@ -12,7 +12,15 @@ import ButtonPaper from '../../components/ButtonPaper'
 import { loginStorage } from '../../storage/appStorage'
 import { disableConditionExceptBasicDetails } from '../../utils/disableCondition'
 
-const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit }) => {
+interface BMOccupationDetailsFormProps {
+    formNumber?: any
+    branchCode?: any
+    flag?: "CO" | "BM"
+    approvalStatus?: "U" | "A" | "S"
+    onSubmit?: any
+}
+
+const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit = () => null }: BMOccupationDetailsFormProps) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
@@ -131,8 +139,8 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
             other_loan_flag: formData.checkOtherOngoingLoan,
             other_loan_amt: formData.otherLoanAmount,
             other_loan_emi: formData.monthlyEmi, // check
-            modified_by: loginStore?.emp_name,
-            created_by: loginStore?.emp_name,
+            modified_by: loginStore?.emp_id,
+            created_by: loginStore?.emp_id,
         }
         await axios.post(`${ADDRESSES.SAVE_OCCUPATION_DETAILS}`, creds).then(res => {
             console.log("occccccuuuuuppppppddddd save", res?.data)

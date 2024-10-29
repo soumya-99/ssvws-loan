@@ -8,6 +8,10 @@ interface DisableConditonProps {
 const disableCondition = (approvalStatus, branchCode) => {
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
+    if (loginStore?.id === 2 && approvalStatus === "A") {
+        return false
+    }
+
     if (approvalStatus !== "U" || +branchCode !== +loginStore?.brn_code) {
         return true
     }
@@ -17,6 +21,10 @@ const disableCondition = (approvalStatus, branchCode) => {
 
 const disableConditionExceptBasicDetails = (approvalStatus, branchCode, flag = "CO") => {
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
+
+    if (loginStore?.id === 2 && approvalStatus === "A") {
+        return false
+    }
 
     if (flag === "CO" || approvalStatus !== "U" || +branchCode !== +loginStore?.brn_code) {
         return true

@@ -8,11 +8,12 @@ import CollectionButton from "../components/CollectionButton"
 import { SCREEN_HEIGHT } from 'react-native-normalize'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
+import { loginStorage } from '../storage/appStorage'
 
 const SearchScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
-    // const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
+    const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     return (
         <SafeAreaView>
@@ -50,6 +51,17 @@ const SearchScreen = () => {
                                 }))
                             }}
                         />
+                        {<CollectionButton
+                            icon={"account-search-outline"}
+                            text="Search By CO"
+                            color={theme.colors.tertiaryContainer}
+                            textColor={theme.colors.onTertiaryContainer}
+                            onPress={() => {
+                                navigation.dispatch(CommonActions.navigate({
+                                    name: navigationRoutes.searchByCOScreen
+                                }))
+                            }}
+                        />}
                     </CollectionButtonsWrapper>
                 </View>
             </ScrollView>

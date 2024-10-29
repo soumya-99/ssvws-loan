@@ -176,8 +176,8 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         const creds = {
             form_no: formNumber,
             branch_code: branchCode,
-            created_by: loginStore?.emp_name,
-            modified_by: loginStore?.emp_name,
+            created_by: loginStore?.emp_id,
+            modified_by: loginStore?.emp_id,
             memberdtls: updatedFormArray
         }
 
@@ -200,9 +200,10 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         await handleFormUpdate()
 
         const creds = {
-            modified_by: loginStore?.emp_name,
+            modified_by: loginStore?.emp_id,
             form_no: formNumber,
-            branch_code: branchCode
+            branch_code: branchCode,
+            remarks: "",
         }
 
         await axios.post(`${ADDRESSES.FINAL_SUBMIT}`, creds).then(res => {

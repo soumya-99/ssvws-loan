@@ -361,7 +361,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             bm_lat_val: location?.latitude,
             bm_long_val: location?.longitude,
             bm_gps_address: geolocationFetchedAddress,
-            modified_by: loginStore?.emp_name,
+            modified_by: loginStore?.emp_id,
         }
         await axios.post(`${ADDRESSES.EDIT_BASIC_DETAILS}`, creds).then(res => {
             console.log("QQQQQQQQQQQQQQQ", res?.data)
@@ -398,7 +398,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             co_lat_val: location?.latitude,
             co_long_val: location?.longitude,
             co_gps_address: geolocationFetchedAddress,
-            created_by: loginStore?.emp_name,
+            created_by: loginStore?.emp_id,
         }
 
         console.log("YYYYYYYYYYY", creds)

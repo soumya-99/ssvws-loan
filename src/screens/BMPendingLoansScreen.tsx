@@ -90,7 +90,7 @@ const BMPendingLoansScreen = () => {
             branch_code: branchCode,
             member_code: memberCode,
             remarks: remarks,
-            deleted_by: loginStore?.emp_name
+            deleted_by: loginStore?.emp_id
         }
         await axios.post(`${ADDRESSES.DELETE_FORM}`, creds).then(res => {
             console.log("DELETE FORM ======== RESSS", res?.data)
