@@ -9,7 +9,7 @@ const disableCondition = (approvalStatus, branchCode) => {
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     if (loginStore?.id === 2 && approvalStatus === "A") {
-        return false
+        return true
     }
 
     if (approvalStatus !== "U" || +branchCode !== +loginStore?.brn_code) {
@@ -23,7 +23,7 @@ const disableConditionExceptBasicDetails = (approvalStatus, branchCode, flag = "
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     if (loginStore?.id === 2 && approvalStatus === "A") {
-        return false
+        return true
     }
 
     if (flag === "CO" || approvalStatus !== "U" || +branchCode !== +loginStore?.brn_code) {
