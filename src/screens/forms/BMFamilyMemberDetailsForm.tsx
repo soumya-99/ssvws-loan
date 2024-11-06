@@ -89,17 +89,12 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         const updatedForm = [...formArray];
         console.log(updatedForm[index]['familyDob'], 'familydob')
         updatedForm[index].openDate = true; // Open only for the specific item
-        // handleInputChange(index, "age", formArray[index].age)
-        updatedForm[index]['age'] = calculateAge(updatedForm[index]['familyDob']).toString()
-
         setFormArray(updatedForm);
     };
 
     const handleCloseDate = (index) => {
         const updatedForm = [...formArray];
         updatedForm[index].openDate = false; // Close the modal for the specific item
-        // updatedForm[index]['age'] = "";
-        updatedForm[index]['age'] = calculateAge(updatedForm[index]['familyDob']).toString()
         setFormArray(updatedForm);
     };
 
@@ -181,24 +176,24 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
         console.log("::::::::::::::::::::", formArray)
         console.log(";;;;;;;;;;;;;;;;;;;;", updatedFormArray)
 
-        // const creds = {
-        //     form_no: formNumber,
-        //     branch_code: branchCode,
-        //     created_by: loginStore?.emp_id,
-        //     modified_by: loginStore?.emp_id,
-        //     memberdtls: updatedFormArray
-        // }
+        const creds = {
+            form_no: formNumber,
+            branch_code: branchCode,
+            created_by: loginStore?.emp_id,
+            modified_by: loginStore?.emp_id,
+            memberdtls: updatedFormArray
+        }
 
-        // console.log("YYYYYYYYYYYYYYYYYYYYY", creds)
+        console.log("YYYYYYYYYYYYYYYYYYYYY", creds)
 
-        // await axios.post(`${ADDRESSES.SAVE_FAMILY_DETAILS}`, creds).then(res => {
-        //     console.log("UUUUUUUUUUUUUUUUUUUU", res?.data)
-        //     if (res?.data?.suc === 1) {
-        //         ToastAndroid.show("Family member details updated successfully!", ToastAndroid.SHORT)
-        //     }
-        // }).catch(err => {
-        //     console.log("88888888888888888888", err)
-        // })
+        await axios.post(`${ADDRESSES.SAVE_FAMILY_DETAILS}`, creds).then(res => {
+            console.log("UUUUUUUUUUUUUUUUUUUU", res?.data)
+            if (res?.data?.suc === 1) {
+                ToastAndroid.show("Family member details updated successfully!", ToastAndroid.SHORT)
+            }
+        }).catch(err => {
+            console.log("88888888888888888888", err)
+        })
 
         setLoading(false)
     }
@@ -214,12 +209,12 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
             remarks: "",
         }
 
-        // await axios.post(`${ADDRESSES.FINAL_SUBMIT}`, creds).then(res => {
-        //     ToastAndroid.show("Form sent to MIS Assistant.", ToastAndroid.SHORT)
-        //     navigation.dispatch(CommonActions.goBack())
-        // }).catch(err => {
-        //     ToastAndroid.show("Some error occurred while submitting the final data.", ToastAndroid.SHORT)
-        // })
+        await axios.post(`${ADDRESSES.FINAL_SUBMIT}`, creds).then(res => {
+            ToastAndroid.show("Form sent to MIS Assistant.", ToastAndroid.SHORT)
+            navigation.dispatch(CommonActions.goBack())
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while submitting the final data.", ToastAndroid.SHORT)
+        })
         setLoading(false)
     }
 
@@ -281,6 +276,8 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                             onConfirm={date => {
                                 handleCloseDate(i)
                                 handleInputChange(i, 'familyDob', date)
+                                // updatedForm[index]['age'] = calculateAge(updatedForm[index]['familyDob']).toString()
+                                handleInputChange(i, 'age', calculateAge(date))
                             }}
                             onCancel={() => handleCloseDate(i)}
                         />
