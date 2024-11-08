@@ -32,7 +32,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         groupType: "",
         groupTypeName: "",
         totalPrincipleAmount: "",
-        totalInterestAmount: ""
+        totalInterestAmount: "",
+        totalAmount: "",
     })
 
     const [memberDetailsArray, setMemberDetailsArray] = useState<any[]>(() => [])
@@ -67,7 +68,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             groupType: fetchedData?.group_type || "",
             groupTypeName: fetchedData?.group_type === "S" ? "SHG" : fetchedData?.group_type === "J" ? "JLG" : "",
             totalPrincipleAmount: fetchedData?.total_prn_amt,
-            totalInterestAmount: fetchedData?.total_intt_amt
+            totalInterestAmount: fetchedData?.total_intt_amt,
+            totalAmount: `${+fetchedData?.total_prn_amt + +fetchedData?.total_intt_amt}`
         })
         setMemberDetailsArray(fetchedData?.memb_dtls)
         console.log("MEMB_DTLS", fetchedData?.memb_dtls)
@@ -106,7 +108,11 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <InputPaper label="Total Interest Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.totalInterestAmount} onChangeText={(txt: any) => handleFormChange("totalInterestAmount", txt)} customStyle={{
+                    <InputPaper label="Total Interest Amount" maxLength={15} leftIcon='cash-plus' keyboardType="numeric" value={formData.totalInterestAmount} onChangeText={(txt: any) => handleFormChange("totalInterestAmount", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Total Amount (Rs.)" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.totalAmount} onChangeText={(txt: any) => handleFormChange("totalAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 

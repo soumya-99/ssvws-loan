@@ -1,5 +1,5 @@
 import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
-import { Chip, Text } from "react-native-paper"
+import { Chip, Surface, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import { Divider, List } from 'react-native-paper'
@@ -26,6 +26,9 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
 
 
     const [creditAmount, setCreditAmount] = useState(() => "")
+    const [remainingTotalPrinciple, setRemainingTotalPrinciple] = useState(() => "")
+    const [remainingTotalInterest, setRemainingTotalInterest] = useState(() => "")
+    const [remainingTotalAmount, setRemainingTotalAmount] = useState(() => "")
 
     const [formData, setFormData] = useState({
         clientName: "",
@@ -41,25 +44,6 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
         principleEMI: "",
         totalEMI: "",
     })
-
-    const [memberDetailsArray, setMemberDetailsArray] = useState<any[]>(() => [])
-
-    const groupTypes = [
-        {
-            title: "SHG",
-            func: () => {
-                handleFormChange("groupType", "S");
-                handleFormChange("groupTypeName", "SHG")
-            }
-        },
-        {
-            title: "JLG",
-            func: () => {
-                handleFormChange("groupType", "J");
-                handleFormChange("groupTypeName", "JLG")
-            }
-        }
-    ]
 
     const handleFormChange = (field: string, value: any) => {
         setFormData((prev) => ({
@@ -84,6 +68,52 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
             totalEMI: fetchedData?.tot_emi || ""
         })
     }, [])
+
+    // const remainingLoanCalculation = (creditAmt: number): void => {
+    //     const totalInterest = parseFloat(formData.totalInterest) || 0;
+    //     const totalPrinciple = parseFloat(formData.totalPrinciple) || 0;
+
+    //     const updatedInterest = Math.max(totalInterest - creditAmt, 0);
+    //     const remainingCredit = Math.max(creditAmt - totalInterest, 0);
+    //     const updatedPrinciple = Math.max(totalPrinciple - remainingCredit, 0);
+    //     const updatedTotalAmount = updatedInterest + updatedPrinciple;
+
+    //     // Update states in a single call for efficiency
+    //     setRemainingTotalPrinciple(updatedPrinciple.toString());
+    //     setRemainingTotalInterest(updatedInterest.toString());
+    //     setRemainingTotalAmount(updatedTotalAmount.toString());
+    // };
+
+    const remainingLoanCalculation = (creditAmt: number) => {
+        let remainingInterest = +formData.totalInterest;
+        let remainingPrinciple = +formData.totalPrinciple;
+        let updatedInterest: number;
+        let updatedPrinciple: number;
+
+        // Subtract creditAmt from totalInterest first
+        if (creditAmt <= remainingInterest) {
+            updatedInterest = remainingInterest - creditAmt;
+            updatedPrinciple = remainingPrinciple;
+        } else {
+            // If creditAmt is greater than remaining interest, reduce principle with the remaining amount
+            updatedInterest = 0;
+            updatedPrinciple = remainingPrinciple - (creditAmt - remainingInterest);
+        }
+
+        // Calculate remaining total amount
+        const updatedTotalAmount = updatedPrinciple + updatedInterest;
+
+        // Update state with calculated values
+        setRemainingTotalPrinciple(updatedPrinciple.toString());
+        setRemainingTotalInterest(updatedInterest.toString());
+        setRemainingTotalAmount(updatedTotalAmount.toString());
+    };
+
+    useEffect(() => {
+        if (formData.totalInterest && formData.totalPrinciple) {
+            remainingLoanCalculation(+creditAmount);
+        }
+    }, [creditAmount, formData.totalInterest, formData.totalPrinciple]);
 
     return (
         <SafeAreaView>
@@ -184,7 +214,49 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         customStyle={{
                             backgroundColor: theme.colors.background,
                         }}
+                        selectTextOnFocus
                     />
+
+                    {creditAmount && (
+                        <Surface style={{
+                            padding: 10,
+                            margin: 5,
+                            borderRadius: 15,
+                        }} elevation={1}>
+                            <Text variant='titleLarge' style={{
+                                color: theme.colors.primary,
+                                marginBottom: 5
+                            }}>Remaining Amounts</Text>
+                            <Divider />
+                            <View style={styles.surfaceTextSpace}>
+                                <Text variant='bodyLarge' style={{
+                                    marginTop: 5
+                                }}>Total Principle</Text>
+                                <Text variant='bodyLarge' style={{
+                                    color: theme.colors.tertiary
+                                }}>{remainingTotalPrinciple}/-</Text>
+                            </View>
+
+                            <View style={styles.surfaceTextSpace}>
+                                <Text variant='bodyLarge' style={{
+                                    marginTop: 5
+                                }}>Total Interest</Text>
+                                <Text variant='bodyLarge' style={{
+                                    color: theme.colors.tertiary
+                                }}>{remainingTotalInterest}/-</Text>
+                            </View>
+
+                            <View style={styles.surfaceTextSpace}>
+                                <Text variant='bodyLarge' style={{
+                                    marginTop: 5
+                                }}>Total Outstanding</Text>
+                                <Text variant='bodyLarge' style={{
+                                    color: theme.colors.tertiary
+                                }}>{remainingTotalAmount}/-</Text>
+                            </View>
+                        </Surface>
+                    )
+                    }
 
                     <View style={{
                         flexDirection: "row",
@@ -201,7 +273,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 text: "Yes"
                             }])
 
-                        }} loading={loading} disabled={!creditAmount}>
+                        }} loading={loading} disabled={!creditAmount || +remainingTotalAmount < 0}>
                             Collect Amount
                         </ButtonPaper>
                     </View>
@@ -215,4 +287,10 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
 
 export default RecoveryMemberForm
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    surfaceTextSpace: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+})
