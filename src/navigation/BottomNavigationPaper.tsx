@@ -12,6 +12,7 @@ import SearchNavigation from "./SearchNavigation"
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
 import useCurrentRouteName from "../hooks/useCurrentRoute"
+import LoanRecoveryNavigation from "./LoanRecoveryNavigation"
 // import { loginStorage } from "../storage/appStorage"
 // import { LoginDataMessage } from "../models/api_types"
 
@@ -137,6 +138,24 @@ function BottomNavigationPaper() {
                 )
                     : (null)
             }
+
+            <Tab.Screen
+                name={navigationRoutes.loanRecoveryNavigation}
+                component={LoanRecoveryNavigation}
+                options={{
+                    tabBarLabel: "Loan Recovery",
+                    tabBarIcon: ({ color, focused }) =>
+                        !focused ? (
+                            <MaterialCommunityIcons
+                                name="refresh"
+                                color={color}
+                                size={26}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons name="refresh-circle" color={color} size={26} />
+                        ),
+                }}
+            />
 
             <Tab.Screen
                 name={navigationRoutes.searchNavigation}
