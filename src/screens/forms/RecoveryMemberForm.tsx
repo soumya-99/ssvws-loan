@@ -189,7 +189,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <InputPaper label="Installment EMI" leftIcon='cash-plus' keyboardType="number-pad" value={formData.installmentEMI} onChangeText={(txt: any) => handleFormChange("installmentEMI", txt)} customStyle={{
+                    <InputPaper label="Interst EMI" leftIcon='cash-plus' keyboardType="number-pad" value={formData.installmentEMI} onChangeText={(txt: any) => handleFormChange("installmentEMI", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
@@ -273,7 +273,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 text: "Yes"
                             }])
 
-                        }} loading={loading} disabled={!creditAmount || +remainingTotalAmount < 0}>
+                        }} loading={loading} disabled={!+creditAmount || +remainingTotalAmount < 0}>
                             Collect Amount
                         </ButtonPaper>
                     </View>
