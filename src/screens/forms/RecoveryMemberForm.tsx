@@ -25,14 +25,21 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
     const [loading, setLoading] = useState(() => false)
 
 
-    const [groupBlocks, setGroupBlocks] = useState(() => [])
+    const [creditAmount, setCreditAmount] = useState(() => "")
 
     const [formData, setFormData] = useState({
-        groupName: "",
-        groupType: "",
-        groupTypeName: "",
-        totalPrincipleAmount: "",
-        totalInterestAmount: ""
+        clientName: "",
+        installmentEndDate: "",
+        installmentPaid: "",
+        installmentEMI: "",
+        loanId: "",
+        memberCode: "",
+        totalPrinciple: "",
+        totalInterest: "",
+        period: "",
+        periodMode: "",
+        principleEMI: "",
+        totalEMI: "",
     })
 
     const [memberDetailsArray, setMemberDetailsArray] = useState<any[]>(() => [])
@@ -63,14 +70,19 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
 
     useEffect(() => {
         setFormData({
-            groupName: fetchedData?.group_name || "",
-            groupType: fetchedData?.group_type || "",
-            groupTypeName: fetchedData?.group_type === "S" ? "SHG" : fetchedData?.group_type === "J" ? "JLG" : "",
-            totalPrincipleAmount: fetchedData?.total_prn_amt,
-            totalInterestAmount: fetchedData?.total_intt_amt
+            clientName: fetchedData?.client_name || "",
+            installmentEndDate: new Date(fetchedData?.instl_end_dt).toLocaleDateString() || "",
+            installmentPaid: fetchedData?.instl_paid || "",
+            installmentEMI: fetchedData?.intt_emi || "",
+            loanId: fetchedData?.loan_id || "",
+            memberCode: fetchedData?.member_code || "",
+            totalPrinciple: fetchedData?.prn_amt || "",
+            totalInterest: fetchedData?.intt_amt || "",
+            period: fetchedData?.period || "",
+            periodMode: fetchedData?.period_mode || "",
+            principleEMI: fetchedData?.prn_emi || "",
+            totalEMI: fetchedData?.tot_emi || ""
         })
-        setMemberDetailsArray(fetchedData?.memb_dtls)
-        console.log("MEMB_DTLS", fetchedData?.memb_dtls)
     }, [])
 
     return (
@@ -83,34 +95,116 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                     gap: 14
                 }}>
                     <Divider />
+                    <Text variant='labelLarge' style={{
+                        marginBottom: 10,
+                        color: theme.colors.primary
+                    }}>Member Details</Text>
 
-                    <InputPaper label="Group Name" leftIcon='account-group-outline' keyboardType="default" value={formData.groupName} onChangeText={(txt: any) => handleFormChange("groupName", txt)} customStyle={{
+                    <InputPaper label="Member Code" leftIcon='numeric' keyboardType="number-pad" value={formData.memberCode} onChangeText={(txt: any) => handleFormChange("memberCode", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <List.Item
-                        title="Group Type"
-                        description={`Group Type: ${formData.groupTypeName}`}
-                        left={props => <List.Icon {...props} icon="account-group-outline" />}
-                        right={props => {
-                            return <MenuPaper menuArrOfObjects={groupTypes} disabled />
+                    <InputPaper label="Member Name" leftIcon='account-circle-outline' keyboardType="default" value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+
+                    <Text variant='labelLarge' style={{
+                        marginBottom: 10,
+                        color: theme.colors.primary
+                    }}>Loan Details</Text>
+
+                    {/* <Divider /> */}
+
+                    <InputPaper label="Loan ID" leftIcon='order-numeric-ascending' keyboardType="number-pad" value={formData.loanId} onChangeText={(txt: any) => handleFormChange("loanId", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Total Principle" leftIcon='cash-multiple' keyboardType="number-pad" value={formData.totalPrinciple} onChangeText={(txt: any) => handleFormChange("totalPrinciple", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Total Interest" leftIcon='cash-plus' keyboardType="number-pad" value={formData.totalInterest} onChangeText={(txt: any) => handleFormChange("totalInterest", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Net Total (Rs.)" leftIcon='cash-fast' keyboardType="number-pad" value={+formData.totalInterest + +formData.totalPrinciple} onChangeText={() => null} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Period" leftIcon='clock-time-five-outline' keyboardType="number-pad" value={formData.period} onChangeText={(txt: any) => handleFormChange("period", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Period Mode" leftIcon='camera-timer' keyboardType="default" value={formData.periodMode} onChangeText={(txt: any) => handleFormChange("periodMode", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    {/* <Divider /> */}
+
+                    <Text variant='labelLarge' style={{
+                        marginBottom: 10,
+                        color: theme.colors.primary
+                    }}>Installment Details</Text>
+
+                    <InputPaper label="Installment End Date" leftIcon='calendar-month-outline' keyboardType="default" value={formData.installmentEndDate} onChangeText={(txt: any) => handleFormChange("installmentEndDate", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Installment Paid" leftIcon='cash-check' keyboardType="number-pad" value={formData.installmentPaid} onChangeText={(txt: any) => handleFormChange("installmentPaid", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Principle EMI" leftIcon='cash-lock' keyboardType="number-pad" value={formData.principleEMI} onChangeText={(txt: any) => handleFormChange("principleEMI", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Installment EMI" leftIcon='cash-plus' keyboardType="number-pad" value={formData.installmentEMI} onChangeText={(txt: any) => handleFormChange("installmentEMI", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <InputPaper label="Total EMI" leftIcon='account-cash-outline' keyboardType="number-pad" value={formData.totalEMI} onChangeText={(txt: any) => handleFormChange("totalEMI", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
+
+                    <Divider />
+
+                    <InputPaper
+                        label="Credit Amount"
+                        leftIcon='cash-check'
+                        keyboardType="decimal-pad"
+                        value={creditAmount}
+                        onChangeText={(txt: string) => {
+                            const numericValue = txt.replace(/[^0-9.]/g, '');
+                            const validValue = numericValue.split('.').length > 2
+                                ? numericValue.slice(0, numericValue.lastIndexOf('.'))
+                                : numericValue;
+                            setCreditAmount(validValue);
                         }}
-                        descriptionStyle={{
-                            color: theme.colors.tertiary,
+                        customStyle={{
+                            backgroundColor: theme.colors.background,
                         }}
                     />
 
-                    <Divider />
+                    <View style={{
+                        flexDirection: "row",
+                        marginTop: 10,
+                        justifyContent: "center",
+                        gap: 10
+                    }}>
+                        <ButtonPaper icon="cash-register" mode="contained" onPress={() => {
+                            Alert.alert(`Collect EMI Amount ${creditAmount}?`, `Are you sure, you want to credit this EMI for ${formData.clientName}?`, [{
+                                onPress: () => null,
+                                text: "No"
+                            }, {
+                                onPress: () => null,
+                                text: "Yes"
+                            }])
 
-                    <InputPaper label="Total Principle Amount" maxLength={15} leftIcon='cash' keyboardType="numeric" value={formData.totalPrincipleAmount} onChangeText={(txt: any) => handleFormChange("totalPrincipleAmount", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled />
-
-                    <InputPaper label="Total Interest Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.totalInterestAmount} onChangeText={(txt: any) => handleFormChange("totalInterestAmount", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled />
-
-                    <Divider />
+                        }} loading={loading} disabled={!creditAmount}>
+                            Collect Amount
+                        </ButtonPaper>
+                    </View>
 
                 </View>
             </ScrollView>

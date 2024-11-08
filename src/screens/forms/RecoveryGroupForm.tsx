@@ -1,5 +1,5 @@
 import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
-import { Chip, Text } from "react-native-paper"
+import { Chip, Icon, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import { Divider, List } from 'react-native-paper'
@@ -118,20 +118,64 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                             color: theme.colors.primary
                         }}>Members</Text>
                         <View style={{
-                            flexDirection: "row",
+                            flexDirection: "column",
                             gap: 8,
                             flexWrap: "wrap"
                         }}>
                             {memberDetailsArray?.map((item, i) => (
-                                <Chip key={i} icon="account-circle-outline" onPress={() => {
-                                    navigation.dispatch(CommonActions.navigate({
-                                        name: navigationRoutes.recoveryMemberScreen,
-                                        params: {
-                                            member_details: item,
+                                // <Chip style={{ width: "100%", flexDirection: 'row', justifyContent: 'space-between' }} key={i} icon="account-circle-outline" onPress={() => {
+                                //     navigation.dispatch(CommonActions.navigate({
+                                //         name: navigationRoutes.recoveryMemberScreen,
+                                //         params: {
+                                //             member_details: item,
+                                //         }
+                                //     }))
+                                // }}
+                                // >
+                                //     {item?.client_name}
+                                //     ({+item?.intt_amt + +item?.prn_amt}/-)
+                                // </Chip>
+
+                                <View key={i} style={{ width: "100%" }}>
+                                    <List.Item
+                                        titleStyle={{
+                                            color: theme.colors.primary,
+                                        }}
+                                        descriptionStyle={{
+                                            color: theme.colors.secondary,
+                                        }}
+                                        key={i}
+                                        title={`${item?.client_name}`}
+                                        description={
+                                            <View>
+                                                <Text style={{
+                                                    color: theme.colors.green
+                                                }}>Total Amount - {+item?.intt_amt + +item?.prn_amt}{(+item?.intt_amt + +item?.prn_amt) && "/-"}</Text>
+                                            </View>
                                         }
-                                    }))
-                                }}
-                                >{item?.client_name}</Chip>
+                                        onPress={() => {
+                                            navigation.dispatch(CommonActions.navigate({
+                                                name: navigationRoutes.recoveryMemberScreen,
+                                                params: {
+                                                    member_details: item,
+                                                }
+                                            }))
+                                        }}
+                                        left={props => <List.Icon {...props} icon="account-circle-outline" />}
+                                    // right={props => (
+                                    //     <View style={{
+                                    //         alignSelf: 'center'
+                                    //     }}>
+                                    //         <Icon
+                                    //             source={item?.status === "U" ? "alpha-u-circle-outline" : "alpha-a-circle-outline"}
+                                    //             size={28}
+                                    //             color={item?.status === "U" ? theme.colors.error : theme.colors.green}
+                                    //         />
+                                    //     </View>
+                                    // )}
+                                    />
+                                    <Divider />
+                                </View>
                             ))}
                         </View>
                     </View>
