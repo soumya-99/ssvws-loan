@@ -193,7 +193,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         gap: 10
                     }}>
                         <ButtonPaper icon="cash-register" mode="contained" onPress={() => {
-                            Alert.alert(`Collect EMI Amount ${creditAmount}?`, `Are you sure, you want to credit this EMI for ${formData.clientName}?`, [{
+                            Alert.alert(`Collect EMI Amount ${creditAmount}/-?`, `Are you sure, you want to credit this EMI for ${formData.clientName}?`, [{
                                 onPress: () => null,
                                 text: "No"
                             }, {
