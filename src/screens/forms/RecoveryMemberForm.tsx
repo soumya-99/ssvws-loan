@@ -29,6 +29,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
     const [remainingTotalPrinciple, setRemainingTotalPrinciple] = useState(() => "")
     const [remainingTotalInterest, setRemainingTotalInterest] = useState(() => "")
     const [remainingTotalAmount, setRemainingTotalAmount] = useState(() => "")
+    const [noOfInstallments, setNoOfInstallments] = useState(0);
 
     const [formData, setFormData] = useState({
         clientName: "",
@@ -109,11 +110,50 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
         setRemainingTotalAmount(updatedTotalAmount.toString());
     };
 
+    const countNoOfInstallments = (creditAmt: number) => {
+        if (Math.trunc(creditAmt / +formData.totalEMI) === 0) {
+            return 1
+        }
+
+        return Math.trunc(creditAmt / +formData.totalEMI)
+    };
+
     useEffect(() => {
         if (formData.totalInterest && formData.totalPrinciple) {
             remainingLoanCalculation(+creditAmount);
+            setNoOfInstallments(countNoOfInstallments(+creditAmount));
+            console.log("NO OF INSTALLMENTS =", countNoOfInstallments(+creditAmount));
         }
     }, [creditAmount, formData.totalInterest, formData.totalPrinciple]);
+
+    const sendRecoveryEMI = async () => {
+        setLoading(true)
+
+        const creds = {
+            instl_paid: noOfInstallments,
+            modified_by: loginStore?.emp_id,
+            loan_id: formData.loanId,
+            branch_code: loginStore?.brn_code,
+            credit: creditAmount,
+            prn_recov: remainingTotalPrinciple,
+            intt_recov: remainingTotalInterest,
+            balance: "0", //! change in some time EEEEEEEERRRRRRRRRRRRR
+            tr_type: "R",
+            created_by: loginStore?.emp_id,
+        }
+        console.log("PAYLOAD---RECOVERY", creds)
+        await axios.post(ADDRESSES.LOAN_RECOVERY_EMI, creds).then(res => {
+            ToastAndroid.show("Loan recovery EMI installment done.", ToastAndroid.SHORT)
+            console.log("Loan recovery EMI installment done.", res?.data)
+
+            navigation.goBack()
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while submitting EMI.", ToastAndroid.SHORT)
+            console.log("Some error occurred while submitting EMI.", err)
+        })
+
+        setLoading(false)
+    }
 
     return (
         <SafeAreaView>
@@ -269,7 +309,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 onPress: () => null,
                                 text: "No"
                             }, {
-                                onPress: () => null,
+                                onPress: async () => await sendRecoveryEMI(),
                                 text: "Yes"
                             }])
 

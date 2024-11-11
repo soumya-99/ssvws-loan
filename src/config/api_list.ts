@@ -38,5 +38,6 @@ export const ADDRESSES = {
     GET_GRT_DETAILS: `${BASE_URL}/get_grt_dtls`,
     GET_FORM_AGAINST_CO: `${BASE_URL}/get_form_against_co`,
     FINAL_SUBMIT: `${BASE_URL}/final_submit`,
-    SEARCH_GROUP_RECOVERY: `${BASE_URL}/search_group_app`
+    SEARCH_GROUP_RECOVERY: `${BASE_URL}/search_group_app`,
+    LOAN_RECOVERY_EMI: `${BASE_URL}/recovery_transaction`
 }
