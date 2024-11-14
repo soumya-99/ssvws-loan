@@ -40,6 +40,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
         memberCode: "",
         totalPrinciple: "",
         totalInterest: "",
+        rateOfInterest: "",
         period: "",
         periodMode: "",
         principleEMI: "",
@@ -63,6 +64,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
             memberCode: fetchedData?.member_code || "",
             totalPrinciple: fetchedData?.prn_amt || "",
             totalInterest: fetchedData?.intt_amt || "",
+            rateOfInterest: fetchedData?.curr_roi || "",
             period: fetchedData?.period || "",
             periodMode: fetchedData?.period_mode || "",
             principleEMI: fetchedData?.prn_emi || "",
@@ -85,24 +87,46 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
     //     setRemainingTotalAmount(updatedTotalAmount.toString());
     // };
 
+    // const remainingLoanCalculation = (creditAmt: number) => {
+    //     let remainingInterest = +formData.totalInterest;
+    //     let remainingPrinciple = +formData.totalPrinciple;
+    //     let updatedInterest: number;
+    //     let updatedPrinciple: number;
+
+    //     // Subtract creditAmt from totalInterest first
+    //     if (creditAmt <= remainingInterest) {
+    //         updatedInterest = remainingInterest - creditAmt;
+    //         updatedPrinciple = remainingPrinciple;
+    //     } else {
+    //         // If creditAmt is greater than remaining interest, reduce principle with the remaining amount
+    //         updatedInterest = 0;
+    //         updatedPrinciple = remainingPrinciple - (creditAmt - remainingInterest);
+    //     }
+
+    //     // Calculate remaining total amount
+    //     const updatedTotalAmount = updatedPrinciple + updatedInterest;
+
+    //     // Update state with calculated values
+    //     setRemainingTotalPrinciple(updatedPrinciple.toString());
+    //     setRemainingTotalInterest(updatedInterest.toString());
+    //     setRemainingTotalAmount(updatedTotalAmount.toString());
+    // };
+
     const remainingLoanCalculation = (creditAmt: number) => {
         let remainingInterest = +formData.totalInterest;
         let remainingPrinciple = +formData.totalPrinciple;
+        let roi = +formData.rateOfInterest;
         let updatedInterest: number;
         let updatedPrinciple: number;
+        let updatedTotalAmount: number;
 
-        // Subtract creditAmt from totalInterest first
-        if (creditAmt <= remainingInterest) {
-            updatedInterest = remainingInterest - creditAmt;
-            updatedPrinciple = remainingPrinciple;
-        } else {
-            // If creditAmt is greater than remaining interest, reduce principle with the remaining amount
-            updatedInterest = 0;
-            updatedPrinciple = remainingPrinciple - (creditAmt - remainingInterest);
-        }
+        let currentPrinciple = ((creditAmt / (roi + 100)) * 100);
+        let currentInterest = creditAmt - currentPrinciple;
 
-        // Calculate remaining total amount
-        const updatedTotalAmount = updatedPrinciple + updatedInterest;
+        updatedInterest = Math.round(remainingInterest - currentInterest);
+        updatedPrinciple = Math.round(remainingPrinciple - currentPrinciple);
+
+        updatedTotalAmount = updatedInterest + updatedPrinciple;
 
         // Update state with calculated values
         setRemainingTotalPrinciple(updatedPrinciple.toString());
@@ -138,7 +162,8 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
             prn_recov: remainingTotalPrinciple,
             intt_recov: remainingTotalInterest,
             balance: "0", //! change in some time EEEEEEEERRRRRRRRRRRRR
-            tr_type: "R",
+            intt_balance: "0", //! change in some time EEEEEEEERRRRRRRRRRRRR
+            // tr_type: "R",
             created_by: loginStore?.emp_id,
         }
         console.log("PAYLOAD---RECOVERY", creds)
