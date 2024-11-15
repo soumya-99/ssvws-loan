@@ -9,6 +9,9 @@ import SearchByCOScreen from '../screens/SearchByCOScreen'
 import MemberDetailsAllFormScreen from '../screens/MemberDetailsAllFormScreen'
 import AvailableFormsScreen from '../screens/AvailableFormsScreen'
 import FormsAgainstCOScreen from '../screens/FormsAgainstCOScreen'
+import SearchTransactionChooseScreen from '../screens/SearchTransactionChooseScreen'
+import SearchApprovedLoansScreen from '../screens/SearchApprovedLoansScreen'
+import SearchUnapprovedLoansScreen from '../screens/SearchUnapprovedLoansScreen'
 
 export default function SearchNavigation() {
     const Stack = createNativeStackNavigator()
@@ -23,6 +26,9 @@ export default function SearchNavigation() {
             <Stack.Screen name={navigationRoutes.availableFormsScreen} component={AvailableFormsScreen} />
             <Stack.Screen name={navigationRoutes.formsAgainstCOScreen} component={FormsAgainstCOScreen} />
             <Stack.Screen name={navigationRoutes.memberDetailsAllFormScreen} component={MemberDetailsAllFormScreen} />
+            <Stack.Screen name={navigationRoutes.searchTransactionChooseScreen} component={SearchTransactionChooseScreen} />
+            <Stack.Screen name={navigationRoutes.searchApprovedLoansScreen} component={SearchApprovedLoansScreen} />
+            <Stack.Screen name={navigationRoutes.searchUnapprovedLoansScreen} component={SearchUnapprovedLoansScreen} />
         </Stack.Navigator>
     )
 }

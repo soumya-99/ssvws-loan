@@ -10,7 +10,7 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
 
-const SearchScreen = () => {
+const SearchTransactionChooseScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
@@ -20,7 +20,7 @@ const SearchScreen = () => {
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background
             }}>
-                <HeadingComp title="Search" subtitle="Choose desired search type" />
+                <HeadingComp title="Choose Transaction" subtitle="Choose desired search type" isBackEnabled />
                 <View style={{
                     minHeight: SCREEN_HEIGHT,
                     height: "auto",
@@ -29,47 +29,25 @@ const SearchScreen = () => {
                     gap: 10
                 }}>
                     <CollectionButtonsWrapper>
-                        {/* <CollectionButton
-                            icon={"clipboard-text-search-outline"}
-                            text="Search By Group"
-                            color={theme.colors.tertiaryContainer}
-                            textColor={theme.colors.onTertiaryContainer}
-                            onPress={() => {
-                                navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.searchByGroupScreen
-                                }))
-                            }}
-                        /> */}
                         <CollectionButton
-                            icon={"account-search-outline"}
-                            text="Search By Member"
+                            icon={"check-outline"}
+                            text="Approved"
                             color={theme.colors.secondaryContainer}
                             textColor={theme.colors.onSecondaryContainer}
                             onPress={() => {
                                 navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.searchByMemberScreen
+                                    name: navigationRoutes.searchApprovedLoansScreen
                                 }))
                             }}
                         />
                         <CollectionButton
-                            icon={"account-search-outline"}
-                            text="Search By CO"
+                            icon={"close-outline"}
+                            text="Un-approved"
                             color={theme.colors.tertiaryContainer}
                             textColor={theme.colors.onTertiaryContainer}
                             onPress={() => {
                                 navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.searchByCOScreen
-                                }))
-                            }}
-                        />
-                        <CollectionButton
-                            icon={"bank-transfer"}
-                            text="Search Transaction"
-                            color={theme.colors.secondaryContainer}
-                            textColor={theme.colors.onSecondaryContainer}
-                            onPress={() => {
-                                navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.searchTransactionChooseScreen
+                                    name: navigationRoutes.searchUnapprovedLoansScreen
                                 }))
                             }}
                         />
@@ -80,6 +58,6 @@ const SearchScreen = () => {
     )
 }
 
-export default SearchScreen
+export default SearchTransactionChooseScreen
 
 const styles = StyleSheet.create({})

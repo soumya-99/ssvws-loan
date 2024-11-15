@@ -1,4 +1,4 @@
-import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
+import { Alert, Linking, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
 import { Chip, Surface, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
@@ -9,20 +9,26 @@ import ButtonPaper from '../../components/ButtonPaper'
 import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../../routes/routes'
 import { formattedDate } from '../../utils/dateFormatter'
 import DatePicker from 'react-native-date-picker'
+import useGeoLocation from '../../hooks/useGeoLocation'
 // import LoadingOverlay from '../components/LoadingOverlay'
 
 const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
+    const isFocused = useIsFocused()
+
+    const { location, error } = useGeoLocation()
+    const [geolocationFetchedAddress, setGeolocationFetchedAddress] = useState(() => "")
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     console.log("LOGIN DATAAA =============", loginStore)
     console.log("4444444444444444444ffffffffffffffff", fetchedData)
+    console.log("LAT, LNG, ERR", location.latitude, location.longitude, error)
 
     const [loading, setLoading] = useState(() => false)
 
@@ -64,6 +70,31 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
             [field]: value,
         }))
     }
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert("Turn on Geolocation", "Give access to Location or Turn on GPS from app settings.", [{
+                text: "Go to Settings",
+                onPress: () => { navigation.dispatch(CommonActions.goBack()); Linking.openSettings() }
+            }])
+        }
+    }, [isFocused, error])
+
+    console.log("LOcAtion", location)
+    console.log("LOcAtion ERRR", error)
+
+    const fetchGeoLocaltionAddress = async () => {
+        console.log("REVERSE GEO ENCODING API CALLING...")
+        await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+            setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
+        })
+    }
+
+    useEffect(() => {
+        if (location?.latitude && location.longitude && approvalStatus === "U") {
+            fetchGeoLocaltionAddress()
+        }
+    }, [location])
 
     useEffect(() => {
         setFormData({
@@ -199,6 +230,9 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
             instl_paid: noOfInstallments,
             created_by: loginStore?.emp_id,
             modified_by: loginStore?.emp_id,
+            trn_lat: location.latitude,
+            trn_long: location.longitude,
+            trn_addr: geolocationFetchedAddress
         }
 
         console.log("PAYLOAD---RECOVERY", creds)
