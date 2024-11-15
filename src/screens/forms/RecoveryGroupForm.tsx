@@ -104,15 +104,15 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
                     <Divider />
 
-                    <InputPaper label="Total Principle Amount" maxLength={15} leftIcon='cash' keyboardType="numeric" value={formData.totalPrincipleAmount} onChangeText={(txt: any) => handleFormChange("totalPrincipleAmount", txt)} customStyle={{
+                    {/* <InputPaper label="Total Principle Amount" maxLength={15} leftIcon='cash' keyboardType="numeric" value={formData.totalPrincipleAmount} onChangeText={(txt: any) => handleFormChange("totalPrincipleAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
                     <InputPaper label="Total Interest Amount" maxLength={15} leftIcon='cash-plus' keyboardType="numeric" value={formData.totalInterestAmount} onChangeText={(txt: any) => handleFormChange("totalInterestAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled />
+                    }} disabled /> */}
 
-                    <InputPaper label="Total Amount (Rs.)" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.totalAmount} onChangeText={(txt: any) => handleFormChange("totalAmount", txt)} customStyle={{
+                    <InputPaper label="Total Outstanding (Rs.)" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.totalAmount} onChangeText={(txt: any) => handleFormChange("totalAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
