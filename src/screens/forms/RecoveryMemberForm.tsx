@@ -260,7 +260,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled /> */}
 
-                    <InputPaper label="Rate of Interest" leftIcon='percent-outline' keyboardType="number-pad" value={formData.totalPrinciple} onChangeText={(txt: any) => handleFormChange("roi", txt)} customStyle={{
+                    <InputPaper label="Rate of Interest" leftIcon='percent-outline' keyboardType="number-pad" value={formData.roi} onChangeText={(txt: any) => handleFormChange("roi", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
