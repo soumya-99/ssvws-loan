@@ -156,7 +156,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                             <View>
                                                 <Text style={{
                                                     color: theme.colors.green
-                                                }}>Total Amount - {+item?.intt_amt + +item?.prn_amt}{(+item?.intt_amt + +item?.prn_amt) && "/-"}</Text>
+                                                }}>Outstanding - {+item?.intt_amt + +item?.prn_amt}{(+item?.intt_amt + +item?.prn_amt) && "/-"}</Text>
                                             </View>
                                         }
                                         onPress={() => {

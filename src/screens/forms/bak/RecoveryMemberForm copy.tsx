@@ -11,8 +11,6 @@ import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../../routes/routes'
-import { formattedDate } from '../../utils/dateFormatter'
-import DatePicker from 'react-native-date-picker'
 // import LoadingOverlay from '../components/LoadingOverlay'
 
 const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
@@ -35,16 +33,13 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
     const [currentCreditAmtPrinciple, setCurrentCreditAmtPrinciple] = useState(() => "")
     const [currentCreditAmtInterest, setCurrentCreditAmtInterest] = useState(() => "")
 
-    const [remainingTotalOutstandingRes, setRemainingTotalOutstandingRes] = useState(() => "")
-
     const [formData, setFormData] = useState({
         clientName: "",
         installmentEndDate: "",
-        installmentPaid: "0",
+        installmentPaid: "",
         installmentEMI: "",
         loanId: "",
         memberCode: "",
-        roi: "",
         totalPrinciple: "",
         totalInterest: "",
         rateOfInterest: "",
@@ -52,11 +47,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
         periodMode: "",
         principleEMI: "",
         totalEMI: "",
-        tnxDate: new Date()
     })
-
-    const [openDate, setOpenDate] = useState(() => false)
-    const formattedTnxDate = formattedDate(formData?.tnxDate)
 
     const handleFormChange = (field: string, value: any) => {
         setFormData((prev) => ({
@@ -69,19 +60,17 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
         setFormData({
             clientName: fetchedData?.client_name || "",
             installmentEndDate: new Date(fetchedData?.instl_end_dt).toLocaleDateString() || "",
-            installmentPaid: fetchedData?.instl_paid || "0",
+            installmentPaid: fetchedData?.instl_paid || "",
             installmentEMI: fetchedData?.intt_emi || "",
             loanId: fetchedData?.loan_id || "",
             memberCode: fetchedData?.member_code || "",
-            roi: fetchedData?.curr_roi || "",
             totalPrinciple: fetchedData?.prn_amt || "",
             totalInterest: fetchedData?.intt_amt || "",
             rateOfInterest: fetchedData?.curr_roi || "",
             period: fetchedData?.period || "",
             periodMode: fetchedData?.period_mode || "",
             principleEMI: fetchedData?.prn_emi || "",
-            totalEMI: fetchedData?.tot_emi || "",
-            tnxDate: new Date()
+            totalEMI: fetchedData?.tot_emi || ""
         })
     }, [])
 
@@ -188,17 +177,15 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
             loan_id: fetchedData?.loan_id,
             credit: creditAmount,
             balance: fetchedData?.balance,
-            // intt_balance: fetchedData?.intt_balance,
-            intt_cal_amt: fetchedData?.intt_cal_amt,
-            intt_emi: Math.round(+currentCreditAmtInterest),
-            prn_emi: Math.round(+currentCreditAmtPrinciple),
-            // prn_recov: remainingTotalPrinciple,
-            // intt_recov: remainingTotalInterest,
-            // rem_outstanding: remainingTotalAmount,
-            last_trn_dt: formattedTnxDate,
+            intt_balance: fetchedData?.intt_balance,
+            intt_emi: (+currentCreditAmtInterest)?.toFixed(2),
+            prn_emi: (+currentCreditAmtPrinciple)?.toFixed(2),
+            prn_recov: remainingTotalPrinciple,
+            intt_recov: remainingTotalInterest,
+            rem_outstanding: remainingTotalAmount,
             instl_paid: noOfInstallments,
             created_by: loginStore?.emp_id,
-            modified_by: loginStore?.emp_id,
+            modified_by: loginStore?.emp_id
         }
 
         console.log("PAYLOAD---RECOVERY", creds)
@@ -206,9 +193,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
             ToastAndroid.show("Loan recovery EMI installment done.", ToastAndroid.SHORT)
             console.log("Loan recovery EMI installment done.", res?.data)
 
-            // navigation.goBack()
-            setRemainingTotalOutstandingRes(res?.data?.outstanding)
-            setCreditAmount(() => "")
+            navigation.goBack()
         }).catch(err => {
             ToastAndroid.show("Some error occurred while submitting EMI.", ToastAndroid.SHORT)
             console.log("Some error occurred while submitting EMI.", err)
@@ -252,19 +237,15 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    {/* <InputPaper label="Total Principle" leftIcon='cash-multiple' keyboardType="number-pad" value={formData.totalPrinciple} onChangeText={(txt: any) => handleFormChange("totalPrinciple", txt)} customStyle={{
+                    <InputPaper label="Total Principle" leftIcon='cash-multiple' keyboardType="number-pad" value={formData.totalPrinciple} onChangeText={(txt: any) => handleFormChange("totalPrinciple", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
                     <InputPaper label="Total Interest" leftIcon='cash-plus' keyboardType="number-pad" value={formData.totalInterest} onChangeText={(txt: any) => handleFormChange("totalInterest", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled /> */}
-
-                    <InputPaper label="Rate of Interest" leftIcon='percent-outline' keyboardType="number-pad" value={formData.totalPrinciple} onChangeText={(txt: any) => handleFormChange("roi", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <InputPaper label="Outstanding (Rs.)" leftIcon='cash-fast' keyboardType="number-pad" value={+formData.totalInterest + +formData.totalPrinciple} onChangeText={() => null} customStyle={{
+                    <InputPaper label="Net Total (Rs.)" leftIcon='cash-fast' keyboardType="number-pad" value={+formData.totalInterest + +formData.totalPrinciple} onChangeText={() => null} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
@@ -291,50 +272,22 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    {/* <InputPaper label="Principle EMI" leftIcon='cash-lock' keyboardType="number-pad" value={formData.principleEMI} onChangeText={(txt: any) => handleFormChange("principleEMI", txt)} customStyle={{
+                    <InputPaper label="Principle EMI" leftIcon='cash-lock' keyboardType="number-pad" value={formData.principleEMI} onChangeText={(txt: any) => handleFormChange("principleEMI", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
                     <InputPaper label="Interst EMI" leftIcon='cash-plus' keyboardType="number-pad" value={formData.installmentEMI} onChangeText={(txt: any) => handleFormChange("installmentEMI", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled /> */}
-
-                    <InputPaper label="EMI" leftIcon='account-cash-outline' keyboardType="number-pad" value={formData.totalEMI} onChangeText={(txt: any) => handleFormChange("totalEMI", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <View style={{
-                        marginHorizontal: 3
-                    }}>
-                        <ButtonPaper
-                            textColor={theme.colors.primary}
-                            onPress={() => setOpenDate(true)}
-                            mode="elevated"
-                            icon="calendar">
-                            {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
-                            CHOOSE TNX. DATE: {formData.tnxDate?.toLocaleDateString("en-GB")}
-                        </ButtonPaper>
-                    </View>
-                    <DatePicker
-                        maximumDate={new Date(new Date(fetchedData?.instl_end_dt))}
-                        modal
-                        mode="date"
-                        // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
-                        open={openDate}
-                        date={formData.tnxDate}
-                        onConfirm={date => {
-                            setOpenDate(false)
-                            handleFormChange("tnxDate", date)
-                        }}
-                        onCancel={() => {
-                            setOpenDate(false)
-                        }}
-                    />
+                    <InputPaper label="Total EMI" leftIcon='account-cash-outline' keyboardType="number-pad" value={formData.totalEMI} onChangeText={(txt: any) => handleFormChange("totalEMI", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
 
                     <Divider />
 
                     <InputPaper
-                        label="Amount"
+                        label="Credit Amount"
                         leftIcon='cash-check'
                         keyboardType="decimal-pad"
                         value={creditAmount}
@@ -351,7 +304,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         selectTextOnFocus
                     />
 
-                    {/* {creditAmount && (
+                    {creditAmount && (
                         <Surface style={{
                             padding: 10,
                             margin: 5,
@@ -389,44 +342,10 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 }}>{remainingTotalAmount}/-</Text>
                             </View>
                         </Surface>
-                    )} */}
+                    )
+                    }
 
-                    {remainingTotalOutstandingRes && (
-                        <Surface style={{
-                            padding: 10,
-                            margin: 5,
-                            borderRadius: 15,
-                        }} elevation={1}>
-                            <Text variant='titleLarge' style={{
-                                color: theme.colors.primary,
-                                marginBottom: 5
-                            }}>Remaining Amounts</Text>
-                            <Divider />
-
-                            <View style={styles.surfaceTextSpace}>
-                                <Text variant='bodyLarge' style={{
-                                    marginTop: 5
-                                }}>Total Outstanding</Text>
-                                <Text variant='bodyLarge' style={{
-                                    color: theme.colors.tertiary
-                                }}>{remainingTotalOutstandingRes}/-</Text>
-                            </View>
-
-                            <View style={{
-                                marginTop: 30
-                            }}>
-                                <ButtonPaper
-                                    textColor={theme.colors.primary}
-                                    onPress={() => navigation.dispatch(CommonActions.navigate(navigationRoutes.searchLoanRecoveryScreen))}
-                                    mode="elevated"
-                                    icon="arrow-left-bold-outline">
-                                    Go Back
-                                </ButtonPaper>
-                            </View>
-                        </Surface>
-                    )}
-
-                    {!remainingTotalOutstandingRes && <View style={{
+                    <View style={{
                         flexDirection: "row",
                         marginTop: 10,
                         justifyContent: "center",
@@ -444,7 +363,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         }} loading={loading} disabled={!+creditAmount || +remainingTotalAmount < 0}>
                             Collect Amount
                         </ButtonPaper>
-                    </View>}
+                    </View>
 
                 </View>
             </ScrollView>
