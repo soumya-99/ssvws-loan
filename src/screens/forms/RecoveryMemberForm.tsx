@@ -316,10 +316,10 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                         </ButtonPaper>
                     </View>
                     <DatePicker
-                        maximumDate={new Date(new Date(fetchedData?.instl_end_dt))}
+                        // maximumDate={new Date(new Date(fetchedData?.instl_end_dt))}
                         modal
                         mode="date"
-                        // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
+                        minimumDate={new Date(fetchedData?.last_trn_dt)}
                         open={openDate}
                         date={formData.tnxDate}
                         onConfirm={date => {
