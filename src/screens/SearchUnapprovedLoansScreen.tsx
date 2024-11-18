@@ -203,7 +203,7 @@ const SearchUnapprovedLoansScreen = () => {
                     title="Remarks"
                     hide={hideDialog}
                     titleStyle={{ textAlign: "center" }}
-                    btnSuccess={"REJECT"}
+                    btnSuccess={"DELETE"}
                     btnFail="CANCEL"
                     onFailure={onDialogFailure}
                     onSuccess={onDialogSuccess}>
