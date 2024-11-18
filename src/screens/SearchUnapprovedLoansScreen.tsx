@@ -90,6 +90,7 @@ const SearchUnapprovedLoansScreen = () => {
         setLoading(true)
 
         const creds = {
+            "particulars": remarks,
             "deleted_by": loginStore?.emp_id,
             "loan_id": loanId
         }
