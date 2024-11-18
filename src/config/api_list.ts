@@ -42,5 +42,6 @@ export const ADDRESSES = {
     LOAN_RECOVERY_EMI: `${BASE_URL}/recovery_transaction`,
 
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
+    DELETE_TNX: `${BASE_URL}/remove_trans`,
 
 }

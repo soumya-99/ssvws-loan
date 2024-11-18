@@ -31,20 +31,18 @@ const SearchUnapprovedLoansScreen = () => {
     const [filteredDataArray, setFilteredDataArray] = useState(() => [])
 
     const [selectedForm, setSelectedForm] = useState({
-        form_no: "",
-        branch_code: "",
-        member_code: ""
+        loan_id: "",
     })
 
-    const fetchPendingGRTForms = async () => {
+    const fetchLoans = async () => {
         setLoading(true)
 
         const creds = {
-            "loan_id": "",
-            "approval_status": ""
+            "loan_id": "0",
+            "approval_status": "U"
         }
         await axios.post(`${ADDRESSES.VIEW_LOAN_TNX}`, creds).then(res => {
-            // console.log(":::;;;:::", res?.data)
+            console.log(":::;;;:::", res?.data)
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
             }
@@ -56,20 +54,22 @@ const SearchUnapprovedLoansScreen = () => {
     }
 
     useEffect(() => {
-        fetchPendingGRTForms()
+        fetchLoans()
     }, [])
 
     useEffect(() => {
         setFilteredDataArray(formsData)
     }, [formsData])
 
-    const handleFormListClick = (formNo: any, brCode: any) => {
+    const handleFormListClick = (item: any, approvalStat: string) => {
         console.log("HIIIII")
         navigation.dispatch(CommonActions.navigate({
-            name: navigationRoutes.bmPendingLoanFormScreen,
+            name: navigationRoutes.recoveryMemberScreen,
             params: {
-                formNumber: formNo,
-                branchCode: brCode
+                member_details: item,
+                group_details: {
+                    status: approvalStat
+                }
             }
         }))
     }
@@ -86,39 +86,36 @@ const SearchUnapprovedLoansScreen = () => {
         // }
     }
 
-    const rejectForm = async (formNo: any, branchCode: any, memberCode: any) => {
+    const deleteLoan = async (loanId: any) => {
         setLoading(true)
 
         const creds = {
-            form_no: formNo,
-            branch_code: branchCode,
-            member_code: memberCode,
-            remarks: remarks,
-            deleted_by: loginStore?.emp_id
+            "deleted_by": loginStore?.emp_id,
+            "loan_id": loanId
         }
-        await axios.post(`${ADDRESSES.DELETE_FORM}`, creds).then(res => {
-            console.log("DELETE FORM ======== RESSS", res?.data)
+        await axios.post(`${ADDRESSES.DELETE_TNX}`, creds).then(res => {
+            console.log("DELETE LOAN ======== RESSS", res?.data)
             if (res?.data?.suc === 1) {
                 ToastAndroid.show("Form Deleted!", ToastAndroid.SHORT)
-                fetchPendingGRTForms()
+                fetchLoans()
                 setRemarks("")
                 hideDialog()
             }
         }).catch(err => {
             console.log("FORM REJ ERRRR ====", err)
-            ToastAndroid.show("Some error while rejecting form!", ToastAndroid.SHORT)
+            ToastAndroid.show("Some error while deleting loan!", ToastAndroid.SHORT)
         })
 
         setLoading(false)
     }
 
     const onDialogSuccess = () => {
-        Alert.alert("Delete Form?", `Are you sure you want to delete form ${selectedForm?.form_no}?`, [{
+        Alert.alert("Delete Loan?", `Are you sure you want to delete loan ${selectedForm?.loan_id}?`, [{
             text: "NO",
             onPress: () => null
         }, {
             text: "YES",
-            onPress: () => remarks ? rejectForm(selectedForm?.form_no, selectedForm?.branch_code, selectedForm?.member_code) : ToastAndroid.show("Please write remarks!", ToastAndroid.SHORT)
+            onPress: () => remarks ? deleteLoan(selectedForm?.loan_id) : ToastAndroid.show("Please write remarks!", ToastAndroid.SHORT)
         }])
     }
 
@@ -172,11 +169,11 @@ const SearchUnapprovedLoansScreen = () => {
                                 title={`${item?.client_name}`}
                                 description={
                                     <View>
-                                        <Text>Form No: {item?.form_no}</Text>
-                                        <Text>GRT Date - {item?.grt_date ? new Date(item?.grt_date).toLocaleDateString("en-GB") : "No Date"}</Text>
+                                        <Text>EMI: {item?.tot_emi}/-</Text>
+                                        <Text>Outstanding - {item?.outstanding}/-</Text>
                                     </View>
                                 }
-                                onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}
+                                onPress={() => handleFormListClick(item, item?.status)}
                                 left={props => <List.Icon {...props} icon="form-select" />}
                                 // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
                                 right={props => (
@@ -184,9 +181,7 @@ const SearchUnapprovedLoansScreen = () => {
                                         icon="trash-can-outline"
                                         onPress={() => {
                                             setSelectedForm({
-                                                form_no: item?.form_no,
-                                                branch_code: item?.branch_code,
-                                                member_code: item?.member_code
+                                                loan_id: item?.loan_id,
                                             });
                                             setVisible(true);
                                         }}

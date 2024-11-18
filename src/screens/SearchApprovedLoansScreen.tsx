@@ -1,126 +1,72 @@
-import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid, Alert } from 'react-native'
+import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
-import { Divider, IconButton, List, Searchbar, Text } from 'react-native-paper'
+import { Divider, Icon, IconButton, List, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
-import LoadingOverlay from '../components/LoadingOverlay'
-import DialogBox from '../components/DialogBox'
-import InputPaper from '../components/InputPaper'
+import RadioComp from '../components/RadioComp'
 
 const SearchApprovedLoansScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
+    const isFocused = useIsFocused()
 
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [loading, setLoading] = useState(() => false)
 
-    const [visible, setVisible] = useState(() => false)
-    const hideDialog = () => setVisible(() => false)
-
-    const [remarks, setRemarks] = useState(() => "")
-
     const [search, setSearch] = useState(() => "")
-    const [formsData, setFormsData] = useState(() => [])
-    const [filteredDataArray, setFilteredDataArray] = useState(() => [])
-
-    const [selectedForm, setSelectedForm] = useState({
-        form_no: "",
-        branch_code: "",
-        member_code: ""
-    })
-
-    const fetchPendingGRTForms = async () => {
-        setLoading(true)
-
-        await axios.get(`${ADDRESSES.FETCH_FORMS}?branch_code=${loginStore?.brn_code}`).then(res => {
-            // console.log(":::;;;:::", res?.data)
-            if (res?.data?.suc === 1) {
-                setFormsData(res?.data?.msg)
-            }
-        }).catch(err => {
-            ToastAndroid.show("Some error while fetching forms list!", ToastAndroid.SHORT)
-        })
-
-        setLoading(false)
-    }
-
-    useEffect(() => {
-        fetchPendingGRTForms()
-    }, [])
-
-    useEffect(() => {
-        setFilteredDataArray(formsData)
-    }, [formsData])
-
-    const handleFormListClick = (formNo: any, brCode: any) => {
-        console.log("HIIIII")
-        navigation.dispatch(CommonActions.navigate({
-            name: navigationRoutes.bmPendingLoanFormScreen,
-            params: {
-                formNumber: formNo,
-                branchCode: brCode
-            }
-        }))
-    }
+    const [formsData, setFormsData] = useState<any[]>(() => [])
+    // const [isApproved, setIsApproved] = useState<string>(() => "U")
 
     const onChangeSearch = (query: string) => {
-        // if (/^\d*$/.test(query)) {
         setSearch(query)
-        const filteredData = formsData.filter((item) => {
-            return item?.client_name?.toString()?.toLowerCase().includes(query?.toLowerCase())
-        })
-        setFilteredDataArray(filteredData)
-        // } else {
-        //     setFilteredDataArray(formsData)
-        // }
     }
 
-    const rejectForm = async (formNo: any, branchCode: any, memberCode: any) => {
+    // useEffect(() => {
+    //     setFormsData(() => [])
+    // }, [isApproved])
+
+    useEffect(() => {
+        setSearch("")
+        setFormsData(() => [])
+    }, [isFocused])
+
+    const handleSearch = async () => {
         setLoading(true)
 
         const creds = {
-            form_no: formNo,
-            branch_code: branchCode,
-            member_code: memberCode,
-            remarks: remarks,
-            deleted_by: loginStore?.emp_id
+            "loan_id": search,
+            "approval_status": "A"
         }
-        await axios.post(`${ADDRESSES.DELETE_FORM}`, creds).then(res => {
-            console.log("DELETE FORM ======== RESSS", res?.data)
+
+        await axios.post(`${ADDRESSES.VIEW_LOAN_TNX}`, creds).then(res => {
             if (res?.data?.suc === 1) {
-                ToastAndroid.show("Form Deleted!", ToastAndroid.SHORT)
-                fetchPendingGRTForms()
-                setRemarks("")
-                hideDialog()
+                setFormsData(res?.data?.msg)
+                console.log("===++=++====", res?.data)
             }
         }).catch(err => {
-            console.log("FORM REJ ERRRR ====", err)
-            ToastAndroid.show("Some error while rejecting form!", ToastAndroid.SHORT)
+            ToastAndroid.show("Some error while searching loans!", ToastAndroid.SHORT)
         })
-
         setLoading(false)
     }
 
-    const onDialogSuccess = () => {
-        Alert.alert("Delete Form?", `Are you sure you want to delete form ${selectedForm?.form_no}?`, [{
-            text: "NO",
-            onPress: () => null
-        }, {
-            text: "YES",
-            onPress: () => remarks ? rejectForm(selectedForm?.form_no, selectedForm?.branch_code, selectedForm?.member_code) : ToastAndroid.show("Please write remarks!", ToastAndroid.SHORT)
-        }])
-    }
-
-    const onDialogFailure = () => {
-        setRemarks("")
-        hideDialog()
+    const handleFormListClick = (item: any, approvalStat: string) => {
+        console.log("HIIIII")
+        navigation.dispatch(CommonActions.navigate({
+            name: navigationRoutes.recoveryMemberScreen,
+            params: {
+                member_details: item,
+                group_details: {
+                    status: approvalStat
+                }
+            }
+        }))
     }
 
     return (
@@ -131,30 +77,83 @@ const SearchApprovedLoansScreen = () => {
                 height: 'auto',
             }} keyboardShouldPersistTaps="handled">
                 <HeadingComp title="Approved Loans" subtitle="Find any user to see his/her loan details" isBackEnabled />
-
                 <View style={{
                     paddingHorizontal: 20
                 }}>
-                    {/* <Searchbar
-                        autoFocus
-                        placeholder={"Find by Member Name"}
-                        onChangeText={onChangeSearch}
-                        value={search}
-                        elevation={search ? 2 : 0}
-                        keyboardType={"default"}
-                        maxLength={18}
-                        style={{
-                            backgroundColor: theme.colors.tertiaryContainer,
-                            color: theme.colors.onTertiaryContainer,
-                        }}
-                    /> */}
+                    {/* <View style={{
+                        padding: 5,
+                        backgroundColor: theme.colors.errorContainer,
+                        borderTopLeftRadius: 20,
+                        borderBottomRightRadius: 20,
+                        marginBottom: 10
+                    }}>
+                        <RadioComp
+                            color={theme.colors.onErrorContainer}
+                            radioButtonColor={theme.colors.error}
+                            title=""
+                            icon="inbox-multiple"
+                            dataArray={[
+                                {
+                                    optionName: "Un-approved",
+                                    optionState: isApproved,
+                                    currentState: "U",
+                                    optionSetStateDispathFun: (value) => setIsApproved(value)
+                                },
+                                {
+                                    optionName: "Approved",
+                                    optionState: isApproved,
+                                    currentState: "A",
+                                    optionSetStateDispathFun: (value) => setIsApproved(value)
+                                }
+                            ]}
+                        />
+                    </View> */}
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                        alignItems: "center",
+                        gap: 5
+                    }}>
+
+                        <Searchbar
+                            autoFocus
+                            placeholder={"Search by Loan ID"}
+                            onChangeText={onChangeSearch}
+                            value={search}
+                            elevation={search ? 2 : 0}
+                            keyboardType={"default"}
+                            maxLength={30}
+                            style={{
+                                backgroundColor: theme.colors.tertiaryContainer,
+                                color: theme.colors.onTertiaryContainer,
+                                width: "84%",
+                                paddingVertical: 1,
+                                alignItems: "center",
+                                alignSelf: "center"
+                            }}
+                            loading={loading ? true : false}
+                            onClearIconPress={() => {
+                                setSearch(() => "")
+                                setFormsData(() => [])
+                            }}
+                        />
+
+                        {/* <ButtonPaper icon={"text-search"} mode='elevated' onPress={handleSearch} style={{
+                            marginTop: 10
+                        }}>
+                            Search
+                        </ButtonPaper> */}
+                        <IconButton icon={"magnify"} mode='contained' onPress={() => search && handleSearch()} size={35} style={{
+                            borderTopLeftRadius: 10
+                        }} />
+                    </View>
                 </View>
 
                 <View style={{
                     padding: 20,
                     paddingBottom: 120
                 }}>
-                    {filteredDataArray?.map((item, i) => (
+                    {formsData?.map((item, i) => (
                         <React.Fragment key={i}>
                             <List.Item
                                 titleStyle={{
@@ -167,55 +166,38 @@ const SearchApprovedLoansScreen = () => {
                                 title={`${item?.client_name}`}
                                 description={
                                     <View>
-                                        <Text>Form No: {item?.form_no}</Text>
-                                        <Text>GRT Date - {item?.grt_date ? new Date(item?.grt_date).toLocaleDateString("en-GB") : "No Date"}</Text>
+                                        <Text>EMI: {item?.tot_emi}/-</Text>
+                                        <Text>Outstanding - {item?.outstanding}/-</Text>
                                     </View>
                                 }
-                                onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}
+                                onPress={() => handleFormListClick(item, item?.status)}
                                 left={props => <List.Icon {...props} icon="form-select" />}
-                                // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
-                                right={props => (
-                                    <IconButton
-                                        icon="trash-can-outline"
-                                        onPress={() => {
-                                            setSelectedForm({
-                                                form_no: item?.form_no,
-                                                branch_code: item?.branch_code,
-                                                member_code: item?.member_code
-                                            });
-                                            setVisible(true);
-                                        }}
-                                        size={28}
-                                        iconColor={theme.colors.error}
-                                        style={{
-                                            alignSelf: 'center'
-                                        }}
-                                    />
-                                )}
+                            // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
+                            // right={props => (
+                            //     <IconButton
+                            //         icon="trash-can-outline"
+                            //         onPress={() => {
+                            //             setSelectedForm({
+                            //                 form_no: item?.form_no,
+                            //                 branch_code: item?.branch_code,
+                            //                 member_code: item?.member_code
+                            //             });
+                            //             setVisible(true);
+                            //         }}
+                            //         size={28}
+                            //         iconColor={theme.colors.error}
+                            //         style={{
+                            //             alignSelf: 'center'
+                            //         }}
+                            //     />
+                            // )}
                             />
                             <Divider />
                         </React.Fragment>
                     ))}
                 </View>
-                <DialogBox
-                    visible={visible}
-                    title="Remarks"
-                    hide={hideDialog}
-                    titleStyle={{ textAlign: "center" }}
-                    btnSuccess={"REJECT"}
-                    btnFail="CANCEL"
-                    onFailure={onDialogFailure}
-                    onSuccess={onDialogSuccess}>
-                    <View>
-                        {/* <Text variant='bodyLarge'>Reason</Text> */}
-                        <InputPaper label="Write Remarks" multiline leftIcon='comment-remove-outline' value={remarks} onChangeText={(txt: any) => setRemarks(txt)} customStyle={{
-                            backgroundColor: theme.colors.surface,
-                            minHeight: 95,
-                        }} />
-                    </View>
-                </DialogBox>
             </ScrollView>
-            {loading && <LoadingOverlay />}
+            {/* {loading && <LoadingOverlay />} */}
         </SafeAreaView>
     )
 }

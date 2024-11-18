@@ -16,7 +16,7 @@ import DatePicker from 'react-native-date-picker'
 import useGeoLocation from '../../hooks/useGeoLocation'
 // import LoadingOverlay from '../components/LoadingOverlay'
 
-const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
+const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const isFocused = useIsFocused()
@@ -91,7 +91,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
     }
 
     useEffect(() => {
-        if (location?.latitude && location.longitude && approvalStatus === "U") {
+        if (location?.latitude && location.longitude && approvalStatus === "A") {
             fetchGeoLocaltionAddress()
         }
     }, [location])
@@ -251,6 +251,10 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
         setLoading(false)
     }
 
+    const inputDisableLogic = () => {
+        return approvalStatus === "U"
+    }
+
     return (
         <SafeAreaView>
             <ScrollView keyboardShouldPersistTaps="handled" style={{
@@ -344,7 +348,8 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                             textColor={theme.colors.primary}
                             onPress={() => setOpenDate(true)}
                             mode="elevated"
-                            icon="calendar">
+                            icon="calendar"
+                            disabled={inputDisableLogic()}>
                             {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
                             CHOOSE TNX. DATE: {formData.tnxDate?.toLocaleDateString("en-GB")}
                         </ButtonPaper>
@@ -383,6 +388,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus = "U" }) => {
                             backgroundColor: theme.colors.background,
                         }}
                         selectTextOnFocus
+                        disabled={inputDisableLogic()}
                     />
 
                     {/* {creditAmount && (
