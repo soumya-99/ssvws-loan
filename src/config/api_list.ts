@@ -43,5 +43,5 @@ export const ADDRESSES = {
 
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
     DELETE_TNX: `${BASE_URL}/remove_trans`,
-
+    GET_BANKS: `${BASE_URL}/get_bank`,
 }

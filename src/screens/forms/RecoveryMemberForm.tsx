@@ -14,6 +14,7 @@ import navigationRoutes from '../../routes/routes'
 import { formattedDate } from '../../utils/dateFormatter'
 import DatePicker from 'react-native-date-picker'
 import useGeoLocation from '../../hooks/useGeoLocation'
+import RadioComp from '../../components/RadioComp'
 // import LoadingOverlay from '../components/LoadingOverlay'
 
 const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
@@ -42,6 +43,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
     const [currentCreditAmtInterest, setCurrentCreditAmtInterest] = useState(() => "")
 
     const [remainingTotalOutstandingRes, setRemainingTotalOutstandingRes] = useState(() => "")
+    const [banks, setBanks] = useState([])
 
     const [formData, setFormData] = useState({
         clientName: "",
@@ -58,10 +60,16 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
         periodMode: "",
         principleEMI: "",
         totalEMI: "",
-        tnxDate: new Date()
+        tnxDate: new Date(),
+        txnMode: "C",
+        bankName: "",
+        bankId: "",
+        chequeId: "",
+        chequeDate: new Date(),
     })
 
     const [openDate, setOpenDate] = useState(() => false)
+    const [openDate2, setOpenDate2] = useState(() => false)
     const formattedTnxDate = formattedDate(formData?.tnxDate)
 
     const handleFormChange = (field: string, value: any) => {
@@ -112,7 +120,12 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
             periodMode: fetchedData?.period_mode || "",
             principleEMI: fetchedData?.prn_emi || "",
             totalEMI: fetchedData?.tot_emi || "",
-            tnxDate: new Date()
+            tnxDate: new Date(),
+            txnMode: "C",
+            bankName: "",
+            bankId: "",
+            chequeId: "",
+            chequeDate: new Date(),
         })
     }, [])
 
@@ -223,6 +236,11 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
             intt_cal_amt: fetchedData?.intt_cal_amt,
             intt_emi: Math.round(+currentCreditAmtInterest),
             prn_emi: Math.round(+currentCreditAmtPrinciple),
+
+            tr_mode: formData?.txnMode || "",
+            bank_name: formData?.bankId || "",
+            cheque_id: formData?.chequeId || "",
+            chq_dt: formattedDate(formData?.chequeDate) || "",
             // prn_recov: remainingTotalPrinciple,
             // intt_recov: remainingTotalInterest,
             // rem_outstanding: remainingTotalAmount,
@@ -250,6 +268,26 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
 
         setLoading(false)
     }
+
+    const fetchBanks = async () => {
+        setBanks([]);
+        setLoading(true)
+        await axios.get(`${ADDRESSES.GET_BANKS}`).then(res => {
+            console.log("LALALALLA", res?.data)
+            if (res?.data?.suc === 1) {
+                res?.data?.msg?.map((item, _) => (
+                    setBanks(prev => [...prev, { title: item?.bank_name, func: () => { handleFormChange("bankName", item?.bank_name); handleFormChange("bankId", item?.bank_code) } }])
+                ))
+            }
+        }).catch(err => {
+            ToastAndroid.show("Some error while fetching Sub Purposes of Loan!", ToastAndroid.SHORT)
+        })
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchBanks()
+    }, [])
 
     const inputDisableLogic = () => {
         return approvalStatus === "U"
@@ -371,6 +409,74 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
                     />
 
                     <Divider />
+
+                    <RadioComp
+                        title="Txn. Mode"
+                        icon="bank-transfer"
+                        dataArray={[
+                            {
+                                optionName: "CASH",
+                                optionState: formData.txnMode,
+                                currentState: "C",
+                                optionSetStateDispathFun: (e) => handleFormChange("txnMode", e)
+                            },
+                            {
+                                optionName: "BANK",
+                                optionState: formData.txnMode,
+                                currentState: "B",
+                                optionSetStateDispathFun: (e) => handleFormChange("txnMode", e)
+                            },
+                        ]}
+                    />
+
+                    {
+                        formData?.txnMode === "B" &&
+                        <>
+                            <List.Item
+                                title="Banks"
+                                description={`Bank: ${formData.bankName}`}
+                                left={props => <List.Icon {...props} icon="bank-outline" />}
+                                right={props => {
+                                    return <MenuPaper menuArrOfObjects={banks} />
+                                }}
+                                descriptionStyle={{
+                                    color: theme.colors.tertiary,
+                                }}
+                            />
+
+                            <InputPaper label="Cheque No." leftIcon='cash-fast' keyboardType="numeric" value={formData.chequeId} onChangeText={(txt: any) => handleFormChange("chequeId", txt)} customStyle={{
+                                backgroundColor: theme.colors.background,
+                            }} />
+
+                            <View style={{
+                                marginHorizontal: 3
+                            }}>
+                                <ButtonPaper
+                                    textColor={theme.colors.primary}
+                                    onPress={() => setOpenDate2(true)}
+                                    mode="elevated"
+                                    icon="calendar">
+                                    {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
+                                    CHEQUE DATE: {formData.chequeDate?.toLocaleDateString("en-GB")}
+                                </ButtonPaper>
+                            </View>
+                            <DatePicker
+                                // maximumDate={new Date(new Date(fetchedData?.instl_end_dt))}
+                                modal
+                                mode="date"
+                                // minimumDate={new Date(fetchedData?.last_trn_dt)}
+                                open={openDate2}
+                                date={formData.chequeDate}
+                                onConfirm={date => {
+                                    setOpenDate2(false)
+                                    handleFormChange("chequeDate", date)
+                                }}
+                                onCancel={() => {
+                                    setOpenDate2(false)
+                                }}
+                            />
+                        </>
+                    }
 
                     <InputPaper
                         label="Amount"
