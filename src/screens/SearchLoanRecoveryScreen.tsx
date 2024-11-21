@@ -62,7 +62,7 @@ const SearchLoanRecoveryScreen = () => {
                 minHeight: SCREEN_HEIGHT,
                 height: 'auto',
             }} keyboardShouldPersistTaps="handled">
-                <HeadingComp title="Loan Recovery" subtitle="Find group" isBackEnabled />
+                <HeadingComp title="Loan Recovery" subtitle="Find group" />
                 <View style={{
                     paddingHorizontal: 20
                 }}>
