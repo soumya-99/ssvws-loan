@@ -16,6 +16,7 @@ import DatePicker from 'react-native-date-picker'
 import useGeoLocation from '../../hooks/useGeoLocation'
 import RadioComp from '../../components/RadioComp'
 // import LoadingOverlay from '../components/LoadingOverlay'
+import ThermalPrinterModule from 'react-native-thermal-printer'
 
 const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
     const theme = usePaperColorScheme()
@@ -71,6 +72,8 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
     const [openDate, setOpenDate] = useState(() => false)
     const [openDate2, setOpenDate2] = useState(() => false)
     const formattedTnxDate = formattedDate(formData?.tnxDate)
+
+    // let recoveryResponse: Object = {}
 
     const handleFormChange = (field: string, value: any) => {
         setFormData((prev) => ({
@@ -210,29 +213,52 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
         }
     }, [creditAmount, formData.totalInterest, formData.totalPrinciple]);
 
+    const handlePrint = async (data: any) => {
+        console.log("Called Printer...")
+        setLoading(true)
+        const text =
+            `[C]SSVWS\n` +
+            `[C]RECEIPT\n` +
+            `[C]${data?.branch_name}\n` +
+            `[C]=====================\n` +
+            `[L]TXN. ID[C]:[R]${data?.tnx_id}\n` +
+            `[L]TXN. DATE[C]:[R]${new Date(data?.tnx_date).toLocaleDateString("en-GB")}\n` +
+            // `[L]RCPT DATE[C]:[R]${new Date().toLocaleDateString("en-GB")}\n` +
+            `[L]RCPT TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
+            `[L]GROUP[C]:[R]${(data?.group_name as string)?.slice(0, 10)}\n` +
+            // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
+            `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
+            `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
+            `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
+            `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
+            `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
+            `[C]==========X==========\n`;
+        // `[L]BRANCH[C]:[R]\n` +
+        await ThermalPrinterModule.printBluetooth({
+            payload: text,
+            printerNbrCharactersPerLine: 32,
+            printerDpi: 120,
+            printerWidthMM: 58,
+            mmFeedPaper: 25,
+        }).then(res => {
+            console.log("RES", res)
+        }).catch(err => {
+            console.log("ERR", err)
+        })
+
+        console.log("Called Printer...2")
+        setLoading(false)
+    }
+
     const sendRecoveryEMI = async () => {
         setLoading(true)
-
-        // const creds = {
-        //     instl_paid: noOfInstallments,
-        //     modified_by: loginStore?.emp_id,
-        //     loan_id: formData.loanId,
-        //     branch_code: loginStore?.brn_code,
-        //     credit: creditAmount,
-        //     prn_recov: remainingTotalPrinciple,
-        //     intt_recov: remainingTotalInterest,
-        //     balance: "0", //! change in some time EEEEEEEERRRRRRRRRRRRR
-        //     intt_balance: "0", //! change in some time EEEEEEEERRRRRRRRRRRRR
-        //     // tr_type: "R",
-        //     created_by: loginStore?.emp_id,
-        // }
 
         const creds = {
             branch_code: loginStore?.brn_code,
             loan_id: fetchedData?.loan_id,
             credit: creditAmount,
             balance: fetchedData?.balance,
-            // intt_balance: fetchedData?.intt_balance,
+
             intt_cal_amt: fetchedData?.intt_cal_amt,
             intt_emi: Math.round(+currentCreditAmtInterest),
             prn_emi: Math.round(+currentCreditAmtPrinciple),
@@ -241,9 +267,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
             bank_name: formData?.bankId || "",
             cheque_id: formData?.chequeId || "",
             chq_dt: formattedDate(formData?.chequeDate) || "",
-            // prn_recov: remainingTotalPrinciple,
-            // intt_recov: remainingTotalInterest,
-            // rem_outstanding: remainingTotalAmount,
+
             last_trn_dt: formattedTnxDate,
             instl_paid: noOfInstallments,
             created_by: loginStore?.emp_id,
@@ -259,7 +283,9 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
             console.log("Loan recovery EMI installment done.", res?.data)
 
             // navigation.goBack()
-            setRemainingTotalOutstandingRes(res?.data?.outstanding)
+            // recoveryResponse = res?.data?.msg[0] as any
+            handlePrint(res?.data?.msg[0])
+            setRemainingTotalOutstandingRes(res?.data?.msg[0]?.outstanding)
             setCreditAmount(() => "")
         }).catch(err => {
             ToastAndroid.show("Some error occurred while submitting EMI.", ToastAndroid.SHORT)
@@ -389,7 +415,7 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
                             icon="calendar"
                             disabled={inputDisableLogic()}>
                             {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
-                            CHOOSE TNX. DATE: {formData.tnxDate?.toLocaleDateString("en-GB")}
+                            CHOOSE TXN. DATE: {formData.tnxDate?.toLocaleDateString("en-GB")}
                         </ButtonPaper>
                     </View>
                     <DatePicker
@@ -587,8 +613,8 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
                                 text: "Yes"
                             }])
 
-                        }} loading={loading} disabled={!+creditAmount || +remainingTotalAmount < 0}>
-                            Collect Amount
+                        }} loading={loading} disabled={!+creditAmount || +remainingTotalAmount < 0 || loading}>
+                            {!loading ? "Collect Amount" : "DON'T CLOSE THIS PAGE..."}
                         </ButtonPaper>
                     </View>}
 
