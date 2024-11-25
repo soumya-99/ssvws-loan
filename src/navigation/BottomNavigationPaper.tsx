@@ -139,7 +139,7 @@ function BottomNavigationPaper() {
                     : (null)
             }
 
-            {checkBMOrCOFlag === 1 && <Tab.Screen
+            <Tab.Screen
                 name={navigationRoutes.loanRecoveryNavigation}
                 component={LoanRecoveryNavigation}
                 options={{
@@ -155,7 +155,7 @@ function BottomNavigationPaper() {
                             <MaterialCommunityIcons name="refresh-circle" color={color} size={26} />
                         ),
                 }}
-            />}
+            />
 
             <Tab.Screen
                 name={navigationRoutes.searchNavigation}
