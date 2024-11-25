@@ -7,6 +7,7 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 const HeadingComp = ({
     title,
     subtitle,
+    background = "",
     isBackEnabled = false,
 }) => {
     const theme = usePaperColorScheme()
@@ -14,7 +15,7 @@ const HeadingComp = ({
 
     return (
         <View style={{
-            backgroundColor: theme.colors.primaryContainer,
+            backgroundColor: background || theme.colors.primaryContainer,
             margin: 20,
             paddingVertical: 30,
             borderTopLeftRadius: 30,
