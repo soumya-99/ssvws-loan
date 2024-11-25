@@ -22,15 +22,15 @@ const HomeScreen = () => {
     const [refreshing, setRefreshing] = useState(() => false)
     const [loading, setLoading] = useState(() => false)
 
-    const [openDate, setOpenDate] = useState(() => false)
-    const [choosenDate, setChoosenDate] = useState(() => new Date())
-    const formattedChoosenDate = formattedDate(choosenDate)
-
     const [currentTime, setCurrentTime] = useState(new Date());
 
     const [noOfGrtForms, setNoOfGrtForms] = useState(() => "")
     const [totalCashRecovery, setTotalCashRecovery] = useState(() => "")
     const [totalBankRecovery, setTotalBankRecovery] = useState(() => "")
+
+    const [openDate2, setOpenDate2] = useState(false)
+    const [choosenDate, setChoosenDate] = useState(new Date())
+    const formattedChoosenDate = formattedDate(choosenDate)
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -168,22 +168,20 @@ const HomeScreen = () => {
                                 justifyContent: 'center',
                                 alignItems: "center"
                             }}>
-                                <IconButton icon="calendar-month-outline" iconColor={theme.colors.onTertiaryContainer} onPress={() => setOpenDate(true)} />
-                                <DatePicker
-                                    // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
+                                <IconButton icon="calendar-month-outline" iconColor={theme.colors.onTertiaryContainer} onPress={() => setOpenDate2(true)} />
+                                {/* <DatePicker
                                     modal
                                     mode="date"
-                                    // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
-                                    open={openDate}
+                                    open={openDate2}
                                     date={choosenDate}
                                     onConfirm={date => {
-                                        setOpenDate(false)
                                         setChoosenDate(date)
+                                        setOpenDate2(false)
                                     }}
                                     onCancel={() => {
-                                        setOpenDate(false)
+                                        setOpenDate2(false)
                                     }}
-                                />
+                                /> */}
                             </View>
                             <View>
                                 <Icon source="arrow-left-thin" size={25} color={theme.colors.onSurface} />
@@ -193,34 +191,6 @@ const HomeScreen = () => {
                                 <Text variant='titleSmall' style={{ color: theme.colors.secondary }}>{`CURRENT TIME: ${currentTime.toLocaleTimeString("en-GB")}`}</Text>
                             </View>
                         </View>
-
-                        {/* <View style={{
-                            height: 80,
-                            width: "100%",
-                            backgroundColor: theme.colors.surface,
-                            borderRadius: 0,
-                            alignItems: "center",
-                            paddingHorizontal: 15,
-                            flexDirection: "row",
-                            gap: 15
-                        }}>
-                            <View style={{
-                                backgroundColor: MD2Colors.green500,
-                                width: 53,
-                                height: 53,
-                                borderWidth: 5,
-                                borderColor: MD2Colors.green200,
-                                borderRadius: 150,
-                                alignItems: "center",
-                                justifyContent: "center"
-                            }}>
-                                <Icon source="format-list-numbered" size={25} color={theme.colors.surface} />
-                            </View>
-                            <View>
-                                <Text variant='titleMedium' style={{ color: MD2Colors.green500 }}>{`No. of GRTs`}</Text>
-                                <Text variant='titleSmall' style={{ color: theme.colors.secondary }}>{`${12} Forms`}</Text>
-                            </View>
-                        </View> */}
 
                         <ListCard
                             title={`No. of GRTs`}
@@ -247,70 +217,9 @@ const HomeScreen = () => {
                             iconViewBorderColor={MD2Colors.blue200}
                         />
 
-                        {/* <View style={{
-                            height: 80,
-                            width: "100%",
-                            backgroundColor: theme.colors.surface,
-                            borderRadius: 0,
-                            alignItems: "center",
-                            paddingHorizontal: 15,
-                            flexDirection: "row",
-                            gap: 15
-                        }}>
-                            <View style={{
-                                backgroundColor: MD2Colors.pink500,
-                                width: 53,
-                                height: 53,
-                                borderWidth: 5,
-                                borderColor: MD2Colors.pink200,
-                                borderRadius: 150,
-                                alignItems: "center",
-                                justifyContent: "center"
-                            }}>
-                                <Icon source="cash" size={25} color={theme.colors.surface} />
-                            </View>
-                            <View>
-                                <Text variant='titleMedium' style={{ color: MD2Colors.pink500 }}>{`Total Cash Recovery`}</Text>
-                                <Text variant='titleSmall' style={{ color: theme.colors.secondary }}>{`Rs. ${250000}/-`}</Text>
-                            </View>
-                        </View> */}
-
-                        {/* <View style={{
-                            height: 80,
-                            width: "100%",
-                            backgroundColor: theme.colors.surface,
-                            borderRadius: 20,
-                            borderTopRightRadius: 0,
-                            borderTopLeftRadius: 0,
-                            alignItems: "center",
-                            paddingHorizontal: 15,
-                            flexDirection: "row",
-                            gap: 15
-                        }}>
-                            <View style={{
-                                backgroundColor: MD2Colors.blue500,
-                                width: 53,
-                                height: 53,
-                                borderWidth: 5,
-                                borderColor: MD2Colors.blue200,
-                                borderRadius: 150,
-                                alignItems: "center",
-                                justifyContent: "center"
-                            }}>
-                                <Icon source="bank" size={25} color={theme.colors.surface} />
-                            </View>
-                            <View>
-                                <Text variant='titleMedium' style={{ color: "#039ff6" }}>{`Total Bank Recovery`}</Text>
-                                <Text variant='titleSmall' style={{ color: theme.colors.secondary }}>{`Rs. ${6208}/-`}</Text>
-                            </View>
-                        </View> */}
-
                     </View>
                 </View>
             </ScrollView>
-            {/* {loading && (
-                <LoadingOverlay />
-            )} */}
         </SafeAreaView>
     )
 }
