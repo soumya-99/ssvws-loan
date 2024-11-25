@@ -5,9 +5,14 @@ import RNRestart from 'react-native-restart'
 import { usePaperColorScheme } from '../theme/theme'
 import { useNavigation } from '@react-navigation/native'
 import HeadingComp from "../components/HeadingComp"
+import ListCard from "../components/ListCard"
 import { loginStorage } from '../storage/appStorage'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from 'react-native-normalize'
 import DatePicker from 'react-native-date-picker'
+import axios from 'axios'
+import { ADDRESSES } from '../config/api_list'
+import { formattedDate } from '../utils/dateFormatter'
+import LoadingOverlay from '../components/LoadingOverlay'
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
@@ -15,11 +20,17 @@ const HomeScreen = () => {
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [refreshing, setRefreshing] = useState(() => false)
+    const [loading, setLoading] = useState(() => false)
 
     const [openDate, setOpenDate] = useState(() => false)
     const [choosenDate, setChoosenDate] = useState(() => new Date())
+    const formattedChoosenDate = formattedDate(choosenDate)
 
     const [currentTime, setCurrentTime] = useState(new Date());
+
+    const [noOfGrtForms, setNoOfGrtForms] = useState(() => "")
+    const [totalCashRecovery, setTotalCashRecovery] = useState(() => "")
+    const [totalBankRecovery, setTotalBankRecovery] = useState(() => "")
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -41,6 +52,63 @@ const HomeScreen = () => {
         }, 2000)
     }, [])
 
+    const fetchDashboardDetails = async () => {
+        // setLoading(true)
+        const creds = {
+            emp_id: loginStore?.emp_id,
+            datetime: formattedChoosenDate
+        }
+        await axios.post(`${ADDRESSES.DASHBOARD_DETAILS}`, creds).then(res => {
+            console.log(">>>>>>>D<<<<<<<", res?.data)
+            setNoOfGrtForms(res?.data?.msg[0]?.no_of_grt)
+        }).catch(err => {
+            console.log("ERRRRR<<<<<D", err)
+        })
+        // setLoading(false)
+    }
+
+    const fetchDashboardCashRecoveryDetails = async () => {
+        // setLoading(true)
+        const creds = {
+            "branch_code": loginStore?.brn_code,
+            "tr_mode": "C",
+            "datetime": formattedChoosenDate,
+            "created_by": loginStore?.emp_id
+        }
+        console.log("CREDSSS C", creds)
+        await axios.post(`${ADDRESSES.DASHBOARD_CASH_RECOV_DETAILS}`, creds).then(res => {
+            console.log(">>>>>>>C<<<<<<<", res?.data)
+            setTotalCashRecovery(res?.data?.msg[0]?.tot_recov_cash)
+        }).catch(err => {
+            console.log("ERRRRR<<<<<C", err)
+        })
+        // setLoading(false)
+    }
+
+    const fetchDashboardBankRecoveryDetails = async () => {
+        // setLoading(true)
+        const creds = {
+            "branch_code": loginStore?.brn_code,
+            "tr_mode": "B",
+            "datetime": formattedChoosenDate,
+            "created_by": loginStore?.emp_id
+        }
+        console.log("CREDSSS B", creds)
+        await axios.post(`${ADDRESSES.DASHBOARD_BANK_RECOV_DETAILS}`, creds).then(res => {
+            console.log(">>>>>>>B<<<<<<<", res?.data)
+            setTotalBankRecovery(res?.data?.msg[0]?.tot_recov_bank)
+        }).catch(err => {
+            console.log("ERRRRR<<<<<B", err)
+        })
+        // setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchDashboardDetails()
+        fetchDashboardCashRecoveryDetails()
+        fetchDashboardBankRecoveryDetails()
+    }, [choosenDate])
+
     return (
         <SafeAreaView>
             {/* <ActivityIndicator size={'large'} /> */}
@@ -49,7 +117,7 @@ const HomeScreen = () => {
                 style={{
                     backgroundColor: theme.colors.background,
                     minHeight: SCREEN_HEIGHT,
-                    height: "auto"
+                    height: "auto",
                 }}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -70,7 +138,7 @@ const HomeScreen = () => {
                     <View style={{
                         backgroundColor: MD2Colors.blue50,
                         width: SCREEN_WIDTH / 1.1,
-                        height: SCREEN_HEIGHT / 1.70,
+                        height: SCREEN_HEIGHT / 1.65,
                         borderTopRightRadius: 30,
                         borderBottomLeftRadius: 30,
                         padding: 15,
@@ -97,6 +165,8 @@ const HomeScreen = () => {
                                 width: 53,
                                 height: 53,
                                 borderRadius: 150,
+                                justifyContent: 'center',
+                                alignItems: "center"
                             }}>
                                 <IconButton icon="calendar-month-outline" iconColor={theme.colors.onTertiaryContainer} onPress={() => setOpenDate(true)} />
                                 <DatePicker
@@ -124,13 +194,11 @@ const HomeScreen = () => {
                             </View>
                         </View>
 
-                        <View style={{
+                        {/* <View style={{
                             height: 80,
                             width: "100%",
                             backgroundColor: theme.colors.surface,
                             borderRadius: 0,
-                            // borderTopRightRadius: 0,
-                            // borderTopLeftRadius: 0,
                             alignItems: "center",
                             paddingHorizontal: 15,
                             flexDirection: "row",
@@ -152,9 +220,34 @@ const HomeScreen = () => {
                                 <Text variant='titleMedium' style={{ color: MD2Colors.green500 }}>{`No. of GRTs`}</Text>
                                 <Text variant='titleSmall' style={{ color: theme.colors.secondary }}>{`${12} Forms`}</Text>
                             </View>
-                        </View>
+                        </View> */}
 
-                        <View style={{
+                        <ListCard
+                            title={`No. of GRTs`}
+                            subtitle={`${noOfGrtForms || 0} Forms`}
+                            position={0}
+                            icon='format-list-numbered'
+                            iconViewColor={MD2Colors.green500}
+                            iconViewBorderColor={MD2Colors.green200}
+                        />
+                        <ListCard
+                            title={`Total Cash Recovery`}
+                            subtitle={`Rs. ${totalCashRecovery || 0}/-`}
+                            position={0}
+                            icon='cash'
+                            iconViewColor={MD2Colors.pink500}
+                            iconViewBorderColor={MD2Colors.pink200}
+                        />
+                        <ListCard
+                            title={`Total Bank Recovery`}
+                            subtitle={`Rs. ${totalBankRecovery || 0}/-`}
+                            position={-1}
+                            icon='bank'
+                            iconViewColor={MD2Colors.blue500}
+                            iconViewBorderColor={MD2Colors.blue200}
+                        />
+
+                        {/* <View style={{
                             height: 80,
                             width: "100%",
                             backgroundColor: theme.colors.surface,
@@ -180,9 +273,9 @@ const HomeScreen = () => {
                                 <Text variant='titleMedium' style={{ color: MD2Colors.pink500 }}>{`Total Cash Recovery`}</Text>
                                 <Text variant='titleSmall' style={{ color: theme.colors.secondary }}>{`Rs. ${250000}/-`}</Text>
                             </View>
-                        </View>
+                        </View> */}
 
-                        <View style={{
+                        {/* <View style={{
                             height: 80,
                             width: "100%",
                             backgroundColor: theme.colors.surface,
@@ -210,10 +303,14 @@ const HomeScreen = () => {
                                 <Text variant='titleMedium' style={{ color: "#039ff6" }}>{`Total Bank Recovery`}</Text>
                                 <Text variant='titleSmall' style={{ color: theme.colors.secondary }}>{`Rs. ${6208}/-`}</Text>
                             </View>
-                        </View>
+                        </View> */}
+
                     </View>
                 </View>
             </ScrollView>
+            {/* {loading && (
+                <LoadingOverlay />
+            )} */}
         </SafeAreaView>
     )
 }

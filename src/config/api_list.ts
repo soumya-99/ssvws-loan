@@ -44,4 +44,8 @@ export const ADDRESSES = {
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
     DELETE_TNX: `${BASE_URL}/remove_trans`,
     GET_BANKS: `${BASE_URL}/get_bank`,
+
+    DASHBOARD_DETAILS: `${BASE_URL}/dashboard_dtls`,
+    DASHBOARD_CASH_RECOV_DETAILS: `${BASE_URL}/dashboard_dtls_cash_recov`,
+    DASHBOARD_BANK_RECOV_DETAILS: `${BASE_URL}/dashboard_dtls_bank_recov`,
 }
