@@ -116,11 +116,17 @@ const HomeScreen = () => {
         // setLoading(false)
     }
 
+    // useEffect(() => {
+    //     fetchDashboardDetails()
+    //     fetchDashboardCashRecoveryDetails()
+    //     fetchDashboardBankRecoveryDetails()
+    // }, [choosenDate])
+
     useEffect(() => {
         fetchDashboardDetails()
         fetchDashboardCashRecoveryDetails()
         fetchDashboardBankRecoveryDetails()
-    }, [choosenDate])
+    }, [])
 
     return (
         <SafeAreaView>
