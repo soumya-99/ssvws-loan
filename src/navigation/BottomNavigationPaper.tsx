@@ -13,6 +13,7 @@ import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
 import useCurrentRouteName from "../hooks/useCurrentRoute"
 import LoanRecoveryNavigation from "./LoanRecoveryNavigation"
+import ReportsNavigation from "./ReportsNavigation"
 // import { loginStorage } from "../storage/appStorage"
 // import { LoginDataMessage } from "../models/api_types"
 
@@ -139,6 +140,24 @@ function BottomNavigationPaper() {
                 )
                     : (null)
             }
+
+            <Tab.Screen
+                name={navigationRoutes.reportsNavigation}
+                component={ReportsNavigation}
+                options={{
+                    tabBarLabel: "Reports",
+                    tabBarIcon: ({ color, focused }) =>
+                        !focused ? (
+                            <MaterialCommunityIcons
+                                name="table"
+                                color={color}
+                                size={26}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons name="table-headers-eye" color={color} size={26} />
+                        ),
+                }}
+            />
 
             <Tab.Screen
                 name={navigationRoutes.loanRecoveryNavigation}

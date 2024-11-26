@@ -9,6 +9,8 @@ const navigationRoutes = {
     groupNavigation: "GroupNavigation",
     groupFormScreen: "GroupFormScreen",
     bottomNavigationPaper: "BottomNavigationPaper",
+    reportsNavigation: "ReportsNavigation",
+    reportsChooseScreen: "ReportsChooseScreen",
     loanRecoveryNavigation: "LoanRecoveryNavigation",
     searchLoanRecoveryScreen: "SearchLoanRecoveryScreen",
     recoveryGroupScreen: "RecoveryGroupScreen",
