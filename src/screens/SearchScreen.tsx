@@ -1,5 +1,4 @@
 import { StyleSheet, SafeAreaView, View, ScrollView } from 'react-native'
-import { Text } from "react-native-paper"
 import React, { useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import HeadingComp from "../components/HeadingComp"
@@ -65,17 +64,6 @@ const SearchScreen = () => {
                         <CollectionButton
                             icon={"bank-transfer"}
                             text="Search Transaction"
-                            color={theme.colors.secondaryContainer}
-                            textColor={theme.colors.onSecondaryContainer}
-                            onPress={() => {
-                                navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.searchTransactionChooseScreen
-                                }))
-                            }}
-                        />
-                        <CollectionButton
-                            icon={"table-headers-eye"}
-                            text="Reports"
                             color={theme.colors.secondaryContainer}
                             textColor={theme.colors.onSecondaryContainer}
                             onPress={() => {

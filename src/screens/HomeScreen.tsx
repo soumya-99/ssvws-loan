@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl } from 'react-native'
+import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl, ToastAndroid } from 'react-native'
 import { Icon, IconButton, MD2Colors, Text } from "react-native-paper"
 import React, { useCallback, useEffect, useState } from 'react'
 import RNRestart from 'react-native-restart'
@@ -31,7 +31,7 @@ const HomeScreen = () => {
     const [totalCashRecovery, setTotalCashRecovery] = useState(() => "")
     const [totalBankRecovery, setTotalBankRecovery] = useState(() => "")
 
-    const [checkUser, setCheckUser] = useState(() => "Own")
+    const [checkUser, setCheckUser] = useState(() => "O")
 
     const [openDate2, setOpenDate2] = useState(false)
     const [choosenDate, setChoosenDate] = useState(new Date())
@@ -123,10 +123,70 @@ const HomeScreen = () => {
     // }, [choosenDate])
 
     useEffect(() => {
-        fetchDashboardDetails()
-        fetchDashboardCashRecoveryDetails()
-        fetchDashboardBankRecoveryDetails()
+        if (loginStore?.id === 1) { // CO
+            fetchDashboardDetails()
+            fetchDashboardCashRecoveryDetails()
+            fetchDashboardBankRecoveryDetails()
+        }
     }, [])
+
+    const handleFetchDashboardDetailsGRTBM = async () => {
+        const creds = {
+            flag: checkUser,
+            emp_id: checkUser === "O" ? loginStore?.emp_id : checkUser === "A" ? 0 : 0,
+            datetime: formattedChoosenDate,
+            branch_code: loginStore?.brn_code
+        }
+        await axios.post(`${ADDRESSES.DASHBOARD_DETAILS_BM}`, creds).then(res => {
+            setNoOfGrtForms(res?.data?.msg[0]?.no_of_grt)
+            console.log("----====----", res?.data)
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while fetching dashboard details BM.", ToastAndroid.SHORT)
+            console.log("Some Errr", err)
+        })
+    }
+
+    const handleFetchDashboardCashDetailsBM = async () => {
+        const creds = {
+            flag: checkUser,
+            emp_id: checkUser === "O" ? loginStore?.emp_id : checkUser === "A" ? 0 : 0,
+            tr_mode: "C",
+            datetime: formattedChoosenDate,
+            branch_code: loginStore?.brn_code
+        }
+        await axios.post(`${ADDRESSES.DASHBOARD_CASH_DETAILS_BM}`, creds).then(res => {
+            setTotalCashRecovery(res?.data?.msg[0]?.tot_recov_cash)
+            console.log("----====----CC", res?.data)
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while fetching dashboard details BM.", ToastAndroid.SHORT)
+            console.log("Some Errr", err)
+        })
+    }
+
+    const handleFetchDashboardBankDetailsBM = async () => {
+        const creds = {
+            flag: checkUser,
+            emp_id: checkUser === "O" ? loginStore?.emp_id : checkUser === "A" ? 0 : 0,
+            tr_mode: "B",
+            datetime: formattedChoosenDate,
+            branch_code: loginStore?.brn_code
+        }
+        await axios.post(`${ADDRESSES.DASHBOARD_BANK_DETAILS_BM}`, creds).then(res => {
+            setTotalBankRecovery(res?.data?.msg[0]?.tot_recov_bank)
+            console.log("----====----BB", res?.data)
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while fetching dashboard details BM.", ToastAndroid.SHORT)
+            console.log("Some Errr", err)
+        })
+    }
+
+    useEffect(() => {
+        if (loginStore?.id === 2) { // BM
+            handleFetchDashboardDetailsGRTBM()
+            handleFetchDashboardCashDetailsBM()
+            handleFetchDashboardBankDetailsBM()
+        }
+    }, [checkUser])
 
     return (
         <SafeAreaView>
@@ -179,13 +239,13 @@ const HomeScreen = () => {
                                     {
                                         optionName: "OWN",
                                         optionState: checkUser,
-                                        currentState: "Own", // bm id
+                                        currentState: "O", // bm emp_id -> 
                                         optionSetStateDispathFun: (e) => setCheckUser(e)
                                     },
                                     {
                                         optionName: "ALL",
                                         optionState: checkUser,
-                                        currentState: "All",
+                                        currentState: "A", // emp_id -> 0
                                         optionSetStateDispathFun: (e) => setCheckUser(e)
                                     },
                                 ]}

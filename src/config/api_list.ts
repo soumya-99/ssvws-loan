@@ -48,4 +48,7 @@ export const ADDRESSES = {
     DASHBOARD_DETAILS: `${BASE_URL}/dashboard_dtls`,
     DASHBOARD_CASH_RECOV_DETAILS: `${BASE_URL}/dashboard_dtls_cash_recov`,
     DASHBOARD_BANK_RECOV_DETAILS: `${BASE_URL}/dashboard_dtls_bank_recov`,
+    DASHBOARD_DETAILS_BM: `${BASE_URL}/dashboard_dtls_bm`,
+    DASHBOARD_CASH_DETAILS_BM: `${BASE_URL}/dashboard_dtls_cash_recov_bm`,
+    DASHBOARD_BANK_DETAILS_BM: `${BASE_URL}/dashboard_dtls_bank_recov_bm`,
 }

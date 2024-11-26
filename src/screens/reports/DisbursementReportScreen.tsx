@@ -43,69 +43,77 @@ const DisbursementReportScreen = () => {
                     paddingHorizontal: 20,
                     gap: 10
                 }}>
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            paddingHorizontal: 15,
-                            alignItems: "center",
-                            backgroundColor: theme.colors.tertiaryContainer,
-                            padding: 2,
-                            borderRadius: 12
-                        }}>
-                        <ButtonPaper
-                            textColor={theme.colors.onTertiaryContainer}
-                            onPress={() => setOpenFromDate(true)}
-                            mode="text">
-                            FROM: {fromDate?.toLocaleDateString("en-GB")}
-                        </ButtonPaper>
-                        <ButtonPaper
-                            textColor={theme.colors.onTertiaryContainer}
-                            onPress={() => setOpenToDate(true)}
-                            mode="text">
-                            TO: {toDate?.toLocaleDateString("en-GB")}
-                        </ButtonPaper>
+                    <View style={{
+                        backgroundColor: theme.colors.onSecondary,
+                        gap: 10,
+                        padding: 10,
+                        borderTopRightRadius: 20,
+                        borderBottomLeftRadius: 20
+                    }}>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                paddingHorizontal: 15,
+                                alignItems: "center",
+                                backgroundColor: theme.colors.tertiaryContainer,
+                                padding: 2,
+                                borderRadius: 12
+                            }}>
+                            <ButtonPaper
+                                textColor={theme.colors.onTertiaryContainer}
+                                onPress={() => setOpenFromDate(true)}
+                                mode="text">
+                                FROM: {fromDate?.toLocaleDateString("en-GB")}
+                            </ButtonPaper>
+                            <ButtonPaper
+                                textColor={theme.colors.onTertiaryContainer}
+                                onPress={() => setOpenToDate(true)}
+                                mode="text">
+                                TO: {toDate?.toLocaleDateString("en-GB")}
+                            </ButtonPaper>
 
-                        <DatePicker
-                            modal
-                            mode="date"
-                            // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
-                            open={openFromDate}
-                            date={fromDate}
-                            onConfirm={date => {
-                                setOpenFromDate(false)
-                                setFromDate(date)
-                            }}
-                            onCancel={() => {
-                                setOpenFromDate(false)
-                            }}
-                        />
-                        <DatePicker
-                            modal
-                            mode="date"
-                            open={openToDate}
-                            date={toDate}
-                            onConfirm={date => {
-                                setOpenToDate(false)
-                                setToDate(date)
-                            }}
-                            onCancel={() => {
-                                setOpenToDate(false)
-                            }}
-                        />
-                    </View>
+                            <DatePicker
+                                modal
+                                mode="date"
+                                // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
+                                open={openFromDate}
+                                date={fromDate}
+                                onConfirm={date => {
+                                    setOpenFromDate(false)
+                                    setFromDate(date)
+                                }}
+                                onCancel={() => {
+                                    setOpenFromDate(false)
+                                }}
+                            />
+                            <DatePicker
+                                modal
+                                mode="date"
+                                open={openToDate}
+                                date={toDate}
+                                onConfirm={date => {
+                                    setOpenToDate(false)
+                                    setToDate(date)
+                                }}
+                                onCancel={() => {
+                                    setOpenToDate(false)
+                                }}
+                            />
+                        </View>
 
-                    <View>
-                        <ButtonPaper
-                            onPress={() => null}
-                            mode="contained-tonal"
-                            buttonColor={theme.colors.secondaryContainer}
-                            textColor={theme.colors.onSecondaryContainer}
-                        // loading={isLoading}
-                        // disabled={isDisabled}
-                        >
-                            SUBMIT
-                        </ButtonPaper>
+                        <View>
+                            <ButtonPaper
+                                onPress={() => null}
+                                mode="contained-tonal"
+                                buttonColor={theme.colors.secondaryContainer}
+                                textColor={theme.colors.onSecondaryContainer}
+                            // loading={isLoading}
+                            // disabled={isDisabled}
+                            >
+                                SUBMIT
+                            </ButtonPaper>
+                        </View>
                     </View>
 
                     <View>
