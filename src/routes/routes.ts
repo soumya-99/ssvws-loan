@@ -11,6 +11,8 @@ const navigationRoutes = {
     bottomNavigationPaper: "BottomNavigationPaper",
     reportsNavigation: "ReportsNavigation",
     reportsChooseScreen: "ReportsChooseScreen",
+    recoveryReportScreen: "RecoveryReportScreen",
+    disbursementReportScreen: "DisbursementReportScreen",
     loanRecoveryNavigation: "LoanRecoveryNavigation",
     searchLoanRecoveryScreen: "SearchLoanRecoveryScreen",
     recoveryGroupScreen: "RecoveryGroupScreen",

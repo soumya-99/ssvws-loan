@@ -30,24 +30,24 @@ const ReportsChooseScreen = () => {
                 }}>
                     <CollectionButtonsWrapper>
                         <CollectionButton
-                            icon={"bank-transfer"}
-                            text="Search Transaction"
+                            icon={"table-refresh"}
+                            text="Recovery Report"
                             color={theme.colors.secondaryContainer}
                             textColor={theme.colors.onSecondaryContainer}
                             onPress={() => {
                                 navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.searchTransactionChooseScreen
+                                    name: navigationRoutes.recoveryReportScreen
                                 }))
                             }}
                         />
                         <CollectionButton
-                            icon={"table-headers-eye"}
-                            text="Reports"
+                            icon={"table-clock"}
+                            text="Disburse Report"
                             color={theme.colors.tertiaryContainer}
                             textColor={theme.colors.onTertiaryContainer}
                             onPress={() => {
                                 navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.searchTransactionChooseScreen
+                                    name: navigationRoutes.disbursementReportScreen
                                 }))
                             }}
                         />

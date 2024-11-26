@@ -143,7 +143,7 @@ const HomeScreen = () => {
                 }
             // onScroll={onScroll}
             >
-                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back ${loginStore?.id === 1 ? "Credit Officer" : "Branch Manager"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
+                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Credit Officer" : "Branch Manager"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
                 <View style={{
                     // paddingHorizontal: 20,
                     // paddingBottom: 120,
@@ -179,7 +179,7 @@ const HomeScreen = () => {
                                     {
                                         optionName: "OWN",
                                         optionState: checkUser,
-                                        currentState: "Own",
+                                        currentState: "Own", // bm id
                                         optionSetStateDispathFun: (e) => setCheckUser(e)
                                     },
                                     {

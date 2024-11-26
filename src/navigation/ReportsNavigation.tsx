@@ -1,12 +1,9 @@
 import React from 'react'
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import navigationRoutes from "../routes/routes"
-import HomeScreen from "../screens/HomeScreen"
-import GroupFormScreen from "../screens/GroupFormScreen"
-import BMPendingLoansScreen from '../screens/BMPendingLoansScreen'
-import BMPendingLoanFormScreen from '../screens/BMPendingLoanFormScreen'
-import GRTFormScreen from '../screens/GRTFormScreen'
 import ReportsChooseScreen from '../screens/reports/ReportsChooseScreen'
+import RecoveryReportScreen from '../screens/reports/RecoveryReportScreen'
+import DisbursementReportScreen from '../screens/reports/DisbursementReportScreen'
 
 export default function ReportsNavigation() {
     const Stack = createNativeStackNavigator()
@@ -14,6 +11,8 @@ export default function ReportsNavigation() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name={navigationRoutes.reportsChooseScreen} component={ReportsChooseScreen} />
+            <Stack.Screen name={navigationRoutes.recoveryReportScreen} component={RecoveryReportScreen} />
+            <Stack.Screen name={navigationRoutes.disbursementReportScreen} component={DisbursementReportScreen} />
 
         </Stack.Navigator>
     )

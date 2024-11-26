@@ -12,6 +12,7 @@ type ReportButtonProps = {
     withImage?: boolean
     imageSource?: string
     imageSourceObject?: ImageProps
+    disabled?: boolean
 }
 
 export default function CollectionButton({
@@ -23,6 +24,7 @@ export default function CollectionButton({
     imageSource,
     imageSourceObject,
     onPress,
+    disabled = false
 }: PropsWithChildren<ReportButtonProps>) {
 
     return (
@@ -38,7 +40,8 @@ export default function CollectionButton({
                 borderTopLeftRadius: 20,
                 borderBottomLeftRadius: 20,
                 backgroundColor: color,
-            }}>
+            }}
+            disabled={disabled}>
             <>
                 <IconButton icon={icon} iconColor={textColor} />
                 <Text style={{ textAlign: "center", color: textColor }}>{text}</Text>
