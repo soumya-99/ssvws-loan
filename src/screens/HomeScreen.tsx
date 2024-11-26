@@ -3,16 +3,19 @@ import { Icon, IconButton, MD2Colors, Text } from "react-native-paper"
 import React, { useCallback, useEffect, useState } from 'react'
 import RNRestart from 'react-native-restart'
 import { usePaperColorScheme } from '../theme/theme'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import HeadingComp from "../components/HeadingComp"
 import ListCard from "../components/ListCard"
 import { loginStorage } from '../storage/appStorage'
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from 'react-native-normalize'
+import normalize, { SCREEN_HEIGHT, SCREEN_WIDTH } from 'react-native-normalize'
 import DatePicker from 'react-native-date-picker'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
 import { formattedDate } from '../utils/dateFormatter'
 import LoadingOverlay from '../components/LoadingOverlay'
+import RadioComp from '../components/RadioComp'
+import AnimatedFABPaper from "../components/AnimatedFABPaper"
+import navigationRoutes from '../routes/routes'
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
@@ -28,9 +31,19 @@ const HomeScreen = () => {
     const [totalCashRecovery, setTotalCashRecovery] = useState(() => "")
     const [totalBankRecovery, setTotalBankRecovery] = useState(() => "")
 
+    const [checkUser, setCheckUser] = useState(() => "Own")
+
     const [openDate2, setOpenDate2] = useState(false)
     const [choosenDate, setChoosenDate] = useState(new Date())
     const formattedChoosenDate = formattedDate(choosenDate)
+
+    const [isExtended, setIsExtended] = useState<boolean>(() => true)
+
+    // const onScroll = ({ nativeEvent }) => {
+    //     const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0
+
+    //     setIsExtended(currentScrollPosition <= 0)
+    // }
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -116,20 +129,24 @@ const HomeScreen = () => {
                 keyboardShouldPersistTaps="handled"
                 style={{
                     backgroundColor: theme.colors.background,
-                    minHeight: SCREEN_HEIGHT,
-                    height: "auto",
+                    // minHeight: SCREEN_HEIGHT,
+                    // height: "auto",
                 }}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }>
-                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back ${loginStore?.id === 1 ? "Credit Officer" : "Branch Manager"}!`} background={MD2Colors.blue100} />
+                }
+            // onScroll={onScroll}
+            >
+                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back ${loginStore?.id === 1 ? "Credit Officer" : "Branch Manager"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
                 <View style={{
                     // paddingHorizontal: 20,
                     // paddingBottom: 120,
                     // gap: 8
                     width: SCREEN_WIDTH,
                     // justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
+                    minHeight: SCREEN_HEIGHT,
+                    height: "auto",
                 }}>
                     {/* <Text variant='bodyLarge'>{JSON.stringify(loginStore)}</Text> */}
 
@@ -138,15 +155,39 @@ const HomeScreen = () => {
                     <View style={{
                         backgroundColor: MD2Colors.blue50,
                         width: SCREEN_WIDTH / 1.1,
-                        height: SCREEN_HEIGHT / 1.65,
+                        height: "auto",
+                        marginBottom: 10,
                         borderTopRightRadius: 30,
                         borderBottomLeftRadius: 30,
                         padding: 15,
                         gap: 10,
                     }}>
-                        <Text variant='bodyLarge' style={{
+                        {loginStore?.id === 2 && <View>
+                            <RadioComp
+                                title={checkUser === "Own" ? `Your Data` : `All User`}
+                                titleColor={MD2Colors.blue900}
+                                color={MD2Colors.blue900}
+                                radioButtonColor={MD2Colors.blue900}
+                                icon="account-convert-outline"
+                                dataArray={[
+                                    {
+                                        optionName: "OWN",
+                                        optionState: checkUser,
+                                        currentState: "Own",
+                                        optionSetStateDispathFun: (e) => setCheckUser(e)
+                                    },
+                                    {
+                                        optionName: "ALL",
+                                        optionState: checkUser,
+                                        currentState: "All",
+                                        optionSetStateDispathFun: (e) => setCheckUser(e)
+                                    },
+                                ]}
+                            />
+                        </View>}
+                        {/* <Text variant='bodyLarge' style={{
                             color: MD2Colors.blue900
-                        }}>Branch - {loginStore?.branch_name}</Text>
+                        }}>Branch - {loginStore?.branch_name}</Text> */}
                         <View style={{
                             height: 80,
                             width: "100%",
@@ -220,10 +261,55 @@ const HomeScreen = () => {
                     </View>
                 </View>
             </ScrollView>
+
+
+            {loginStore?.id === 2 && <AnimatedFABPaper
+                color={theme.colors.onTertiaryContainer}
+                variant="tertiary"
+                icon="form-select"
+                label="Pending Forms"
+                onPress={() =>
+                    navigation.dispatch(
+                        CommonActions.navigate({
+                            name: navigationRoutes.bmPendingLoansScreen,
+                        }),
+                    )
+                }
+                extended={isExtended}
+                animateFrom="left"
+                iconMode="dynamic"
+                customStyle={[styles.fabStyle, { backgroundColor: theme.colors.tertiaryContainer }]}
+            />}
+
+            {loginStore?.id === 1 && <AnimatedFABPaper
+                color={theme.colors.onTertiaryContainer}
+                variant="tertiary"
+                icon="form-select"
+                label="GRT Form"
+                onPress={() =>
+                    navigation.dispatch(
+                        CommonActions.navigate({
+                            name: navigationRoutes.grtFormScreen,
+                        }),
+                    )
+                }
+                extended={isExtended}
+                animateFrom="left"
+                iconMode="dynamic"
+                customStyle={[styles.fabStyle, { backgroundColor: theme.colors.tertiaryContainer }]}
+            />}
+
+
         </SafeAreaView>
     )
 }
 
 export default HomeScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    fabStyle: {
+        bottom: normalize(16),
+        right: normalize(16),
+        position: "absolute",
+    },
+})

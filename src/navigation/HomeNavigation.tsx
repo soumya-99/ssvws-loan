@@ -3,6 +3,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import navigationRoutes from "../routes/routes"
 import HomeScreen from "../screens/HomeScreen"
 import GroupFormScreen from "../screens/GroupFormScreen"
+import BMPendingLoansScreen from '../screens/BMPendingLoansScreen'
+import BMPendingLoanFormScreen from '../screens/BMPendingLoanFormScreen'
+import GRTFormScreen from '../screens/GRTFormScreen'
 
 export default function HomeNavigation() {
     const Stack = createNativeStackNavigator()
@@ -16,6 +19,10 @@ export default function HomeNavigation() {
                 component={ProductsScreen}
                 options={{ animation: "fade_from_bottom" }}
             /> */}
+
+            <Stack.Screen name={navigationRoutes.bmPendingLoansScreen} component={BMPendingLoansScreen} />
+            <Stack.Screen name={navigationRoutes.bmPendingLoanFormScreen} component={BMPendingLoanFormScreen} />
+            <Stack.Screen name={navigationRoutes.grtFormScreen} component={GRTFormScreen} />
 
         </Stack.Navigator>
     )

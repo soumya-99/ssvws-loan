@@ -15,12 +15,13 @@ interface RadioCompProps {
     icon?: string
     dataArray: Array<DataArrayProps>
 
+    titleColor?: string
     color?: string
     radioButtonColor?: string
     disabled?: boolean
 }
 
-const RadioComp = ({ title, icon, dataArray, color, radioButtonColor, disabled }: RadioCompProps) => {
+const RadioComp = ({ title, titleColor, icon, dataArray, color, radioButtonColor, disabled }: RadioCompProps) => {
     const theme = usePaperColorScheme()
 
     return (
@@ -36,7 +37,9 @@ const RadioComp = ({ title, icon, dataArray, color, radioButtonColor, disabled }
                 gap: 12
             }}>
                 <Icon source={icon} size={25} color={color ?? theme.colors.secondary} />
-                <Text variant='bodyLarge'>{title}</Text>
+                <Text variant='bodyLarge' style={{
+                    color: titleColor || theme.colors.secondary
+                }}>{title}</Text>
             </View>
             <View style={{
                 flexDirection: "row",

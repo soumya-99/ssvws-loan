@@ -9,6 +9,7 @@ const HeadingComp = ({
     subtitle,
     background = "",
     isBackEnabled = false,
+    footerText = ""
 }) => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
@@ -38,6 +39,14 @@ const HeadingComp = ({
                     // textAlign: "left",
                 }}>{subtitle}</Text>
             </View>
+            <Text variant="bodySmall" style={{
+                color: theme.colors.onSecondaryContainer,
+                textAlign: "right",
+                bottom: -15,
+                right: 20,
+                textTransform: "uppercase",
+                fontStyle: "italic"
+            }}>{footerText}</Text>
 
         </View>
     )

@@ -26,7 +26,7 @@ function BottomNavigationPaper() {
 
     console.log("CURRNT ROUTE: ", currentRoute)
 
-    const shouldHideTabBar = ["BMPendingLoanFormScreen", "SearchByGroupScreen", "COGroupFormExtendedScreen", "SearchByMemberScreen", "MemberDetailsAllFormScreen"].includes(currentRoute)
+    const shouldHideTabBar = ["BMPendingLoanFormScreen", "SearchByGroupScreen", "COGroupFormExtendedScreen", "SearchByMemberScreen", "MemberDetailsAllFormScreen", "BMPendingLoansScreen", "RecoveryGroupScreen", "RecoveryMemberScreen", "AvailableFormsScreen", "SearchByCOScreen", "FormsAgainstCOScreen", "SearchTransactionChooseScreen", "SearchApprovedLoansScreen", "SearchUnapprovedLoansScreen", "GRTFormScreen"].includes(currentRoute)
 
     const checkBMOrCOFlag = loginStore?.id
 
@@ -64,7 +64,7 @@ function BottomNavigationPaper() {
             />
             {checkBMOrCOFlag === 1 ? (
                 <>
-                    <Tab.Screen
+                    {/* <Tab.Screen
                         name={navigationRoutes.grtNavigation}
                         component={GRTNavigation}
                         options={{
@@ -80,7 +80,7 @@ function BottomNavigationPaper() {
                                     <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
                                 ),
                         }}
-                    />
+                    /> */}
                     {/* <Tab.Screen
                         name={navigationRoutes.searchNavigation}
                         component={SearchNavigation}
@@ -118,23 +118,24 @@ function BottomNavigationPaper() {
                 </>
             )
                 : checkBMOrCOFlag === 2 ? (
-                    <Tab.Screen
-                        name={navigationRoutes.bmPendingLoansNavigation}
-                        component={BMPendingLoansNavigation}
-                        options={{
-                            tabBarLabel: "Pending Forms",
-                            tabBarIcon: ({ color, focused }) =>
-                                !focused ? (
-                                    <MaterialCommunityIcons
-                                        name="form-select"
-                                        color={color}
-                                        size={26}
-                                    />
-                                ) : (
-                                    <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
-                                ),
-                        }}
-                    />
+                    // <Tab.Screen
+                    //     name={navigationRoutes.bmPendingLoansNavigation}
+                    //     component={BMPendingLoansNavigation}
+                    //     options={{
+                    //         tabBarLabel: "Pending Forms",
+                    //         tabBarIcon: ({ color, focused }) =>
+                    //             !focused ? (
+                    //                 <MaterialCommunityIcons
+                    //                     name="form-select"
+                    //                     color={color}
+                    //                     size={26}
+                    //                 />
+                    //             ) : (
+                    //                 <MaterialCommunityIcons name="form-dropdown" color={color} size={26} />
+                    //             ),
+                    //     }}
+                    // />
+                    null
                 )
                     : (null)
             }

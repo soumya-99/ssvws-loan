@@ -52,13 +52,6 @@ const SettingsScreen = () => {
       } catch (err) {
         console.error(err);
       }
-    } else if (Platform.OS === 'ios') {
-      const result = await request(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
-      if (result === RESULTS.GRANTED) {
-        console.log('Bluetooth permission granted on iOS.');
-      } else {
-        console.log('Bluetooth permission denied on iOS.');
-      }
     }
   };
 

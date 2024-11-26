@@ -20,7 +20,7 @@ const SearchScreen = () => {
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background
             }}>
-                <HeadingComp title="Search" subtitle="Choose desired search type" />
+                <HeadingComp title="Search & More" subtitle="Choose desired search type and reports" />
                 <View style={{
                     minHeight: SCREEN_HEIGHT,
                     height: "auto",
@@ -65,6 +65,17 @@ const SearchScreen = () => {
                         <CollectionButton
                             icon={"bank-transfer"}
                             text="Search Transaction"
+                            color={theme.colors.secondaryContainer}
+                            textColor={theme.colors.onSecondaryContainer}
+                            onPress={() => {
+                                navigation.dispatch(CommonActions.navigate({
+                                    name: navigationRoutes.searchTransactionChooseScreen
+                                }))
+                            }}
+                        />
+                        <CollectionButton
+                            icon={"table-headers-eye"}
+                            text="Reports"
                             color={theme.colors.secondaryContainer}
                             textColor={theme.colors.onSecondaryContainer}
                             onPress={() => {

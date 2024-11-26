@@ -130,7 +130,7 @@ const BMPendingLoansScreen = () => {
                 minHeight: SCREEN_HEIGHT,
                 height: 'auto',
             }} keyboardShouldPersistTaps="handled">
-                <HeadingComp title="Pending Forms" subtitle="Choose Form" />
+                <HeadingComp title="Pending Forms" subtitle="Choose Form" isBackEnabled />
                 {/* <BMPendingLoanFormScreen /> */}
 
                 <View style={{

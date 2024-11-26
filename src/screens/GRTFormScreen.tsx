@@ -17,7 +17,7 @@ const GRTFormScreen = () => {
             <ScrollView keyboardShouldPersistTaps="handled" style={{
                 backgroundColor: theme.colors.background
             }}>
-                <HeadingComp title="GRT Form" subtitle="Basic Details" />
+                <HeadingComp title="GRT Form" subtitle="Basic Details" isBackEnabled />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 10,
