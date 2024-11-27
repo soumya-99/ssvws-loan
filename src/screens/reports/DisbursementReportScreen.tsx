@@ -12,16 +12,31 @@ import { loginStorage } from '../../storage/appStorage'
 import ButtonPaper from '../../components/ButtonPaper'
 import SurfacePaper from '../../components/SurfacePaper'
 import DatePicker from 'react-native-date-picker'
+import { formattedDate } from '../../utils/dateFormatter'
+import axios from 'axios'
+import { ADDRESSES } from '../../config/api_list'
+import RadioComp from '../../components/RadioComp'
 
 const DisbursementReportScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
+    const [isLoading, setIsLoading] = useState(() => false)
+    const [isDisabled, setIsDisabled] = useState(() => false)
+
     const [fromDate, setFromDate] = useState(() => new Date())
     const [toDate, setToDate] = useState(() => new Date())
     const [openFromDate, setOpenFromDate] = useState(() => false)
     const [openToDate, setOpenToDate] = useState(() => false)
+
+    const formattedFromDate = formattedDate(fromDate)
+    const formattedToDate = formattedDate(toDate)
+
+    // const [checkUser, setCheckUser] = useState(() => "O")
+    const [txnMode, setTxnMode] = useState(() => "C")
+
+    const [reportData, setReportData] = useState(() => [])
 
     const titleTextStyle: TextStyle = {
         color: theme.colors.onPrimaryContainer
@@ -29,6 +44,25 @@ const DisbursementReportScreen = () => {
 
     const titleStyle: ViewStyle = {
         backgroundColor: theme.colors.primaryContainer
+    }
+
+    const fetchDisbursementReport = async () => {
+        setIsLoading(true)
+        setIsDisabled(true)
+        const creds = {
+            "from_dt": formattedFromDate,
+            "to_dt": formattedToDate,
+            "tr_mode": txnMode,
+            "emp_id": loginStore?.emp_id,
+        }
+        await axios.post(`${ADDRESSES.MEMBERWISE_DISBURSEMENT_REPORT}`, creds).then(res => {
+            console.log(">>>>>>", res?.data)
+            setReportData(res?.data?.msg)
+        }).catch(err => {
+            console.log("<<<<<<", err)
+        })
+        setIsLoading(false)
+        setIsDisabled(false)
     }
 
     return (
@@ -50,6 +84,29 @@ const DisbursementReportScreen = () => {
                         borderTopRightRadius: 20,
                         borderBottomLeftRadius: 20
                     }}>
+                        <View>
+                            <RadioComp
+                                title={txnMode === "B" ? `Mode Bank` : `Mode Cash`}
+                                titleColor={theme.colors.tertiary}
+                                color={theme.colors.tertiary}
+                                radioButtonColor={theme.colors.tertiary}
+                                icon={txnMode === "C" ? "cash" : "bank"}
+                                dataArray={[
+                                    {
+                                        optionName: "CASH",
+                                        optionState: txnMode,
+                                        currentState: "C", // bm emp_id -> 
+                                        optionSetStateDispathFun: (e) => setTxnMode(e)
+                                    },
+                                    {
+                                        optionName: "BANK",
+                                        optionState: txnMode,
+                                        currentState: "B", // emp_id -> 0
+                                        optionSetStateDispathFun: (e) => setTxnMode(e)
+                                    },
+                                ]}
+                            />
+                        </View>
                         <View
                             style={{
                                 flexDirection: "row",
@@ -104,12 +161,12 @@ const DisbursementReportScreen = () => {
 
                         <View>
                             <ButtonPaper
-                                onPress={() => null}
+                                onPress={() => fetchDisbursementReport()}
                                 mode="contained-tonal"
                                 buttonColor={theme.colors.secondaryContainer}
                                 textColor={theme.colors.onSecondaryContainer}
-                            // loading={isLoading}
-                            // disabled={isDisabled}
+                                loading={isLoading}
+                                disabled={isDisabled}
                             >
                                 SUBMIT
                             </ButtonPaper>
@@ -124,10 +181,10 @@ const DisbursementReportScreen = () => {
                                     <DataTable.Title textStyle={titleTextStyle}>Sl. No.</DataTable.Title>
                                     <DataTable.Title textStyle={titleTextStyle}>Group</DataTable.Title>
                                     <DataTable.Title textStyle={titleTextStyle}>Member</DataTable.Title>
-                                    <DataTable.Title textStyle={titleTextStyle} numeric>Credit</DataTable.Title>
+                                    <DataTable.Title textStyle={titleTextStyle} numeric>Debit</DataTable.Title>
                                 </DataTable.Header>
 
-                                {[{ group_name: "Kojagori", client_name: "Tiyasha Barui", credit: 8005 }, { group_name: "Kojagori", client_name: "Tiyasha Barui", credit: 8005 }].map((item, index) => {
+                                {reportData?.map((item, index) => {
                                     return (
                                         <DataTable.Row key={index}>
                                             <DataTable.Cell>
@@ -144,7 +201,7 @@ const DisbursementReportScreen = () => {
                                                 }
                                             </DataTable.Cell>
                                             <DataTable.Cell numeric>
-                                                {item?.credit}
+                                                {item?.debit}
                                             </DataTable.Cell>
                                         </DataTable.Row>
                                     )

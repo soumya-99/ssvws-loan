@@ -58,7 +58,7 @@ const RecoveryReportScreen = () => {
             "flag": checkUser,
             "branch_code": loginStore?.brn_code,
         }
-        await axios.post(`${ADDRESSES.MEMBERWISE_RECOVERY}`, creds).then(res => {
+        await axios.post(`${ADDRESSES.MEMBERWISE_RECOVERY_REPORT}`, creds).then(res => {
             console.log(">>>>>>", res?.data)
             setReportData(res?.data?.msg)
         }).catch(err => {
