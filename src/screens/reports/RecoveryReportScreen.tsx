@@ -1,6 +1,6 @@
 import { StyleSheet, SafeAreaView, View, ScrollView, TextStyle, ViewStyle } from 'react-native'
 import { DataTable, MD2Colors, MD2DarkTheme, MD2LightTheme, MD3LightTheme, Text } from "react-native-paper"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import HeadingComp from "../../components/HeadingComp"
 import CollectionButtonsWrapper from "../../components/CollectionButtonsWrapper"
@@ -12,16 +12,31 @@ import { loginStorage } from '../../storage/appStorage'
 import ButtonPaper from '../../components/ButtonPaper'
 import SurfacePaper from '../../components/SurfacePaper'
 import DatePicker from 'react-native-date-picker'
+import RadioComp from '../../components/RadioComp'
+import { formattedDate } from '../../utils/dateFormatter'
+import axios from 'axios'
+import { ADDRESSES } from '../../config/api_list'
 
 const RecoveryReportScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
+    const [isLoading, setIsLoading] = useState(() => false)
+    const [isDisabled, setIsDisabled] = useState(() => false)
+
     const [fromDate, setFromDate] = useState(() => new Date())
     const [toDate, setToDate] = useState(() => new Date())
     const [openFromDate, setOpenFromDate] = useState(() => false)
     const [openToDate, setOpenToDate] = useState(() => false)
+
+    const formattedFromDate = formattedDate(fromDate)
+    const formattedToDate = formattedDate(toDate)
+
+    const [checkUser, setCheckUser] = useState(() => "O")
+    const [txnMode, setTxnMode] = useState(() => "C")
+
+    const [reportData, setReportData] = useState(() => [])
 
     const titleTextStyle: TextStyle = {
         color: theme.colors.onPrimaryContainer
@@ -29,6 +44,28 @@ const RecoveryReportScreen = () => {
 
     const titleStyle: ViewStyle = {
         backgroundColor: theme.colors.primaryContainer
+    }
+
+    const fetchRecoveryReport = async () => {
+        setIsLoading(true)
+        setIsDisabled(true)
+        const creds = {
+            "user_id": loginStore?.id,
+            "from_dt": formattedFromDate,
+            "to_dt": formattedToDate,
+            "tr_mode": txnMode,
+            "emp_id": loginStore?.emp_id,
+            "flag": checkUser,
+            "branch_code": loginStore?.brn_code,
+        }
+        await axios.post(`${ADDRESSES.MEMBERWISE_RECOVERY}`, creds).then(res => {
+            console.log(">>>>>>", res?.data)
+            setReportData(res?.data?.msg)
+        }).catch(err => {
+            console.log("<<<<<<", err)
+        })
+        setIsLoading(false)
+        setIsDisabled(false)
     }
 
     return (
@@ -50,6 +87,53 @@ const RecoveryReportScreen = () => {
                         borderTopRightRadius: 20,
                         borderBottomLeftRadius: 20
                     }}>
+                        {loginStore?.id === 2 && <View>
+                            <RadioComp
+                                title={checkUser === "O" ? `Your Data` : `All User`}
+                                titleColor={theme.colors.primary}
+                                color={theme.colors.primary}
+                                radioButtonColor={theme.colors.primary}
+                                icon="account-convert-outline"
+                                dataArray={[
+                                    {
+                                        optionName: "OWN",
+                                        optionState: checkUser,
+                                        currentState: "O", // bm emp_id -> 
+                                        optionSetStateDispathFun: (e) => setCheckUser(e)
+                                    },
+                                    {
+                                        optionName: "ALL",
+                                        optionState: checkUser,
+                                        currentState: "A", // emp_id -> 0
+                                        optionSetStateDispathFun: (e) => setCheckUser(e)
+                                    },
+                                ]}
+                            />
+                        </View>}
+
+                        <View>
+                            <RadioComp
+                                title={txnMode === "B" ? `Mode Bank` : `Mode Cash`}
+                                titleColor={theme.colors.tertiary}
+                                color={theme.colors.tertiary}
+                                radioButtonColor={theme.colors.tertiary}
+                                icon={txnMode === "C" ? "cash" : "bank"}
+                                dataArray={[
+                                    {
+                                        optionName: "CASH",
+                                        optionState: txnMode,
+                                        currentState: "C", // bm emp_id -> 
+                                        optionSetStateDispathFun: (e) => setTxnMode(e)
+                                    },
+                                    {
+                                        optionName: "BANK",
+                                        optionState: txnMode,
+                                        currentState: "B", // emp_id -> 0
+                                        optionSetStateDispathFun: (e) => setTxnMode(e)
+                                    },
+                                ]}
+                            />
+                        </View>
                         <View
                             style={{
                                 flexDirection: "row",
@@ -104,12 +188,12 @@ const RecoveryReportScreen = () => {
 
                         <View>
                             <ButtonPaper
-                                onPress={() => null}
+                                onPress={() => fetchRecoveryReport()}
                                 mode="contained-tonal"
                                 buttonColor={theme.colors.secondary}
                                 textColor={theme.colors.onSecondary}
-                            // loading={isLoading}
-                            // disabled={isDisabled}
+                                loading={isLoading}
+                                disabled={isDisabled}
                             >
                                 SUBMIT
                             </ButtonPaper>
@@ -127,7 +211,7 @@ const RecoveryReportScreen = () => {
                                     <DataTable.Title textStyle={titleTextStyle} numeric>Credit</DataTable.Title>
                                 </DataTable.Header>
 
-                                {[{ group_name: "Kojagori", client_name: "Tiyasha Barui", credit: 8005 }, { group_name: "Kojagori", client_name: "Tiyasha Barui", credit: 8005 }].map((item, index) => {
+                                {reportData?.map((item, index) => {
                                     return (
                                         <DataTable.Row key={index}>
                                             <DataTable.Cell>

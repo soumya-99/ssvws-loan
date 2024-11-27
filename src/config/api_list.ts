@@ -51,4 +51,6 @@ export const ADDRESSES = {
     DASHBOARD_DETAILS_BM: `${BASE_URL}/dashboard_dtls_bm`,
     DASHBOARD_CASH_DETAILS_BM: `${BASE_URL}/dashboard_dtls_cash_recov_bm`,
     DASHBOARD_BANK_DETAILS_BM: `${BASE_URL}/dashboard_dtls_bank_recov_bm`,
+
+    MEMBERWISE_RECOVERY: `${BASE_URL}/member_wise_recovery`,
 }
