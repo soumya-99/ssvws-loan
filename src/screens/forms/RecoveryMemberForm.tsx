@@ -1,4 +1,4 @@
-import { Alert, Linking, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
+import { Alert, Linking, PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
 import { Chip, Surface, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
@@ -106,6 +106,55 @@ const RecoveryMemberForm = ({ fetchedData, approvalStatus }) => {
             fetchGeoLocaltionAddress()
         }
     }, [location])
+
+    const requestBluetoothPermissions = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.requestMultiple([
+                    PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+                    PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                ]);
+
+                if (
+                    granted['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED &&
+                    granted['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED
+                ) {
+                    console.log('Bluetooth permissions granted.');
+                } else {
+                    console.log('Bluetooth permissions denied.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    };
+
+    const requestNearbyDevicesPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.NEARBY_WIFI_DEVICES
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log('Nearby devices permission granted.');
+                } else {
+                    console.log('Nearby devices permission denied.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    };
+
+    const requestPermissions = async () => {
+        await requestBluetoothPermissions();
+        await requestNearbyDevicesPermission();
+    };
+
+    useEffect(() => {
+        requestPermissions()
+    }, [])
 
     useEffect(() => {
         setFormData({

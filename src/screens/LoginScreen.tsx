@@ -1,6 +1,6 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
+import { PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ButtonPaper from '../components/ButtonPaper'
 import InputPaper from '../components/InputPaper'
 import normalize, { SCREEN_HEIGHT } from "react-native-normalize"
@@ -18,9 +18,54 @@ const LoginScreen = () => {
     const [username, setUsername] = useState(() => "")
     const [password, setPassword] = useState(() => "")
 
-    // const handleLogin = () => {
-    //     console.log("logged in...")
-    // }
+    const requestBluetoothPermissions = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.requestMultiple([
+                    PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+                    PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                ]);
+
+                if (
+                    granted['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED &&
+                    granted['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED
+                ) {
+                    console.log('Bluetooth permissions granted.');
+                } else {
+                    console.log('Bluetooth permissions denied.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    };
+
+    const requestNearbyDevicesPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.NEARBY_WIFI_DEVICES
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log('Nearby devices permission granted.');
+                } else {
+                    console.log('Nearby devices permission denied.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    };
+
+    const requestPermissions = async () => {
+        await requestBluetoothPermissions();
+        await requestNearbyDevicesPermission();
+    };
+
+    useEffect(() => {
+        requestPermissions()
+    }, [])
 
     const login = () => {
         handleLogin(username, password)
