@@ -44,7 +44,7 @@ const HeadingComp = ({
                 textAlign: "center",
                 bottom: -17,
                 right: 20,
-                left: 155,
+                left: 160,
                 textTransform: "uppercase",
                 fontStyle: "italic",
                 backgroundColor: MD2Colors.blue500,
