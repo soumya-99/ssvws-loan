@@ -29,7 +29,7 @@ function BottomNavigationPaper() {
 
     const shouldHideTabBar = ["BMPendingLoanFormScreen", "SearchByGroupScreen", "COGroupFormExtendedScreen", "SearchByMemberScreen", "MemberDetailsAllFormScreen", "BMPendingLoansScreen", "RecoveryGroupScreen", "RecoveryMemberScreen", "AvailableFormsScreen", "SearchByCOScreen", "FormsAgainstCOScreen", "SearchTransactionChooseScreen", "SearchApprovedLoansScreen", "SearchUnapprovedLoansScreen", "GRTFormScreen", "RecoveryReportScreen"].includes(currentRoute)
 
-    const checkBMOrCOFlag = loginStore?.id
+    const checkBMOrCOFlag = loginStore?.id // 1-> CO, 2-> BM, 3-> MIS
 
     return (
         <Tab.Navigator
