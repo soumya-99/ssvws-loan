@@ -16,6 +16,8 @@ import RadioComp from '../../components/RadioComp'
 import DatePicker from 'react-native-date-picker'
 import { formattedDate } from '../../utils/dateFormatter'
 // import LoadingOverlay from '../components/LoadingOverlay'
+import ThermalPrinterModule from 'react-native-thermal-printer'
+// import PRNTMSG from '../../../assets/msg.png'
 
 const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
@@ -29,17 +31,18 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
     console.log("LOGIN DATAAA =============", loginStore)
     console.log("4444444444444444444ffffffffffffffff", fetchedData)
+    console.log("tr_dt", fetchedData.memb_dtls[0].last_trn_dt)
 
     const [loading, setLoading] = useState(() => false)
-
+    
     const [formData, setFormData] = useState({
+        last_trn_dt:"",
         groupName: "",
         groupType: "",
         groupTypeName: "",
         totalPrincipleAmount: "",
         totalInterestAmount: "",
         totalAmount: "",
-
         // //////////////////////
 
         roi: "",
@@ -54,7 +57,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
     const [memberDetailsArray, setMemberDetailsArray] = useState<any[]>(() => [])
     const [banks, setBanks] = useState([])
-
+    const [last_trn_dt,setLastTrnDt] = useState(fetchedData.memb_dtls[0].last_trn_dt)
     const [openDate, setOpenDate] = useState(() => false)
     const [openDate2, setOpenDate2] = useState(() => false)
     const formattedTnxDate = formattedDate(formData?.txnDate)
@@ -159,12 +162,17 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         requestPermissions()
     }, [])
 
-    const countNoOfInstallments = (creditAmt: number) => {
-        if (Math.trunc(creditAmt / +fetchedData?.tot_emi) === 0) {
+    const countNoOfInstallments = (creditAmt: number,index:number) => {
+        console.log("tot_emi_func",fetchedData.memb_dtls[index]?.tot_emi,creditAmt)
+        if (creditAmt / +fetchedData.memb_dtls[index]?.tot_emi <= 1) {
+            console.log("in 1")
             return 1
         }
-
-        return Math.trunc(creditAmt / +fetchedData?.tot_emi)
+        
+        // return Math.trunc(creditAmt / +fetchedData.memb_dtls[index]?.tot_emi)
+        else{
+            return 0
+        }
     };
 
     const currentPrincipalCalculate = (creditAmt: number) => {
@@ -190,8 +198,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             totalPrincipleAmount: fetchedData?.total_prn_amt,
             totalInterestAmount: fetchedData?.total_intt_amt,
             totalAmount: `${+fetchedData?.total_prn_amt + +fetchedData?.total_intt_amt}`,
-
-
+            last_trn_dt:fetchedData?.memb_dtls[0].last_trn_dt,
             roi: fetchedData?.memb_dtls[0]?.curr_roi,
             period: fetchedData?.memb_dtls[0]?.period,
             periodMode: fetchedData?.memb_dtls[0]?.period_mode,
@@ -218,9 +225,15 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     // const [totalEMI, setTotalEMI] = useState(() => "")
 
     const handleEMIChange = (txt: any, i: any) => {
+        console.log(memberDetailsArray.map(e=>e.instl_paid),txt,"member details")
+        // setMemberDetailsArray(prevArray =>
+        //     prevArray.map((member, index) =>
+        //         index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid: countNoOfInstallments(+txt,index) } : member
+        //     )
+        // )
         setMemberDetailsArray(prevArray =>
             prevArray.map((member, index) =>
-                index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid: countNoOfInstallments(+txt) } : member
+                index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid:0 } : member
             )
         )
     }
@@ -280,6 +293,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             prn_emi: item.prn_emi,
             intt_emi: item.intt_emi,
             instl_paid: item.instl_paid,
+            balance:item.balance,
+            group_code:fetchedData.group_code,
             last_trn_dt: formattedDate(formData.txnDate),
         }));
 
@@ -318,7 +333,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             // recoveryResponse = res?.data?.msg[0] as any
 
 
-            // handlePrint(res?.data?.msg[0])
+            handlePrint(res?.data?.msg)
             // setRemainingTotalOutstandingRes(res?.data?.msg[0]?.outstanding)
             // setCreditAmount(() => "")
             navigation.goBack()
@@ -326,10 +341,67 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             ToastAndroid.show("Some error occurred while submitting EMI.", ToastAndroid.SHORT)
             console.log("Some error occurred while submitting EMI.", err)
         })
-
+        // বিঃ দ্রঃ - দোয়া করে এই রিসিটটির একটি ফটোকপি রাখবেন। 
         setLoading(false)
     }
+    const handlePrint = async (data: any) => {
+        let tot_amt = 0
+        console.log('dataaaaaaaaaaaaaa',data)
+        console.log("Called Printer...")
+        setLoading(true)
+        let text =
+            `[C]SSVWS\n` +
+            `[C]RECEIPT\n` +
+            `[C]${data[0]?.branch_name}\n` +
+            `[C]=====================\n` +
+            // `[L]TXN. ID[C]:[R]${data?.tnx_id}\n` +
+            `[L]DATE[C]:[R]${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}\n` +
+            // `[L]RCPT DATE[C]:[R]${new Date().toLocaleDateString("en-GB")}\n` +
+            `[L]TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
+            `[L]GROUP[C]:[R]${(data[0]?.group_name as string)?.slice(0, 10)}\n` +
+            `[L]CODE[C]:[R]${data[0]?.group_code}\n` +
+            `[L]MODE[C]:[R]${data[0]?.tr_mode=='B'?'UPI':'CASH'}\n`;
+            if(data[0]?.tr_mode=='B')
+                text +=
+            `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
+           
+            // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
+            // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
+            // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
+            // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
+            // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
+            // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
+            // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
+            `[C]**************X*************\n`+
 
+            `[L]MEMBER[C]:[R]AMOUNT\n` ;
+            
+            for (const item of data) {
+                tot_amt+=item.credit
+                text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
+              }
+            text+=
+            `[L]TOTAL[C]:[R]${tot_amt}\n` +
+            `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
+            `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
+            `[C]================X===============\n`;
+        // `[L]BRANCH[C]:[R]\n` +
+        await ThermalPrinterModule.printBluetooth({
+            payload: text,
+            printerNbrCharactersPerLine: 32,
+            // printerNbrCharactersPerLine: ,
+            printerDpi: 120,
+            printerWidthMM: 58,
+            mmFeedPaper: 25,
+        }).then(res => {
+            console.log("RES", res)
+        }).catch(err => {
+            console.log("ERR", err)
+        })
+
+        console.log("Called Printer...2")
+        setLoading(false)
+    }
     const inputDisableLogic = () => {
         return approvalStatus === "U"
     }
@@ -343,6 +415,9 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                     paddingBottom: 10,
                     gap: 14
                 }}>
+                   <InputPaper label="Last Transaction Date" leftIcon='account-group-outline' keyboardType="default" value={new Date(last_trn_dt).toLocaleDateString("en-GB")} onChangeText={(txt: any) => handleFormChange("last_trn_dt", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled />
                     <Divider />
 
                     <InputPaper label="Group Name" leftIcon='account-group-outline' keyboardType="default" value={formData.groupName} onChangeText={(txt: any) => handleFormChange("groupName", txt)} customStyle={{
@@ -400,7 +475,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 optionSetStateDispathFun: (e) => handleFormChange("txnMode", e)
                             },
                             {
-                                optionName: "BANK",
+                                optionName: "UPI",
                                 optionState: formData.txnMode,
                                 currentState: "B",
                                 optionSetStateDispathFun: (e) => handleFormChange("txnMode", e)

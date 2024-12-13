@@ -14,6 +14,7 @@ import { loginStorage } from '../storage/appStorage'
 import useCurrentRouteName from "../hooks/useCurrentRoute"
 import LoanRecoveryNavigation from "./LoanRecoveryNavigation"
 import ReportsNavigation from "./ReportsNavigation"
+import DemandNavigation from './DemandNavigation'
 // import { loginStorage } from "../storage/appStorage"
 // import { LoginDataMessage } from "../models/api_types"
 
@@ -194,7 +195,23 @@ function BottomNavigationPaper() {
                         ),
                 }}
             />
-
+ {/* <Tab.Screen
+                name={navigationRoutes.DemandNavigation}
+                component={DemandNavigation}
+                options={{
+                    tabBarLabel: "Demand",
+                    tabBarIcon: ({ color, focused }) =>
+                        !focused ? (
+                            <MaterialCommunityIcons
+                                name="hand-extended-outline"
+                                color={color}
+                                size={26}
+                            />
+                        ) : (
+                            <MaterialCommunityIcons name="hand-heart" color={color} size={26} />
+                        ),
+                }}
+            /> */}
             <Tab.Screen
                 name={navigationRoutes.settingsNavigation}
                 component={SettingsNavigation}

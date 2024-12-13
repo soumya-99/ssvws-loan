@@ -10,38 +10,41 @@ import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/na
 import navigationRoutes from '../routes/routes'
 import { loginStorage } from '../storage/appStorage'
 import RadioComp from '../components/RadioComp'
+import DatePicker from 'react-native-date-picker'
+import ButtonPaper from '../components/ButtonPaper'
+import { formattedDate } from '../utils/dateFormatter'
 
 const SearchLoanRecoveryScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const isFocused = useIsFocused()
-
+    const [openFromDate, setOpenFromDate] = useState(() => false);
+    const [reportData,setReportData] = useState(()=>[])
+    const [fromDate, setFromDate] = useState(() => new Date());
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
-
     const [loading, setLoading] = useState(() => false)
-
+    const [isDisabled,setDisabled] = useState(()=>false)
     const [search, setSearch] = useState(() => "")
+    const [demand_click,setDemandClick]=useState(()=>false)
     const [formsData, setFormsData] = useState<any[]>(() => [])
+    const [group_code,setGroupCode] = useState([])
+
     // const [isApproved, setIsApproved] = useState<string>(() => "U")
 
     const onChangeSearch = (query: string) => {
         setSearch(query)
     }
 
-    // useEffect(() => {
-    //     setFormsData(() => [])
-    // }, [isApproved])
-
     useEffect(() => {
         setSearch("")
         setFormsData(() => [])
     }, [isFocused])
 
-    const handleSearch = async () => {
+    const handleSearch = async (src) => {
         setLoading(true)
-
+        setDemandClick(false)
         const creds = {
-            grp_dtls: search
+            grp_dtls: src
         }
 
         await axios.post(`${ADDRESSES.SEARCH_GROUP_RECOVERY}`, creds).then(res => {
@@ -54,7 +57,47 @@ const SearchLoanRecoveryScreen = () => {
         })
         setLoading(false)
     }
+    const getDemandReportData = ()=>{
+        console.log("hello")
+        setLoading(true)
+        setDisabled(true)
+       axios.post(`${ADDRESSES.DEMANDREPORT}`, {get_date:formattedDate(fromDate)}).then(res=>{console.log('report_date',res?.data);
+        setGroupCode(Object.keys(res?.data?.msg))
+        setDisabled(false)
+        setLoading(false)
+            // setReportData(res?.data?.msg)
+            // reportData.length=0
+            setReportData([])
+            for(let i of Object.keys(res?.data?.msg)){
+                var sum = 0,name='',count=0,t=[]
+                for(let j of res?.data?.msg[i]){
+                  sum+=j.demand.demand.ld_demand
+                  name=j.group_name
+                //   f=Object.keys(j).length
+                  t.push({mem_code:j.member_code,demand:j.demand.demand.ld_demand})
+                  count++
+                }
 
+                // console.log(res?.data?.msg[i].length,count,'len')
+                setReportData(prev => [...prev, {
+                    code:i,
+                    demand:sum,
+                    name:name,
+                    count:res?.data?.msg[i].length,
+                    members:t
+                    // members:res?.data?.msg[i]
+                }])
+                setDemandClick(true)
+
+            }
+            // setReportData(reportData)
+            console.log('====================================')
+            console.log(reportData[0].members,"dataaaaaaa")
+            console.log('====================================')
+
+            // setDemandClick(false)
+        }).catch(err=>console.log('error',err))
+      }
     return (
         <SafeAreaView>
             <ScrollView style={{
@@ -66,41 +109,61 @@ const SearchLoanRecoveryScreen = () => {
                 <View style={{
                     paddingHorizontal: 20
                 }}>
-                    {/* <View style={{
-                        padding: 5,
-                        backgroundColor: theme.colors.errorContainer,
-                        borderTopLeftRadius: 20,
-                        borderBottomRightRadius: 20,
-                        marginBottom: 10
+                  
+                  {/* <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        paddingHorizontal: 15,
+                        alignItems: "center",
+                        backgroundColor: theme.colors.tertiary,
+                        padding: 2,
+                        borderRadius: 12,
+                        marginVertical:15
                     }}>
-                        <RadioComp
-                            color={theme.colors.onErrorContainer}
-                            radioButtonColor={theme.colors.error}
-                            title=""
-                            icon="inbox-multiple"
-                            dataArray={[
-                                {
-                                    optionName: "Un-approved",
-                                    optionState: isApproved,
-                                    currentState: "U",
-                                    optionSetStateDispathFun: (value) => setIsApproved(value)
-                                },
-                                {
-                                    optionName: "Approved",
-                                    optionState: isApproved,
-                                    currentState: "A",
-                                    optionSetStateDispathFun: (value) => setIsApproved(value)
-                                }
-                            ]}
-                        />
+                    <ButtonPaper
+                        textColor={theme.colors.onTertiary}
+                        onPress={() => setOpenFromDate(true)}
+                        mode="text">
+                        FROM: {fromDate?.toLocaleDateString("en-GB")}
+                    </ButtonPaper>
+                    <DatePicker
+                                modal
+                                mode="date"
+                                open={openFromDate}
+                                date={fromDate}
+                                onConfirm={date => {
+                                    setOpenFromDate(false)
+                                    setFromDate(date)
+                                }}
+                                onCancel={() => {
+                                    setOpenFromDate(false)
+                                }}
+                            />
                     </View> */}
+                    {/* <View  style={{
+                       
+                        marginVertical:15,
+                    }}>
+                    <ButtonPaper
+                        onPress={() => getDemandReportData()}
+                        mode="contained-tonal"
+                        buttonColor={theme.colors.secondary}
+                        textColor={theme.colors.onSecondary}
+                        loading={loading}
+                        disabled={isDisabled}
+                    >
+                        SUBMIT
+                    </ButtonPaper>
+                </View> */}
+                  
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-evenly",
                         alignItems: "center",
                         gap: 5
                     }}>
-
+                      
                         <Searchbar
                             autoFocus
                             placeholder={"Search by Group Name/Code"}
@@ -129,13 +192,13 @@ const SearchLoanRecoveryScreen = () => {
                         }}>
                             Search
                         </ButtonPaper> */}
-                        <IconButton icon={"magnify"} mode='contained' onPress={() => search && handleSearch()} size={35} style={{
+                        <IconButton icon={"magnify"} mode='contained' onPress={() => search && handleSearch(search)} size={35} style={{
                             borderTopLeftRadius: 10
                         }} />
                     </View>
                 </View>
 
-                <View style={{
+               {!demand_click && <View style={{
                     padding: 20,
                     paddingBottom: 120
                 }}>
@@ -153,12 +216,12 @@ const SearchLoanRecoveryScreen = () => {
                                 description={
                                     <View>
                                         {/* <Text>Group Code: {item?.group_code}</Text> */}
-                                        <Text style={{
+                                        {/* <Text style={{
                                             color: theme.colors.green
-                                        }}>Principle Amount - {item?.total_prn_amt}{item?.total_prn_amt && "/-"}</Text>
-                                        <Text style={{
+                                        }}>Principle Amount - {item?.total_prn_amt}{item?.total_prn_amt && "/-"}</Text> */}
+                                        {/* <Text style={{
                                             color: theme.colors.error
-                                        }}>Interest Amount - {item?.total_intt_amt}{item?.total_intt_amt && "/-"}</Text>
+                                        }}>Interest Amount - {item?.total_intt_amt}{item?.total_intt_amt && "/-"}</Text> */}
                                     </View>
                                 }
                                 onPress={() => {
@@ -187,7 +250,72 @@ const SearchLoanRecoveryScreen = () => {
                             <Divider />
                         </React.Fragment>
                     ))}
-                </View>
+                </View>}
+                {demand_click && <View style={{
+                    padding: 20,
+                    paddingBottom: 120
+                }}>
+                    {reportData.length>0 && reportData?.map((item, i) => (
+                        <React.Fragment key={i}>
+                            <List.Item
+                                titleStyle={{
+                                    color: theme.colors.primary,
+                                }}
+                                descriptionStyle={{
+                                    color: theme.colors.secondary,
+                                }}
+                                key={i}
+                                title={`${item.name}-${item.code}`}
+                                description={
+                                    <View>
+                                        <Text style={{
+                                            color: theme.colors.green
+                                        }}>Demand Amount - {item.demand+'/-'}</Text>
+                                        <Text style={{
+                                            color: theme.colors.green
+                                        }}>Members - {item.count}</Text>
+                                        {item?.members?.map((mem,index)=>(
+                                             <React.Fragment key={index}>
+                                          
+                                            <View>
+                                            <Text style={{
+                                            color: theme.colors.secondary}}>Member code - {mem.mem_code}, Demand - {mem.demand}/-</Text>
+                                            </View>
+                                            </React.Fragment>
+                    ))}
+                                       
+                                    </View>
+                                }
+                                onPress={() => {
+                                    // navigation.dispatch(CommonActions.navigate({
+                                    //     name: navigationRoutes.recoveryGroupScreen,
+                                    //     params: {
+                                    //         group_details: item.code,
+                                    //         // approvalFlag: isApproved
+                                    //     }
+                                    // }))
+                                    setSearch(item.name)
+                                    handleSearch(item.name)
+                                    setDemandClick(false)
+                                }}
+                                left={props => <List.Icon {...props} icon="form-select" />}
+                                // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
+                                right={props => (
+                                    <View style={{
+                                        alignSelf: 'center'
+                                    }}>
+                                        <Icon
+                                            source={item?.status === "U" ? "alpha-u-circle-outline" : "alpha-a-circle-outline"}
+                                            size={28}
+                                            color={item?.status === "U" ? theme.colors.error : theme.colors.green}
+                                        />
+                                    </View>
+                                )}
+                            />
+                            <Divider />
+                        </React.Fragment>
+                    ))}
+                </View>}
             </ScrollView>
             {/* {loading && <LoadingOverlay />} */}
         </SafeAreaView>

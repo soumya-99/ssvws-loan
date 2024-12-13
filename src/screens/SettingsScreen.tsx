@@ -86,6 +86,7 @@ const SettingsScreen = () => {
     setLoading(true)
     const text =
       '[L]BEAUTIFUL SHIRT[R]9.99e\n' +
+      // `[C]<img>file:///android_asset/msg.png</img>\n`+
       '[L]Some text goes here...===';
     await ThermalPrinterModule.printBluetooth({
       payload: text,

@@ -1,3 +1,5 @@
+import DemandNavigation from "../navigation/DemandNavigation"
+
 const navigationRoutes = {
     login: "Login",
     register: "Register",
@@ -11,9 +13,12 @@ const navigationRoutes = {
     bottomNavigationPaper: "BottomNavigationPaper",
     reportsNavigation: "ReportsNavigation",
     reportsChooseScreen: "ReportsChooseScreen",
-    recoveryReportScreen: "RecoveryReportScreen",
+    demandReport:"DemandReport",
+    recoveryReportScreen: "RecoveryReportScreen",    
+    groupwiseRecovery: "GroupwiseRecovery",
     disbursementReportScreen: "DisbursementReportScreen",
     loanRecoveryNavigation: "LoanRecoveryNavigation",
+    DemandNavigation: "DemandNavigation",
     searchLoanRecoveryScreen: "SearchLoanRecoveryScreen",
     recoveryGroupScreen: "RecoveryGroupScreen",
     recoveryMemberScreen: "RecoveryMemberScreen",

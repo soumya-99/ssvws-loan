@@ -31,7 +31,7 @@ const ReportsChooseScreen = () => {
                     <CollectionButtonsWrapper>
                         <CollectionButton
                             icon={"table-refresh"}
-                            text="Recovery Report"
+                            text="Memberwise Recovery Report"
                             color={theme.colors.secondaryContainer}
                             textColor={theme.colors.onSecondaryContainer}
                             onPress={() => {
@@ -40,7 +40,7 @@ const ReportsChooseScreen = () => {
                                 }))
                             }}
                         />
-                        <CollectionButton
+                        {/* <CollectionButton
                             icon={"table-clock"}
                             text="Disburse Report"
                             color={theme.colors.tertiaryContainer}
@@ -48,6 +48,28 @@ const ReportsChooseScreen = () => {
                             onPress={() => {
                                 navigation.dispatch(CommonActions.navigate({
                                     name: navigationRoutes.disbursementReportScreen
+                                }))
+                            }}
+                        /> */}
+                         <CollectionButton
+                            icon={"table-refresh"}
+                            text="Groupwise Recovery Report"
+                            color={theme.colors.tertiaryContainer}
+                            textColor={theme.colors.onTertiaryContainer}
+                            onPress={() => {
+                                navigation.dispatch(CommonActions.navigate({
+                                    name: navigationRoutes.groupwiseRecovery
+                                }))
+                            }}
+                        />
+                         <CollectionButton
+                            icon={"table-refresh"}
+                            text="Demand Report"
+                            color={theme.colors.secondaryContainer}
+                            textColor={theme.colors.onSecondaryContainer}
+                            onPress={() => {
+                                navigation.dispatch(CommonActions.navigate({
+                                    name: navigationRoutes.demandReport
                                 }))
                             }}
                         />

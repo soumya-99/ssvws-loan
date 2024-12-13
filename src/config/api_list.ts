@@ -39,6 +39,8 @@ export const ADDRESSES = {
     GET_FORM_AGAINST_CO: `${BASE_URL}/get_form_against_co`,
     FINAL_SUBMIT: `${BASE_URL}/final_submit`,
     SEARCH_GROUP_RECOVERY: `${BASE_URL}/search_group_app`,
+    DEMANDREPORT: `${BASE_URL}/get_demand_data`,
+    GROUPWISERECOVERYREPORT:  `${BASE_URL}/group_wise_recov_app`,
     LOAN_RECOVERY_EMI: `${BASE_URL}/recovery_transaction`,
 
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
@@ -52,6 +54,7 @@ export const ADDRESSES = {
     DASHBOARD_CASH_DETAILS_BM: `${BASE_URL}/dashboard_dtls_cash_recov_bm`,
     DASHBOARD_BANK_DETAILS_BM: `${BASE_URL}/dashboard_dtls_bank_recov_bm`,
 
-    MEMBERWISE_RECOVERY_REPORT: `${BASE_URL}/member_wise_recovery`,
+    // MEMBERWISE_RECOVERY_REPORT: `${BASE_URL}/member_wise_recovery`,
+    MEMBERWISE_RECOVERY_REPORT: `${BASE_URL}/memb_wise_recov_app`,
     MEMBERWISE_DISBURSEMENT_REPORT: `${BASE_URL}/member_wise_disb`,
 }
