@@ -32,6 +32,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     console.log("LOGIN DATAAA =============", loginStore)
     console.log("4444444444444444444ffffffffffffffff", fetchedData)
     console.log("tr_dt", fetchedData.memb_dtls[0].last_trn_dt)
+    console.log("membbbbbbbbbbbbb", fetchedData.memb_dtls[0])
 
     const [loading, setLoading] = useState(() => false)
     
@@ -44,7 +45,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         totalInterestAmount: "",
         totalAmount: "",
         // //////////////////////
-
+        // prn_amt: "",
         roi: "",
         period: "",
         periodMode: "",
@@ -178,7 +179,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const currentPrincipalCalculate = (creditAmt: number) => {
         let roi = +fetchedData?.memb_dtls[0]?.curr_roi;
         let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
-        return currentPrincipal?.toFixed(2)
+        // return currentPrincipal?.toFixed(2)
+        return Math.round(currentPrincipal)
     }
 
     const currentInterestCalculate = (creditAmt: number) => {
@@ -187,7 +189,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
         let currentInterest = creditAmt - currentPrincipal;
 
-        return currentInterest?.toFixed(2)
+        // return currentInterest?.toFixed(2)
+        return Math.round(currentInterest)
     }
 
     useEffect(() => {
@@ -202,41 +205,80 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             roi: fetchedData?.memb_dtls[0]?.curr_roi,
             period: fetchedData?.memb_dtls[0]?.period,
             periodMode: fetchedData?.memb_dtls[0]?.period_mode,
-            txnMode: "C",
-            txnDate: new Date(),
-            chequeDate: new Date(),
-            bankName: "",
-            chequeId: ""
+            txnMode: formData.txnMode,
+            txnDate: formData.txnDate || new Date(),
+            chequeDate: formData.chequeDate ||new Date(),
+            bankName: formData.bankName || "",
+            chequeId: formData.chequeId || "",
         })
         if (memberDetailsArray.length === 0) {
-            setMemberDetailsArray((fetchedData?.memb_dtls as any[])?.map((item, _) => ({
+            setMemberDetailsArray((fetchedData?.memb_dtls as any[])?.map((item, i) => {
+                handleEMIChange(item?.demand?.demand?.ld_demand || 0, i)
+                return ({
                 ...item,
                 isChecked: true,
-                credit: item?.tot_emi,
-                intt_emi: currentInterestCalculate(+item?.tot_emi),
-                prn_emi: currentPrincipalCalculate(+item?.tot_emi),
-            })))
+                prn_amt:item?.prn_amt,
+
+                credit: item?.demand?.demand?.ld_demand ? item?.demand?.demand?.ld_demand : 0,
+                // credit: item?.tot_emi,
+                intt_emi: currentInterestCalculate(+item?.demand?.demand?.ld_demand||0),
+                prn_emi: currentPrincipalCalculate(+item?.demand?.demand?.ld_demand||0),
+            })}))
             // setTotalEMI(memberDetailsArray.reduce((sum, item) => sum + item.creditAmount, 0))
         }
+        // setMemberDetailsArray((fetchedData?.memb_dtls as any[])?.map((item, i) => {
+        //     handleEMIChange(item?.tot_emi, i)
+        //     return ({
+        //     ...item,
+        //     isChecked: true,
+        //     credit: item?.demand?.demand?.ld_demand ? item?.demand?.demand?.ld_demand : 0,
+        //     // credit: item?.tot_emi,
+        //     intt_emi: currentInterestCalculate(+item?.tot_emi),
+        //     prn_emi: currentPrincipalCalculate(+item?.tot_emi),
+        // })}))
+
         console.log("MEMB_DTLS", fetchedData?.memb_dtls)
         console.log("MEMB_DTLS UPDATEDDDDD", memberDetailsArray)
     }, [memberDetailsArray])
 
     // const [totalEMI, setTotalEMI] = useState(() => "")
 
-    const handleEMIChange = (txt: any, i: any) => {
+    const handleEMIChange = (txt: string, i: any) => {
+        // if (!txt) {
+        //     memberDetailsArray?.forEach((item, i) => {
+        //         console.log("UUUUUUU", item?.credit)
+        //         return(
+        //         handleEMIChange(item?.credit, i)
+        //     )
+        // })
+        // }
+
         console.log(memberDetailsArray.map(e=>e.instl_paid),txt,"member details")
         // setMemberDetailsArray(prevArray =>
         //     prevArray.map((member, index) =>
         //         index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid: countNoOfInstallments(+txt,index) } : member
         //     )
         // )
+      
+
+        console.log("TTTTTXXXXXXXTTTTTTTTT", txt)
+        console.log("TTTTTXXXXXXXTTTTTTTTT IIIIIIIIIIII", currentInterestCalculate(+txt))
+        console.log("TTTTTXXXXXXXTTTTTTTTT PPPPPPPPPPPP", currentPrincipalCalculate(+txt))
         setMemberDetailsArray(prevArray =>
             prevArray.map((member, index) =>
                 index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid:0 } : member
             )
         )
     }
+
+    // useEffect(() => {
+    //     if (!initialized) {
+    //         memberDetailsArray.forEach((item, i) => {
+    //             handleEMIChange(item?.credit, i);
+    //         });
+    //         setInitialized(true);
+    //     }
+    // }, [initialized, memberDetailsArray]);
 
     // const remainingLoanCalculation = (creditAmt: number) => {
     //     let remainingInterest = +fetchedData?.intt_amt;
@@ -286,15 +328,17 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const sendRecoveryEMI = async () => {
         setLoading(true)
 
-        const transformedObj = memberDetailsArray.filter((item, i) => item.isChecked).map((item) => ({
+        const transformedObj = memberDetailsArray.filter((item, i) => item.isChecked && item.credit > 0).map((item) => ({
             loan_id: item.loan_id,
             credit: item.credit,
             intt_cal_amt: item.intt_cal_amt,
             prn_emi: item.prn_emi,
             intt_emi: item.intt_emi,
             instl_paid: item.instl_paid,
-            balance:item.balance,
+            // balance:item.balance,
             group_code:fetchedData.group_code,
+            prn_amt:item?.prn_amt,
+            intt_amt:item?.intt_amt,
             last_trn_dt: formattedDate(formData.txnDate),
         }));
 
@@ -310,7 +354,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             "bank_name": formData?.bankName || "",
             "cheque_id": formData?.chequeId || 0,
             "chq_dt": formattedDate(formData?.chequeDate) || "",
-            "balance": fetchedData?.balance,
+            // "prn_amt":formData?.prn_amt,
+            // "balance": fetchedData?.balance,
             // "recovdtls": [{
             //     "loan_id": "",
             //     "credit": "",
@@ -342,6 +387,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             console.log("Some error occurred while submitting EMI.", err)
         })
         // বিঃ দ্রঃ - দোয়া করে এই রিসিটটির একটি ফটোকপি রাখবেন। 
+
+        console.log("JJJJJJJJJJJJJJJJJJJJ", transformedObj)
         setLoading(false)
     }
     const handlePrint = async (data: any) => {
@@ -383,6 +430,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             text+=
             `[L]TOTAL[C]:[R]${tot_amt}\n` +
             `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
+            `[L]COLLECTOR[C]:[R]${data[0]?.collec_name}\n` +
+            `[L]CODE[C]:[R]${data[0]?.collec_code}\n` +
             `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
             `[C]================X===============\n`;
         // `[L]BRANCH[C]:[R]\n` +
@@ -498,7 +547,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 }}
                             />
 
-                            <InputPaper label="Cheque No." leftIcon='cash-fast' keyboardType="numeric" value={formData.chequeId} onChangeText={(txt: any) => handleFormChange("chequeId", txt)} customStyle={{
+                            <InputPaper label="Txn. ID" leftIcon='cash-fast' keyboardType="numeric" value={formData.chequeId} onChangeText={(txt: any) => handleFormChange("chequeId", txt)} customStyle={{
                                 backgroundColor: theme.colors.background,
                             }} />
 
@@ -511,7 +560,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                     mode="elevated"
                                     icon="calendar">
                                     {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
-                                    CHEQUE DATE: {formData.chequeDate?.toLocaleDateString("en-GB")}
+                                    TXN. DATE: {formData.chequeDate?.toLocaleDateString("en-GB")}
                                 </ButtonPaper>
                             </View>
                             <DatePicker
@@ -540,16 +589,21 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                             onPress={() => setOpenDate(true)}
                             mode="elevated"
                             icon="calendar"
-                            disabled={inputDisableLogic()}>
+                            // disabled={inputDisableLogic()}
+                            
+                            
+                            >
                             {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
                             CHOOSE TXN. DATE: {formData.txnDate?.toLocaleDateString("en-GB")}
                         </ButtonPaper>
                     </View>
                     <DatePicker
                         // maximumDate={new Date(new Date(fetchedData?.instl_end_dt))}
+                        maximumDate={new Date()}
+                        minimumDate={new Date(new Date().setDate(1))}
                         modal
                         mode="date"
-                        minimumDate={new Date(new Date())}
+                        // minimumDate={new Date(new Date())}
                         open={openDate}
                         date={formData.txnDate}
                         onConfirm={date => {
@@ -613,8 +667,10 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                                     status={item?.isChecked ? 'checked' : 'unchecked'}
                                                     onPress={() => {
                                                         setMemberDetailsArray(prevArray =>
+                                                            // prevArray.map((member, index) =>
+                                                            //     index === i ? { ...member, isChecked: !member.isChecked, credit: member?.isChecked ? 0 : member.demand.demand.ld_demand?member.demand.demand.ld_demand:member?.tot_emi } : member
                                                             prevArray.map((member, index) =>
-                                                                index === i ? { ...member, isChecked: !member.isChecked, credit: member?.isChecked ? 0 : member?.tot_emi } : member
+                                                                index === i ? { ...member, isChecked: !member.isChecked, credit: member?.isChecked ? 0 : member.demand.demand.ld_demand?member.demand.demand.ld_demand:0 } : member
                                                             )
                                                         );
                                                         // setMemberDetailsArray(prevArray =>
@@ -626,11 +682,23 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                                 />
                                             </View>
                                         )}
-                                        right={() => (
-                                            <InputPaper label="EMI" maxLength={8} leftIcon='cash-100' keyboardType="numeric" value={item?.credit} onChangeText={(txt: any) => handleEMIChange(txt, i)} customStyle={{
+                                        right={() => {
+                                        //    console.log("@@@@@@@@@@@@@@", item?.credit)
+                                            return(
+                                            <InputPaper selectTextOnFocus label="EMI" maxLength={8} leftIcon='cash-100' keyboardType="numeric" value={item?.credit}
+                                            onBlur={()=>{
+                                                if(memberDetailsArray.filter((item, _) => +item.credit > (+item.prn_amt + +item.intt_amt)).length > 0)
+                                                    {
+                                                        ToastAndroid.show('Entered amount cannot be greater than the outstanding amount',ToastAndroid.SHORT)
+                                                    }
+                                                }}
+                                            onChangeText={(txt: string) => {
+                                                // handleEMIChange(item?.credit, i)
+                                                handleEMIChange(txt, i)
+                                            }} customStyle={{
                                                 backgroundColor: theme.colors.background,
                                             }} disabled={!item?.isChecked} />
-                                        )}
+                                        )}}
                                     />
                                     <Divider />
                                 </View>
@@ -691,7 +759,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 text: "Yes"
                             }])
 
-                        }} loading={loading} disabled={loading || memberDetailsArray.reduce((sum, item) => sum + +item.credit, 0) === 0}>
+                        }} loading={loading} disabled={loading || memberDetailsArray.reduce((sum, item) => sum + +item.credit, 0) === 0 || memberDetailsArray.filter((item, _) => +item.credit > (+item.prn_amt + +item.intt_amt)).length > 0}>
                             {!loading ? "Collect Amount" : "DON'T CLOSE THIS PAGE..."}
                         </ButtonPaper>
                     </View>

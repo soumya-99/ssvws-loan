@@ -141,8 +141,8 @@ function BottomNavigationPaper() {
                 )
                     : (null)
             }
-
-            <Tab.Screen
+{/* ===========================to be enabled================= */}
+            {/* <Tab.Screen
                 name={navigationRoutes.reportsNavigation}
                 component={ReportsNavigation}
                 options={{
@@ -158,7 +158,8 @@ function BottomNavigationPaper() {
                             <MaterialCommunityIcons name="table-headers-eye" color={color} size={26} />
                         ),
                 }}
-            />
+            /> */}
+{/* ===========================to be enabled================= */}
 
             <Tab.Screen
                 name={navigationRoutes.loanRecoveryNavigation}

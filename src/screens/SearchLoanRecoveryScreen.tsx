@@ -44,7 +44,8 @@ const SearchLoanRecoveryScreen = () => {
         setLoading(true)
         setDemandClick(false)
         const creds = {
-            grp_dtls: src
+            grp_dtls: src,
+            get_date:new Date()
         }
 
         await axios.post(`${ADDRESSES.SEARCH_GROUP_RECOVERY}`, creds).then(res => {
