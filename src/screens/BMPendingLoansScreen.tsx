@@ -40,7 +40,7 @@ const BMPendingLoansScreen = () => {
         setLoading(true)
 
         await axios.get(`${ADDRESSES.FETCH_FORMS}?branch_code=${loginStore?.brn_code}`).then(res => {
-            // console.log(":::;;;:::", res?.data)
+            console.log(":::;;;:::", res?.data)
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
             }

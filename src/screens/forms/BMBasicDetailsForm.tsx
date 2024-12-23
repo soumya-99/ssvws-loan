@@ -123,25 +123,45 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         }))
     }
 
+    // const handleFetchGroupNames = async () => {
+    //     setLoading(true)
+    //     setGroupNames(() => [])
+    //     await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`).then(res => {
+    //         // setGroupNamesAndCodesTemp(res?.data?.msg)
+    //         console.log("XXXXXXXXXXXXXXXXXX", res?.data?.msg)
+
+    //         res?.data?.msg?.map((item, i) => {
+    //             return (
+    //                 //@ts-ignore
+    //                 setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { handleFormChange("groupCode", item?.group_code); handleFormChange("groupCodeName", item?.group_name) } }])
+    //             )
+    //         })
+
+    //     }).catch(err => {
+    //         ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT)
+    //     })
+    //     setLoading(false)
+    // }
+
     const handleFetchGroupNames = async () => {
-        setLoading(true)
-        setGroupNames(() => [])
-        await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`).then(res => {
-            // setGroupNamesAndCodesTemp(res?.data?.msg)
-            console.log("XXXXXXXXXXXXXXXXXX", res?.data?.msg)
-
-            res?.data?.msg?.map((item, i) => {
-                return (
-                    //@ts-ignore
-                    setGroupNames(prev => [...prev, { title: item?.group_name, func: () => { handleFormChange("groupCode", item?.group_code); handleFormChange("groupCodeName", item?.group_name) } }])
-                )
-            })
-
-        }).catch(err => {
-            ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT)
-        })
-        setLoading(false)
-    }
+        setLoading(true);
+        setGroupNames(() => []);
+        try {
+            const response = await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`);
+            const groupNames = response?.data?.msg?.map((item) => ({
+                title: item?.group_name,
+                func: () => {
+                    handleFormChange("groupCode", item?.group_code);
+                    handleFormChange("groupCodeName", item?.group_name);
+                }
+            }));
+            setGroupNames(groupNames);
+        } catch (err) {
+            ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleFetchReligions = async () => {
         setLoading(true)

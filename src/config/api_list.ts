@@ -40,7 +40,7 @@ export const ADDRESSES = {
     FINAL_SUBMIT: `${BASE_URL}/final_submit`,
     SEARCH_GROUP_RECOVERY: `${BASE_URL}/search_group_app`,
     DEMANDREPORT: `${BASE_URL}/get_demand_data`,
-    GROUPWISERECOVERYREPORT:  `${BASE_URL}/group_wise_recov_app`,
+    GROUPWISERECOVERYREPORT: `${BASE_URL}/group_wise_recov_app`,
     LOAN_RECOVERY_EMI: `${BASE_URL}/recovery_transaction`,
 
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
