@@ -570,6 +570,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     /> */}
 
+                    {/* {console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", formData)} */}
                     <Dropdown
                         style={styles.dropdown}
                         placeholderStyle={[styles.placeholderStyle, { color: theme.colors.onBackground }]}
@@ -588,12 +589,12 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         valueField="value"
                         placeholder="Select Group"
                         searchPlaceholder="Search Group..."
-                        value={formData?.groupCodeName}
+                        value={formData?.groupCode}
                         onChange={item => {
                             console.log("??????????????????????", item)
                             // setValue(item.value);
                             handleFormChange("groupCode", item?.value);
-                            handleFormChange("groupCodeName", item?.label);
+                            // handleFormChange("groupCodeName", item?.label);
                         }}
                         renderLeftIcon={() => (
                             <Icon size={25} source={"account-group-outline"} />

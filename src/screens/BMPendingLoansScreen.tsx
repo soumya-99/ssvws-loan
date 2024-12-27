@@ -12,6 +12,7 @@ import { loginStorage } from '../storage/appStorage'
 import LoadingOverlay from '../components/LoadingOverlay'
 import DialogBox from '../components/DialogBox'
 import InputPaper from '../components/InputPaper'
+import ButtonPaper from '../components/ButtonPaper'
 
 const BMPendingLoansScreen = () => {
     const theme = usePaperColorScheme()
@@ -134,7 +135,8 @@ const BMPendingLoansScreen = () => {
                 {/* <BMPendingLoanFormScreen /> */}
 
                 <View style={{
-                    paddingHorizontal: 20
+                    paddingHorizontal: 20,
+                    gap: 10
                 }}>
                     <Searchbar
                         autoFocus
@@ -150,6 +152,10 @@ const BMPendingLoansScreen = () => {
                         }}
                     // loading={search ? true : false}
                     />
+
+                    <ButtonPaper mode='elevated' onPress={() => null} icon={"text-box-search-outline"}>
+                        Search
+                    </ButtonPaper>
                 </View>
 
                 <View style={{
