@@ -105,7 +105,7 @@ const LoginScreen = () => {
                         {/* @ts-ignore */}
                         <ButtonPaper mode='elevated' onPress={login} icon="login" style={{
                             marginTop: normalize(20)
-                        }} loading={isLoading} disabled={isLoading}>
+                        }} loading={isLoading} disabled={isLoading || !username || !password}>
                             Login
                         </ButtonPaper>
                     </View>

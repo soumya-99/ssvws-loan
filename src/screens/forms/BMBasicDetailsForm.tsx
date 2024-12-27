@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, View, Alert, ToastAndroid, Linking } from 'react-native'
-import { List } from "react-native-paper"
+import { Divider, Icon, List } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { formattedDate } from "../../utils/dateFormatter"
 import InputPaper from "../../components/InputPaper"
@@ -14,6 +14,8 @@ import { loginStorage } from '../../storage/appStorage'
 import LoadingOverlay from "../../components/LoadingOverlay"
 import useGeoLocation from '../../hooks/useGeoLocation'
 import { disableCondition } from "../../utils/disableCondition"
+import { Dropdown } from 'react-native-element-dropdown'
+import { SCREEN_WIDTH } from 'react-native-normalize'
 
 interface BMBasicDetailsFormProps {
     formNumber?: any
@@ -100,6 +102,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         })
     }
 
+    //! IMP: Temporarily stopped for debug mode, enable on production
     useEffect(() => {
         if (location?.latitude && location.longitude && approvalStatus === "U") {
             fetchGeoLocaltionAddress()
@@ -148,14 +151,16 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         setGroupNames(() => []);
         try {
             const response = await axios.get(`${ADDRESSES.GROUP_NAMES}?branch_code=${loginStore?.brn_code}`);
-            const groupNames = response?.data?.msg?.map((item) => ({
-                title: item?.group_name,
-                func: () => {
-                    handleFormChange("groupCode", item?.group_code);
-                    handleFormChange("groupCodeName", item?.group_name);
-                }
-            }));
-            setGroupNames(groupNames);
+            // const groupNames = response?.data?.msg?.map((item) => ({
+            //     title: item?.group_name,
+            //     func: () => {
+            //         handleFormChange("groupCode", item?.group_code);
+            //         handleFormChange("groupCodeName", item?.group_name);
+            //     }
+            // }));
+            setGroupNames(response?.data?.msg?.map((item, _) => (
+                { label: item?.group_name, value: item?.group_code }
+            )));
         } catch (err) {
             ToastAndroid.show("Some error occurred {handleFetchGroupNames}!", ToastAndroid.SHORT);
         } finally {
@@ -531,6 +536,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     // }, [onSubmitRef]);
 
     console.log("~~~~~~~~~~~~~~~~~", branchCode, loginStore?.brn_code)
+    // console.log("FORM DATA ============>>>", branchCode, formData)
 
     return (
         <SafeAreaView>
@@ -552,7 +558,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         backgroundColor: theme.colors.background,
                     }} />}
 
-                    <List.Item
+                    {/* <List.Item
                         title="Choose Group"
                         description={`${formData.groupCodeName} - ${formData.groupCode}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
@@ -562,7 +568,39 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         descriptionStyle={{
                             color: theme.colors.tertiary,
                         }}
+                    /> */}
+
+                    <Dropdown
+                        style={styles.dropdown}
+                        placeholderStyle={[styles.placeholderStyle, { color: theme.colors.onBackground }]}
+                        selectedTextStyle={[styles.selectedTextStyle, { color: theme.colors.primary }]}
+                        inputSearchStyle={[styles.inputSearchStyle, { borderRadius: 10 }]}
+                        containerStyle={{
+                            width: SCREEN_WIDTH / 1.1,
+                            alignSelf: "center",
+                            borderRadius: 10
+                        }}
+                        iconStyle={styles.iconStyle}
+                        data={groupNames}
+                        search
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Select Group"
+                        searchPlaceholder="Search Group..."
+                        value={formData?.groupCodeName}
+                        onChange={item => {
+                            console.log("??????????????????????", item)
+                            // setValue(item.value);
+                            handleFormChange("groupCode", item?.value);
+                            handleFormChange("groupCodeName", item?.label);
+                        }}
+                        renderLeftIcon={() => (
+                            <Icon size={25} source={"account-group-outline"} />
+                        )}
                     />
+
+                    <Divider />
 
                     <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
@@ -725,6 +763,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                                 { text: "No", onPress: () => null },
                                 { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
                             ])
+                            console.log("FORM DATA ============>>>", formData)
                         }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || disableCondition(approvalStatus, branchCode)}
                             loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
                     </View>
@@ -740,4 +779,33 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
 export default BMBasicDetailsForm
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    dropdown: {
+        margin: 16,
+        height: 30,
+        width: SCREEN_WIDTH,
+        alignSelf: "center",
+        paddingHorizontal: 35,
+        borderRadius: 10
+    },
+    // icon: {
+    //     marginLeft: -150,
+    // },
+    placeholderStyle: {
+        fontSize: 16,
+        marginLeft: 16,
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+        marginLeft: 16,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
+
+})
