@@ -37,10 +37,29 @@ const BMPendingLoansScreen = () => {
         member_code: ""
     })
 
-    const fetchPendingGRTForms = async () => {
+    // const fetchPendingGRTForms = async () => {
+    //     setLoading(true)
+
+    //     await axios.get(`${ADDRESSES.FETCH_FORMS}?branch_code=${loginStore?.brn_code}`).then(res => {
+    //         console.log(":::;;;:::", res?.data)
+    //         if (res?.data?.suc === 1) {
+    //             setFormsData(res?.data?.msg)
+    //         }
+    //     }).catch(err => {
+    //         ToastAndroid.show("Some error while fetching forms list!", ToastAndroid.SHORT)
+    //     })
+
+    //     setLoading(false)
+    // }
+
+    const searchPendingGRTForms = async () => {
         setLoading(true)
 
-        await axios.get(`${ADDRESSES.FETCH_FORMS}?branch_code=${loginStore?.brn_code}`).then(res => {
+        const creds = {
+            "bm_search_pending": search
+        }
+
+        await axios.post(`${ADDRESSES.BM_SEARCH_PENDING_FORM}`, creds).then(res => {
             console.log(":::;;;:::", res?.data)
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
@@ -52,9 +71,9 @@ const BMPendingLoansScreen = () => {
         setLoading(false)
     }
 
-    useEffect(() => {
-        fetchPendingGRTForms()
-    }, [])
+    // useEffect(() => {
+    //     fetchPendingGRTForms()
+    // }, [])
 
     useEffect(() => {
         setFilteredDataArray(formsData)
@@ -74,10 +93,12 @@ const BMPendingLoansScreen = () => {
     const onChangeSearch = (query: string) => {
         // if (/^\d*$/.test(query)) {
         setSearch(query)
-        const filteredData = formsData.filter((item) => {
-            return item?.client_name?.toString()?.toLowerCase().includes(query?.toLowerCase())
-        })
-        setFilteredDataArray(filteredData)
+        ///////////////////////////
+        // const filteredData = formsData.filter((item) => {
+        //     return item?.client_name?.toString()?.toLowerCase().includes(query?.toLowerCase())
+        // })
+        // setFilteredDataArray(filteredData)
+        //////////////////////////
         // } else {
         //     setFilteredDataArray(formsData)
         // }
@@ -97,7 +118,7 @@ const BMPendingLoansScreen = () => {
             console.log("DELETE FORM ======== RESSS", res?.data)
             if (res?.data?.suc === 1) {
                 ToastAndroid.show("Form Deleted!", ToastAndroid.SHORT)
-                fetchPendingGRTForms()
+                // fetchPendingGRTForms()
                 setRemarks("")
                 hideDialog()
             }
@@ -131,7 +152,7 @@ const BMPendingLoansScreen = () => {
                 minHeight: SCREEN_HEIGHT,
                 height: 'auto',
             }} keyboardShouldPersistTaps="handled">
-                <HeadingComp title="Pending Forms" subtitle="Choose Form" isBackEnabled />
+                <HeadingComp title="Pending Forms" subtitle="Search by Member Name/Code/Aadhaar/Mobile/PAN and Choose Form" isBackEnabled />
                 {/* <BMPendingLoanFormScreen /> */}
 
                 <View style={{
@@ -140,7 +161,7 @@ const BMPendingLoansScreen = () => {
                 }}>
                     <Searchbar
                         autoFocus
-                        placeholder={"Search by Member Name"}
+                        placeholder={"Name/Code/Aadhaar/Mobile/PAN"}
                         onChangeText={onChangeSearch}
                         value={search}
                         elevation={search ? 2 : 0}
@@ -150,10 +171,10 @@ const BMPendingLoansScreen = () => {
                             backgroundColor: theme.colors.tertiaryContainer,
                             color: theme.colors.onTertiaryContainer,
                         }}
-                    // loading={search ? true : false}
+                        loading={loading}
                     />
 
-                    <ButtonPaper mode='elevated' onPress={() => null} icon={"text-box-search-outline"}>
+                    <ButtonPaper mode='elevated' onPress={async () => await searchPendingGRTForms()} icon={"text-box-search-outline"}>
                         Search
                     </ButtonPaper>
                 </View>

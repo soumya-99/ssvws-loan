@@ -42,6 +42,7 @@ export const ADDRESSES = {
     DEMANDREPORT: `${BASE_URL}/get_demand_data`,
     GROUPWISERECOVERYREPORT: `${BASE_URL}/group_wise_recov_app`,
     LOAN_RECOVERY_EMI: `${BASE_URL}/recovery_transaction`,
+    BM_SEARCH_PENDING_FORM: `${BASE_URL}/bm_search_pending_form`,
 
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
     DELETE_TNX: `${BASE_URL}/remove_trans`,
