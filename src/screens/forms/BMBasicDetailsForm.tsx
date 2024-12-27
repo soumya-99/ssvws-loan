@@ -598,7 +598,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
-                        placeholder="Select Group"
+                        placeholder="Select Group*"
                         searchPlaceholder="Search Group..."
                         value={formData?.groupCode}
                         onChange={item => {
@@ -620,7 +620,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         mode="elevated"
                         icon="calendar-outline"
                         disabled={disableCondition(approvalStatus, branchCode)}>
-                        CHOOSE GRT DATE: {formData.grtDate?.toLocaleDateString("en-GB")}
+                        CHOOSE GRT DATE*: {formData.grtDate?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
                         // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
@@ -638,28 +638,28 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
+                    <InputPaper label="Mobile No.*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Aadhaar No." maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
+                    <InputPaper label="Aadhaar No.*" maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="PAN No." maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => fetchClientDetails("P", formData.panNumber)} customStyle={{
+                    <InputPaper label="PAN No.*" maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => fetchClientDetails("P", formData.panNumber)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Member Name" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
+                    <InputPaper label="Member Name*" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Member Email" leftIcon='email-outline' keyboardType="email-address" value={formData.clientEmail} onChangeText={(txt: any) => handleFormChange("clientEmail", txt)} customStyle={{
+                    <InputPaper label="Member Email*" leftIcon='email-outline' keyboardType="email-address" value={formData.clientEmail} onChangeText={(txt: any) => handleFormChange("clientEmail", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
                     <List.Item
-                        title="Choose Gender"
+                        title="Choose Gender*"
                         description={`Gender: ${formData.clientGender}`}
                         left={props => <List.Icon {...props} icon="gender-male-female" />}
                         right={props => {
@@ -670,20 +670,20 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    <InputPaper label="Guardian Name" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
+                    <InputPaper label="Guardian Name*" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Guardian Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.guardianMobile} onChangeText={(txt: any) => handleFormChange("guardianMobile", txt)} customStyle={{
+                    <InputPaper label="Guardian Mobile No.*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.guardianMobile} onChangeText={(txt: any) => handleFormChange("guardianMobile", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Member Address" multiline leftIcon='card-account-phone-outline' value={formData.clientAddress} onChangeText={(txt: any) => handleFormChange("clientAddress", txt)} customStyle={{
+                    <InputPaper label="Member Address*" multiline leftIcon='card-account-phone-outline' value={formData.clientAddress} onChangeText={(txt: any) => handleFormChange("clientAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="PIN No." leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
+                    <InputPaper label="PIN No.*" leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
@@ -694,7 +694,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         icon="baby-face-outline"
                         disabled={disableCondition(approvalStatus, branchCode)}>
                         {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
-                        CHOOSE D.O.B. {isToday(formData.dob) ? "(BIRTH DATE)" : formData.dob?.toLocaleDateString("en-GB")}
+                        CHOOSE D.O.B. {isToday(formData.dob) ? "(BIRTH DATE)*" : formData.dob?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
                         // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
@@ -713,7 +713,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     />
 
                     <List.Item
-                        title="Choose Religion"
+                        title="Choose Religion*"
                         description={`Religion: ${formData.religion}`}
                         left={props => <List.Icon {...props} icon="peace" />}
                         right={props => {
@@ -729,7 +729,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     }} disabled={disableCondition(approvalStatus, branchCode)} />}
 
                     <List.Item
-                        title="Choose Caste"
+                        title="Choose Caste*"
                         description={`Caste: ${formData.caste}`}
                         left={props => <List.Icon {...props} icon="account-question-outline" />}
                         right={props => {
@@ -745,7 +745,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     }} disabled={disableCondition(approvalStatus, branchCode)} />}
 
                     <List.Item
-                        title="Choose Education"
+                        title="Choose Education*"
                         description={`Education: ${formData.education}`}
                         left={props => <List.Icon {...props} icon="book-education-outline" />}
                         right={props => {

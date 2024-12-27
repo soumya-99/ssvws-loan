@@ -136,11 +136,11 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                 }}>
                     <Divider />
 
-                    <InputPaper label="No. of Rooms" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
+                    <InputPaper label="No. of Rooms*" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
-                    <InputPaper label="Parental Address" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
+                    <InputPaper label="Parental Address*" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
@@ -150,7 +150,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <List.Item
-                        title="House Type"
+                        title="House Type*"
                         description={`Purpose: ${formData.houseType}`}
                         left={props => <List.Icon {...props} icon="office-building-cog-outline" />}
                         right={props => {
@@ -162,7 +162,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                     />
 
                     <RadioComp
-                        title="Own or Rent?"
+                        title="Own or Rent?*"
                         icon="home-switch-outline"
                         dataArray={[
                             {
@@ -183,12 +183,12 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
 
                     <Divider />
 
-                    <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
+                    <InputPaper label="Total Land (In Kathas)*" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <RadioComp
-                        title="Politically Active?"
+                        title="Politically Active?*"
                         icon="police-badge-outline"
                         dataArray={[
                             {
@@ -207,7 +207,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Own a TV?"
+                        title="Own a TV?*"
                         icon="television-classic"
                         dataArray={[
                             {
@@ -226,7 +226,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Own a Bike?"
+                        title="Own a Bike?*"
                         icon="motorbike"
                         dataArray={[
                             {
@@ -245,7 +245,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Own a Fridge?"
+                        title="Own a Fridge?*"
                         icon="fridge-bottom"
                         dataArray={[
                             {
@@ -264,7 +264,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Washing Machine?"
+                        title="Washing Machine?*"
                         icon="washing-machine"
                         dataArray={[
                             {

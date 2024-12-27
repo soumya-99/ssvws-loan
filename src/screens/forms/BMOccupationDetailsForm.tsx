@@ -167,19 +167,19 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                 }}>
                     <Divider />
 
-                    <InputPaper label="Self Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.selfOccupation} onChangeText={(txt: any) => handleFormChange("selfOccupation", txt)} customStyle={{
+                    <InputPaper label="Self Occupation*" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.selfOccupation} onChangeText={(txt: any) => handleFormChange("selfOccupation", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
-                    <InputPaper label="Self Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.selfMonthlyIncome} onChangeText={(txt: any) => handleFormChange("selfMonthlyIncome", txt)} customStyle={{
+                    <InputPaper label="Self Monthly Income*" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.selfMonthlyIncome} onChangeText={(txt: any) => handleFormChange("selfMonthlyIncome", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
-                    <InputPaper label="Spouse Occupation" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.spouseOccupation} onChangeText={(txt: any) => handleFormChange("spouseOccupation", txt)} customStyle={{
+                    <InputPaper label="Spouse Occupation*" maxLength={50} leftIcon='bag-personal-outline' keyboardType="default" value={formData.spouseOccupation} onChangeText={(txt: any) => handleFormChange("spouseOccupation", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
-                    <InputPaper label="Spouse Monthly Income" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.spouseMonthlyIncome} onChangeText={(txt: any) => handleFormChange("spouseMonthlyIncome", txt)} customStyle={{
+                    <InputPaper label="Spouse Monthly Income*" maxLength={15} leftIcon='account-cash-outline' keyboardType="numeric" value={formData.spouseMonthlyIncome} onChangeText={(txt: any) => handleFormChange("spouseMonthlyIncome", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
@@ -188,7 +188,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                         minHeight: 95,
                     }} /> */}
                     <List.Item
-                        title="Purpose of Loan"
+                        title="Purpose of Loan*"
                         description={`Purpose: ${formData.purposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="progress-question" />}
                         right={props => {
@@ -200,7 +200,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                     />
 
                     {formData.purposeOfLoan && <List.Item
-                        title="Sub Purpose"
+                        title="Sub Purpose*"
                         description={`Purpose: ${formData.subPurposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="file-question-outline" />}
                         right={props => {
@@ -211,12 +211,12 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                         }}
                     />}
 
-                    <InputPaper label="Amount Applied" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} customStyle={{
+                    <InputPaper label="Amount Applied*" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <RadioComp
-                        title="Other Loans?"
+                        title="Other Loans?*"
                         icon="cash-multiple"
                         dataArray={[
                             {
@@ -235,11 +235,11 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
 
-                    {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Other Loan Amount" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.otherLoanAmount} onChangeText={(txt: any) => handleFormChange("otherLoanAmount", txt)} customStyle={{
+                    {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Other Loan Amount*" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.otherLoanAmount} onChangeText={(txt: any) => handleFormChange("otherLoanAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />}
 
-                    {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Monthly EMI" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={formData.monthlyEmi} onChangeText={(txt: any) => handleFormChange("monthlyEmi", txt)} customStyle={{
+                    {formData.checkOtherOngoingLoan === "Y" && <InputPaper label="Monthly EMI*" maxLength={15} leftIcon='cash-check' keyboardType="numeric" value={formData.monthlyEmi} onChangeText={(txt: any) => handleFormChange("monthlyEmi", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />}
 

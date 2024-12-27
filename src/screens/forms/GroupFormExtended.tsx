@@ -180,12 +180,12 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
                 }}>
                     <Divider />
 
-                    <InputPaper label="Group Name" leftIcon='account-group-outline' keyboardType="default" value={formData.groupName} onChangeText={(txt: any) => handleFormChange("groupName", txt)} customStyle={{
+                    <InputPaper label="Group Name*" leftIcon='account-group-outline' keyboardType="default" value={formData.groupName} onChangeText={(txt: any) => handleFormChange("groupName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
                     <List.Item
-                        title="Choose Group Type"
+                        title="Choose Group Type*"
                         description={`Group Type: ${formData.groupTypeName}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
@@ -198,17 +198,17 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
 
                     <Divider />
 
-                    <InputPaper label="Address" multiline leftIcon='card-account-phone-outline' keyboardType="default" value={formData.address} onChangeText={(txt: any) => handleFormChange("address", txt)} customStyle={{
+                    <InputPaper label="Address*" multiline leftIcon='card-account-phone-outline' keyboardType="default" value={formData.address} onChangeText={(txt: any) => handleFormChange("address", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="PIN No." maxLength={10} leftIcon='map-legend' keyboardType="numeric" value={formData.pin} onChangeText={(txt: any) => handleFormChange("pin", txt)} customStyle={{
+                    <InputPaper label="PIN No.*" maxLength={10} leftIcon='map-legend' keyboardType="numeric" value={formData.pin} onChangeText={(txt: any) => handleFormChange("pin", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
                     <List.Item
-                        title="Choose Block"
+                        title="Choose Block*"
                         description={`Group Block: ${formData.groupBlockName}`}
                         left={props => <List.Icon {...props} icon="map-marker-distance" />}
                         right={props => {
@@ -221,39 +221,39 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
 
                     <Divider />
 
-                    <InputPaper label="Mobile No. 1" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.phoneNo} onChangeText={(txt: any) => handleFormChange("phoneNo", txt)} customStyle={{
+                    <InputPaper label="Mobile No. 1*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.phoneNo} onChangeText={(txt: any) => handleFormChange("phoneNo", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="Mobile No. 2" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.phoneNo2} onChangeText={(txt: any) => handleFormChange("phoneNo2", txt)} customStyle={{
+                    <InputPaper label="Mobile No. 2*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.phoneNo2} onChangeText={(txt: any) => handleFormChange("phoneNo2", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="Email Id." leftIcon='email-outline' keyboardType="email-address" value={formData.emailId} onChangeText={(txt: any) => handleFormChange("emailId", txt)} customStyle={{
+                    <InputPaper label="Email Id.*" leftIcon='email-outline' keyboardType="email-address" value={formData.emailId} onChangeText={(txt: any) => handleFormChange("emailId", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="Bank Name" leftIcon='bank-outline' keyboardType="default" value={formData.bankName} onChangeText={(txt: any) => handleFormChange("bankName", txt)} customStyle={{
+                    <InputPaper label="Bank Name*" leftIcon='bank-outline' keyboardType="default" value={formData.bankName} onChangeText={(txt: any) => handleFormChange("bankName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="Bank Branch" leftIcon='bank-transfer-in' keyboardType="default" value={formData.bankBranchName} onChangeText={(txt: any) => handleFormChange("bankBranchName", txt)} customStyle={{
+                    <InputPaper label="Bank Branch*" leftIcon='bank-transfer-in' keyboardType="default" value={formData.bankBranchName} onChangeText={(txt: any) => handleFormChange("bankBranchName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="IFSC Code" leftIcon='numeric' keyboardType="default" value={formData.ifscCode} onChangeText={(txt: any) => handleFormChange("ifscCode", txt)} customStyle={{
+                    <InputPaper label="IFSC Code*" leftIcon='numeric' keyboardType="default" value={formData.ifscCode} onChangeText={(txt: any) => handleFormChange("ifscCode", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="MICR Code" leftIcon='nfc' keyboardType="default" value={formData.micr} onChangeText={(txt: any) => handleFormChange("micr", txt)} customStyle={{
+                    <InputPaper label="MICR Code*" leftIcon='nfc' keyboardType="default" value={formData.micr} onChangeText={(txt: any) => handleFormChange("micr", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="Account No. 1" maxLength={20} leftIcon='numeric-1-circle-outline' keyboardType="numeric" value={formData.accNo1} onChangeText={(txt: any) => handleFormChange("accNo1", txt)} customStyle={{
+                    <InputPaper label="Account No. 1*" maxLength={20} leftIcon='numeric-1-circle-outline' keyboardType="numeric" value={formData.accNo1} onChangeText={(txt: any) => handleFormChange("accNo1", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="Account No. 2" maxLength={20} leftIcon='numeric-2-circle-outline' keyboardType="numeric" value={formData.accNo2} onChangeText={(txt: any) => handleFormChange("accNo2", txt)} customStyle={{
+                    <InputPaper label="Account No. 2*" maxLength={20} leftIcon='numeric-2-circle-outline' keyboardType="numeric" value={formData.accNo2} onChangeText={(txt: any) => handleFormChange("accNo2", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 

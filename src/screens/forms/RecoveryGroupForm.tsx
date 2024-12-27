@@ -469,17 +469,17 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                     paddingBottom: 10,
                     gap: 14
                 }}>
-                    <InputPaper label="Last Transaction Date" leftIcon='account-group-outline' keyboardType="default" value={new Date(last_trn_dt).toLocaleDateString("en-GB")} onChangeText={(txt: any) => handleFormChange("last_trn_dt", txt)} customStyle={{
+                    <InputPaper label="Last Transaction Date*" leftIcon='account-group-outline' keyboardType="default" value={new Date(last_trn_dt).toLocaleDateString("en-GB")} onChangeText={(txt: any) => handleFormChange("last_trn_dt", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
                     <Divider />
 
-                    <InputPaper label="Group Name" leftIcon='account-group-outline' keyboardType="default" value={formData.groupName} onChangeText={(txt: any) => handleFormChange("groupName", txt)} customStyle={{
+                    <InputPaper label="Group Name*" leftIcon='account-group-outline' keyboardType="default" value={formData.groupName} onChangeText={(txt: any) => handleFormChange("groupName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
                     <List.Item
-                        title="Group Type"
+                        title="Group Type*"
                         description={`Group Type: ${formData.groupTypeName}`}
                         left={props => <List.Icon {...props} icon="account-group-outline" />}
                         right={props => {
@@ -500,26 +500,26 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled /> */}
 
-                    <InputPaper label="Total Outstanding (Rs.)" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.totalAmount} onChangeText={(txt: any) => handleFormChange("totalAmount", txt)} customStyle={{
+                    <InputPaper label="Total Outstanding (Rs.)*" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.totalAmount} onChangeText={(txt: any) => handleFormChange("totalAmount", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <InputPaper label="Rate of Interest" leftIcon='percent-outline' keyboardType="number-pad" value={formData.roi} onChangeText={(txt: any) => handleFormChange("roi", txt)} customStyle={{
+                    <InputPaper label="Rate of Interest*" leftIcon='percent-outline' keyboardType="number-pad" value={formData.roi} onChangeText={(txt: any) => handleFormChange("roi", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <InputPaper label="Period" leftIcon='clock-time-five-outline' keyboardType="number-pad" value={formData.period} onChangeText={(txt: any) => handleFormChange("period", txt)} customStyle={{
+                    <InputPaper label="Period*" leftIcon='clock-time-five-outline' keyboardType="number-pad" value={formData.period} onChangeText={(txt: any) => handleFormChange("period", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
-                    <InputPaper label="Period Mode" leftIcon='camera-timer' keyboardType="default" value={formData.periodMode} onChangeText={(txt: any) => handleFormChange("periodMode", txt)} customStyle={{
+                    <InputPaper label="Period Mode*" leftIcon='camera-timer' keyboardType="default" value={formData.periodMode} onChangeText={(txt: any) => handleFormChange("periodMode", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
 
                     <Divider />
 
                     <RadioComp
-                        title="Txn. Mode"
+                        title="Txn. Mode*"
                         icon="bank-transfer"
                         dataArray={[
                             {
@@ -541,7 +541,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                         formData?.txnMode === "B" &&
                         <>
                             <List.Item
-                                title="Banks"
+                                title="Banks*"
                                 description={`Bank: ${formData.bankName}`}
                                 left={props => <List.Icon {...props} icon="bank-outline" />}
                                 right={props => {
@@ -552,7 +552,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 }}
                             />
 
-                            <InputPaper label="Txn. ID" leftIcon='cash-fast' keyboardType="numeric" value={formData.chequeId} onChangeText={(txt: any) => handleFormChange("chequeId", txt)} customStyle={{
+                            <InputPaper label="Txn. ID*" leftIcon='cash-fast' keyboardType="numeric" value={formData.chequeId} onChangeText={(txt: any) => handleFormChange("chequeId", txt)} customStyle={{
                                 backgroundColor: theme.colors.background,
                             }} />
 

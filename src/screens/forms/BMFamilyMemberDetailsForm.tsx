@@ -234,7 +234,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         <Divider />
 
                         <InputPaper
-                            label="Name"
+                            label="Name*"
                             leftIcon='account-edit-outline'
                             keyboardType="default"
                             value={item?.name}
@@ -244,7 +244,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         />
 
                         <InputPaper
-                            label="Relation"
+                            label="Relation*"
                             maxLength={15}
                             leftIcon='account-child-outline'
                             keyboardType="default"
@@ -264,7 +264,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                                 alignSelf: "center"
                             }}>
                             {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
-                            CHOOSE D.O.B. {isToday(item.familyDob) ? "(BIRTH DATE)" : item.familyDob?.toLocaleDateString("en-GB")}
+                            CHOOSE D.O.B.* {isToday(item.familyDob) ? "(BIRTH DATE)" : item.familyDob?.toLocaleDateString("en-GB")}
                         </ButtonPaper>
                         <DatePicker
                             // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
@@ -285,7 +285,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         {/* {console.log("=================", calculateAge(item?.familyDob) || item?.age)} */}
 
                         <InputPaper
-                            label="Age"
+                            label="Age*"
                             maxLength={3}
                             leftIcon='account-clock-outline'
                             keyboardType="numeric"
@@ -296,7 +296,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         />
 
                         <List.Item
-                            title="Choose Gender"
+                            title="Choose Gender*"
                             description={`Gender: ${item.sex}`}
                             left={props => <List.Icon {...props} icon="gender-male-female" />}
                             right={props => {
@@ -316,7 +316,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         })))} */}
 
                         <List.Item
-                            title="Choose Education"
+                            title="Choose Education*"
                             description={`Education: ${item.education}`}
                             left={props => <List.Icon {...props} icon="book-education-outline" />}
                             right={props => {
@@ -357,7 +357,7 @@ const BMFamilyMemberDetailsForm = ({ formNumber, branchCode, flag = "BM", approv
                         />
 
                         <InputPaper
-                            label="Monthly Income"
+                            label="Monthly Income*"
                             maxLength={15}
                             leftIcon='account-cash-outline'
                             keyboardType="numeric"
