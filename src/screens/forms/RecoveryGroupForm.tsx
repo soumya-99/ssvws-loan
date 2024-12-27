@@ -18,6 +18,7 @@ import { formattedDate } from '../../utils/dateFormatter'
 // import LoadingOverlay from '../components/LoadingOverlay'
 import ThermalPrinterModule from 'react-native-thermal-printer'
 // import PRNTMSG from '../../../assets/msg.png'
+import { CONSTANTS } from "../../utils/constants"
 
 const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
@@ -35,9 +36,9 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     console.log("membbbbbbbbbbbbb", fetchedData.memb_dtls[0])
 
     const [loading, setLoading] = useState(() => false)
-    
+
     const [formData, setFormData] = useState({
-        last_trn_dt:"",
+        last_trn_dt: "",
         groupName: "",
         groupType: "",
         groupTypeName: "",
@@ -58,7 +59,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
     const [memberDetailsArray, setMemberDetailsArray] = useState<any[]>(() => [])
     const [banks, setBanks] = useState([])
-    const [last_trn_dt,setLastTrnDt] = useState(fetchedData.memb_dtls[0].last_trn_dt)
+    const [last_trn_dt, setLastTrnDt] = useState(fetchedData.memb_dtls[0].last_trn_dt)
     const [openDate, setOpenDate] = useState(() => false)
     const [openDate2, setOpenDate2] = useState(() => false)
     const formattedTnxDate = formattedDate(formData?.txnDate)
@@ -163,15 +164,15 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         requestPermissions()
     }, [])
 
-    const countNoOfInstallments = (creditAmt: number,index:number) => {
-        console.log("tot_emi_func",fetchedData.memb_dtls[index]?.tot_emi,creditAmt)
+    const countNoOfInstallments = (creditAmt: number, index: number) => {
+        console.log("tot_emi_func", fetchedData.memb_dtls[index]?.tot_emi, creditAmt)
         if (creditAmt / +fetchedData.memb_dtls[index]?.tot_emi <= 1) {
             console.log("in 1")
             return 1
         }
-        
+
         // return Math.trunc(creditAmt / +fetchedData.memb_dtls[index]?.tot_emi)
-        else{
+        else {
             return 0
         }
     };
@@ -201,13 +202,13 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             totalPrincipleAmount: fetchedData?.total_prn_amt,
             totalInterestAmount: fetchedData?.total_intt_amt,
             totalAmount: `${+fetchedData?.total_prn_amt + +fetchedData?.total_intt_amt}`,
-            last_trn_dt:fetchedData?.memb_dtls[0].last_trn_dt,
+            last_trn_dt: fetchedData?.memb_dtls[0].last_trn_dt,
             roi: fetchedData?.memb_dtls[0]?.curr_roi,
             period: fetchedData?.memb_dtls[0]?.period,
             periodMode: fetchedData?.memb_dtls[0]?.period_mode,
             txnMode: formData.txnMode,
             txnDate: formData.txnDate || new Date(),
-            chequeDate: formData.chequeDate ||new Date(),
+            chequeDate: formData.chequeDate || new Date(),
             bankName: formData.bankName || "",
             chequeId: formData.chequeId || "",
         })
@@ -215,15 +216,16 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             setMemberDetailsArray((fetchedData?.memb_dtls as any[])?.map((item, i) => {
                 handleEMIChange(item?.demand?.demand?.ld_demand || 0, i)
                 return ({
-                ...item,
-                isChecked: true,
-                prn_amt:item?.prn_amt,
+                    ...item,
+                    isChecked: true,
+                    prn_amt: item?.prn_amt,
 
-                credit: item?.demand?.demand?.ld_demand ? item?.demand?.demand?.ld_demand : 0,
-                // credit: item?.tot_emi,
-                intt_emi: currentInterestCalculate(+item?.demand?.demand?.ld_demand||0),
-                prn_emi: currentPrincipalCalculate(+item?.demand?.demand?.ld_demand||0),
-            })}))
+                    credit: item?.demand?.demand?.ld_demand ? item?.demand?.demand?.ld_demand : 0,
+                    // credit: item?.tot_emi,
+                    intt_emi: currentInterestCalculate(+item?.demand?.demand?.ld_demand || 0),
+                    prn_emi: currentPrincipalCalculate(+item?.demand?.demand?.ld_demand || 0),
+                })
+            }))
             // setTotalEMI(memberDetailsArray.reduce((sum, item) => sum + item.creditAmount, 0))
         }
         // setMemberDetailsArray((fetchedData?.memb_dtls as any[])?.map((item, i) => {
@@ -253,20 +255,20 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         // })
         // }
 
-        console.log(memberDetailsArray.map(e=>e.instl_paid),txt,"member details")
+        console.log(memberDetailsArray.map(e => e.instl_paid), txt, "member details")
         // setMemberDetailsArray(prevArray =>
         //     prevArray.map((member, index) =>
         //         index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid: countNoOfInstallments(+txt,index) } : member
         //     )
         // )
-      
+
 
         console.log("TTTTTXXXXXXXTTTTTTTTT", txt)
         console.log("TTTTTXXXXXXXTTTTTTTTT IIIIIIIIIIII", currentInterestCalculate(+txt))
         console.log("TTTTTXXXXXXXTTTTTTTTT PPPPPPPPPPPP", currentPrincipalCalculate(+txt))
         setMemberDetailsArray(prevArray =>
             prevArray.map((member, index) =>
-                index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid:0 } : member
+                index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid: 0 } : member
             )
         )
     }
@@ -336,9 +338,9 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             intt_emi: item.intt_emi,
             instl_paid: item.instl_paid,
             // balance:item.balance,
-            group_code:fetchedData.group_code,
-            prn_amt:item?.prn_amt,
-            intt_amt:item?.intt_amt,
+            group_code: fetchedData.group_code,
+            prn_amt: item?.prn_amt,
+            intt_amt: item?.intt_amt,
             last_trn_dt: formattedDate(formData.txnDate),
         }));
 
@@ -393,7 +395,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     }
     const handlePrint = async (data: any) => {
         let tot_amt = 0
-        console.log('dataaaaaaaaaaaaaa',data)
+        console.log('dataaaaaaaaaaaaaa', data)
         console.log("Called Printer...")
         setLoading(true)
         let text =
@@ -407,33 +409,36 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             `[L]TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
             `[L]GROUP[C]:[R]${(data[0]?.group_name as string)?.slice(0, 10)}\n` +
             `[L]CODE[C]:[R]${data[0]?.group_code}\n` +
-            `[L]MODE[C]:[R]${data[0]?.tr_mode=='B'?'UPI':'CASH'}\n`;
-            if(data[0]?.tr_mode=='B')
-                text +=
-            `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
-           
-            // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
-            // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
-            // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
-            // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
-            // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
-            // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
-            // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
-            `[C]**************X*************\n`+
+            `[L]MODE[C]:[R]${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}\n`;
+        if (data[0]?.tr_mode == 'B')
+            text +=
+                `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
 
-            `[L]MEMBER[C]:[R]AMOUNT\n` ;
-            
-            for (const item of data) {
-                tot_amt+=item.credit
-                text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
-              }
-            text+=
+                // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
+                // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
+                // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
+                // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
+                // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
+                // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
+                // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
+                `[C]**************X*************\n` +
+
+                `[L]MEMBER[C]:[R]AMOUNT\n`;
+
+        for (const item of data) {
+            tot_amt += item.credit
+            text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
+        }
+        text +=
             `[L]TOTAL[C]:[R]${tot_amt}\n` +
             `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
             `[L]COLLECTOR[C]:[R]${data[0]?.collec_name}\n` +
             `[L]CODE[C]:[R]${data[0]?.collec_code}\n` +
-            `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
-            `[C]================X===============\n`;
+            `[C]================================\n` +
+            `[C]HELPLINE: ${CONSTANTS.helplineNumeber}\n` +
+            // `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
+            `[C]================X===============\n` +
+            `[C]                                \n`;
         // `[L]BRANCH[C]:[R]\n` +
         await ThermalPrinterModule.printBluetooth({
             payload: text,
@@ -464,7 +469,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                     paddingBottom: 10,
                     gap: 14
                 }}>
-                   <InputPaper label="Last Transaction Date" leftIcon='account-group-outline' keyboardType="default" value={new Date(last_trn_dt).toLocaleDateString("en-GB")} onChangeText={(txt: any) => handleFormChange("last_trn_dt", txt)} customStyle={{
+                    <InputPaper label="Last Transaction Date" leftIcon='account-group-outline' keyboardType="default" value={new Date(last_trn_dt).toLocaleDateString("en-GB")} onChangeText={(txt: any) => handleFormChange("last_trn_dt", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
                     <Divider />
@@ -589,10 +594,10 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                             onPress={() => setOpenDate(true)}
                             mode="elevated"
                             icon="calendar"
-                            // disabled={inputDisableLogic()}
-                            
-                            
-                            >
+                        // disabled={inputDisableLogic()}
+
+
+                        >
                             {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
                             CHOOSE TXN. DATE: {formData.txnDate?.toLocaleDateString("en-GB")}
                         </ButtonPaper>
@@ -670,7 +675,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                                             // prevArray.map((member, index) =>
                                                             //     index === i ? { ...member, isChecked: !member.isChecked, credit: member?.isChecked ? 0 : member.demand.demand.ld_demand?member.demand.demand.ld_demand:member?.tot_emi } : member
                                                             prevArray.map((member, index) =>
-                                                                index === i ? { ...member, isChecked: !member.isChecked, credit: member?.isChecked ? 0 : member.demand.demand.ld_demand?member.demand.demand.ld_demand:0 } : member
+                                                                index === i ? { ...member, isChecked: !member.isChecked, credit: member?.isChecked ? 0 : member.demand.demand.ld_demand ? member.demand.demand.ld_demand : 0 } : member
                                                             )
                                                         );
                                                         // setMemberDetailsArray(prevArray =>
@@ -683,22 +688,22 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                             </View>
                                         )}
                                         right={() => {
-                                        //    console.log("@@@@@@@@@@@@@@", item?.credit)
-                                            return(
-                                            <InputPaper selectTextOnFocus label="EMI" maxLength={8} leftIcon='cash-100' keyboardType="numeric" value={item?.credit}
-                                            onBlur={()=>{
-                                                if(memberDetailsArray.filter((item, _) => +item.credit > (+item.prn_amt + +item.intt_amt)).length > 0)
-                                                    {
-                                                        ToastAndroid.show('Entered amount cannot be greater than the outstanding amount',ToastAndroid.SHORT)
-                                                    }
-                                                }}
-                                            onChangeText={(txt: string) => {
-                                                // handleEMIChange(item?.credit, i)
-                                                handleEMIChange(txt, i)
-                                            }} customStyle={{
-                                                backgroundColor: theme.colors.background,
-                                            }} disabled={!item?.isChecked} />
-                                        )}}
+                                            //    console.log("@@@@@@@@@@@@@@", item?.credit)
+                                            return (
+                                                <InputPaper selectTextOnFocus label="EMI" maxLength={8} leftIcon='cash-100' keyboardType="numeric" value={item?.credit}
+                                                    onBlur={() => {
+                                                        if (memberDetailsArray.filter((item, _) => +item.credit > (+item.prn_amt + +item.intt_amt)).length > 0) {
+                                                            ToastAndroid.show('Entered amount cannot be greater than the outstanding amount', ToastAndroid.SHORT)
+                                                        }
+                                                    }}
+                                                    onChangeText={(txt: string) => {
+                                                        // handleEMIChange(item?.credit, i)
+                                                        handleEMIChange(txt, i)
+                                                    }} customStyle={{
+                                                        backgroundColor: theme.colors.background,
+                                                    }} disabled={!item?.isChecked} />
+                                            )
+                                        }}
                                     />
                                     <Divider />
                                 </View>

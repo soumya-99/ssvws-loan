@@ -65,8 +65,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         otherEducation: "",
         groupCode: "",
         groupCodeName: "",
-        dob: new Date(),
-        grtDate: new Date(),
+        dob: new Date()
     })
 
     const [readonlyMemberId, setReadonlyMemberId] = useState(() => "")
@@ -74,9 +73,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     // const [dob, setDob] = useState(() => new Date()) //dob
     const [openDate, setOpenDate] = useState(() => false)
     const formattedDob = formattedDate(formData?.dob)
-
-    const [openDate2, setOpenDate2] = useState(() => false)
-    const formattedGrtDate = formattedDate(formData?.grtDate)
 
     const isToday = (someDate: Date) => {
         const today = new Date()
@@ -265,8 +261,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         otherEducation: res?.data?.msg[0]?.other_education || "",
                         groupCode: res?.data?.msg[0]?.prov_grp_code || "",
                         groupCodeName: res?.data?.msg[0]?.group_name || "",
-                        dob: res?.data?.msg[0]?.dob ? new Date(res.data.msg[0].dob) : new Date(),
-                        grtDate: res?.data?.msg[0]?.grt_date ? new Date(res.data.msg[0].grt_date) : new Date(),
+                        dob: res?.data?.msg[0]?.dob ? new Date(res.data.msg[0].dob) : new Date()
                     })
                     setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
@@ -297,8 +292,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                             otherEducation: "",
                             groupCode: "",
                             groupCodeName: "",
-                            dob: new Date(),
-                            grtDate: new Date(),
+                            dob: new Date()
                         })
                         setMemberCodeShowHide(false)
                     }
@@ -345,8 +339,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     otherEducation: res?.data?.msg[0]?.other_education || "",
                     groupCode: res?.data?.msg[0]?.prov_grp_code || "",
                     groupCodeName: res?.data?.msg[0]?.group_name || "",
-                    dob: new Date(res?.data?.msg[0]?.dob) ?? new Date(),
-                    grtDate: new Date(res?.data?.msg[0]?.grt_date) ?? new Date(), // fetch date later
+                    dob: new Date(res?.data?.msg[0]?.dob) ?? new Date()
                 })
                 setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
@@ -390,7 +383,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             education: formData.education,
             other_education: formData.otherEducation,
             dob: formattedDob,
-            grt_date: formattedGrtDate,
             bm_lat_val: location?.latitude,
             bm_long_val: location?.longitude,
             bm_gps_address: geolocationFetchedAddress,
@@ -428,7 +420,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             education: formData.education,
             other_education: formData.otherEducation,
             dob: formattedDob,
-            grt_date: formattedGrtDate,
             co_lat_val: location?.latitude,
             co_long_val: location?.longitude,
             co_gps_address: geolocationFetchedAddress,
@@ -460,7 +451,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 groupCode: "",
                 groupCodeName: "",
                 dob: new Date(),
-                grtDate: new Date(),
             })
             setMemberCodeShowHide(false)
             onSubmit()
@@ -497,8 +487,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     otherEducation: "",
                     groupCode: "",
                     groupCodeName: "",
-                    dob: new Date(),
-                    grtDate: new Date(),
+                    dob: new Date()
                 })
                 setMemberCodeShowHide(false)
                 // setDob(new Date())
@@ -613,30 +602,6 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     />
 
                     <Divider />
-
-                    <ButtonPaper
-                        textColor={theme.colors.primary}
-                        onPress={() => setOpenDate2(true)}
-                        mode="elevated"
-                        icon="calendar-outline"
-                        disabled={disableCondition(approvalStatus, branchCode)}>
-                        CHOOSE GRT DATE: {formData.grtDate?.toLocaleDateString("en-GB")}
-                    </ButtonPaper>
-                    <DatePicker
-                        // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
-                        modal
-                        mode="date"
-                        // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
-                        open={openDate2}
-                        date={formData.grtDate}
-                        onConfirm={date => {
-                            setOpenDate2(false)
-                            handleFormChange("grtDate", date)
-                        }}
-                        onCancel={() => {
-                            setOpenDate2(false)
-                        }}
-                    />
 
                     <InputPaper label="Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
                         backgroundColor: theme.colors.background,
