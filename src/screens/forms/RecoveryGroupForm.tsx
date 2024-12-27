@@ -469,7 +469,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                     paddingBottom: 10,
                     gap: 14
                 }}>
-                    <InputPaper label="Last Transaction Date*" leftIcon='account-group-outline' keyboardType="default" value={new Date(last_trn_dt).toLocaleDateString("en-GB")} onChangeText={(txt: any) => handleFormChange("last_trn_dt", txt)} customStyle={{
+                    <InputPaper label="Last Transaction Date" leftIcon='account-group-outline' keyboardType="default" value={new Date(last_trn_dt).toLocaleDateString("en-GB")} onChangeText={(txt: any) => handleFormChange("last_trn_dt", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled />
                     <Divider />
