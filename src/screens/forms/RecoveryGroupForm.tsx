@@ -604,8 +604,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                     </View>
                     <DatePicker
                         // maximumDate={new Date(new Date(fetchedData?.instl_end_dt))}
-                        maximumDate={new Date()}
-                        minimumDate={new Date(new Date().setDate(1))}
+                        // maximumDate={new Date()}
+                        // minimumDate={new Date(new Date().setDate(1))}
                         modal
                         mode="date"
                         // minimumDate={new Date(new Date())}
