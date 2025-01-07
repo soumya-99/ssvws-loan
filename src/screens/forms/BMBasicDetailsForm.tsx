@@ -38,6 +38,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     const [loading, setLoading] = useState(() => false)
+    const [ongoingLoanCheckFlag, setOngoingLoanCheckFlag] = useState(() => false)
 
     const [religions, setReligions] = useState(() => [])
     const [castes, setCastes] = useState(() => [])
@@ -223,7 +224,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     }, [])
 
     const fetchClientDetails = async (flag, data) => {
-        setLoading(true)
+        // setLoading(true)
+        setOngoingLoanCheckFlag(true)
         const creds = {
             flag: flag,
             user_dt: data
@@ -308,7 +310,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         }).catch(err => {
             ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
         })
-        setLoading(false)
+        // setLoading(false)
+        setOngoingLoanCheckFlag(false)
     }
 
     const fetchBasicDetails = async () => {
@@ -806,9 +809,9 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
                 </View>
             </>
-            {/* {loading && (
+            {ongoingLoanCheckFlag && (
                 <LoadingOverlay />
-            )} */}
+            )}
         </SafeAreaView>
     )
 }
