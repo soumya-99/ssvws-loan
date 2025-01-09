@@ -228,7 +228,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         setOngoingLoanCheckFlag(true)
         const creds = {
             flag: flag,
-            user_dt: data
+            user_dt: data,
+            branch_code: loginStore?.brn_code
         }
 
         if (flag === "M" && !formData.clientMobile) {
