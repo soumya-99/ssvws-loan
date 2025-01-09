@@ -56,7 +56,8 @@ const BMPendingLoansScreen = () => {
         setLoading(true)
 
         const creds = {
-            "bm_search_pending": search
+            "bm_search_pending": search,
+            "branch_code": loginStore?.brn_code
         }
 
         await axios.post(`${ADDRESSES.BM_SEARCH_PENDING_FORM}`, creds).then(res => {

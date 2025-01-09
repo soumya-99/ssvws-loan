@@ -626,12 +626,12 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         CHOOSE GRT DATE*: {formData.grtDate?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
-                        // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
                         modal
                         mode="date"
-                        // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
                         open={openDate2}
                         date={formData.grtDate}
+                        minimumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 55))}
+                        maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
                         onConfirm={date => {
                             setOpenDate2(false)
                             handleFormChange("grtDate", date)
@@ -641,15 +641,25 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    <InputPaper label="Mobile No.*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => fetchClientDetails("M", formData.clientMobile)} customStyle={{
+
+                    <InputPaper label="Mobile No.*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => {
+                        formData.clientMobile &&
+                            fetchClientDetails("M", formData.clientMobile)
+                    }} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Aadhaar No.*" maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => fetchClientDetails("A", formData.aadhaarNumber)} customStyle={{
+                    <InputPaper label="Aadhaar No.*" maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => {
+                        formData.aadhaarNumber &&
+                            fetchClientDetails("A", formData.aadhaarNumber)
+                    }} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="PAN No.*" maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => fetchClientDetails("P", formData.panNumber)} customStyle={{
+                    <InputPaper label="PAN No.*" maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => {
+                        formData.panNumber &&
+                            fetchClientDetails("P", formData.panNumber)
+                    }} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
