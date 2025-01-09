@@ -223,97 +223,97 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         handleFetchEducations()
     }, [])
 
-    const fetchClientDetails = async (flag, data) => {
-        // setLoading(true)
-        setOngoingLoanCheckFlag(true)
-        const creds = {
-            flag: flag,
-            user_dt: data,
-            branch_code: loginStore?.brn_code
-        }
+    // const fetchClientDetails = async (flag, data) => {
+    //     // setLoading(true)
+    //     setOngoingLoanCheckFlag(true)
+    //     const creds = {
+    //         flag: flag,
+    //         user_dt: data,
+    //         branch_code: loginStore?.brn_code
+    //     }
 
-        if (flag === "M" && !formData.clientMobile) {
-            return
-        }
+    //     if (flag === "M" && !formData.clientMobile) {
+    //         return
+    //     }
 
-        if (flag === "P" && !formData.panNumber) {
-            return
-        }
+    //     if (flag === "P" && !formData.panNumber) {
+    //         return
+    //     }
 
-        if (flag === "A" && !formData.aadhaarNumber) {
-            return
-        }
+    //     if (flag === "A" && !formData.aadhaarNumber) {
+    //         return
+    //     }
 
-        await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
-            console.log("PPPPPPPPPPPPPPPPP", res?.data)
-            if (res?.data?.suc === 1) {
-                if (res?.data?.msg?.length > 0) {
-                    setMemberCodeShowHide(true)
-                    setFormData({
-                        clientName: res?.data?.msg[0]?.client_name || "",
-                        clientEmail: res?.data?.msg[0]?.email_id || "",
-                        clientGender: res?.data?.msg[0]?.gender || "",
-                        clientMobile: res?.data?.msg[0]?.client_mobile || "",
-                        guardianName: res?.data?.msg[0]?.gurd_name || "",
-                        guardianMobile: res?.data?.msg[0]?.gurd_mobile || "",
-                        clientAddress: res?.data?.msg[0]?.client_addr || "",
-                        clientPin: res?.data?.msg[0]?.pin_no || "",
-                        aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
-                        panNumber: res?.data?.msg[0]?.pan_no || "",
-                        religion: res?.data?.msg[0]?.religion || "",
-                        otherReligion: res?.data?.msg[0]?.other_religion || "",
-                        caste: res?.data?.msg[0]?.caste || "",
-                        otherCaste: res?.data?.msg[0]?.other_caste || "",
-                        education: res?.data?.msg[0]?.education ?? "",
-                        otherEducation: res?.data?.msg[0]?.other_education || "",
-                        groupCode: res?.data?.msg[0]?.prov_grp_code || "",
-                        groupCodeName: res?.data?.msg[0]?.group_name || "",
-                        dob: res?.data?.msg[0]?.dob ? new Date(res.data.msg[0].dob) : new Date(),
-                        grtDate: res?.data?.msg[0]?.grt_date ? new Date(res.data.msg[0].grt_date) : new Date(),
-                    })
-                    setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
+    //     await axios.post(`${ADDRESSES.FETCH_CLIENT_DETAILS}`, creds).then(res => {
+    //         console.log("PPPPPPPPPPPPPPPPP", res?.data)
+    //         if (res?.data?.suc === 1) {
+    //             if (res?.data?.msg?.length > 0) {
+    //                 setMemberCodeShowHide(true)
+    //                 setFormData({
+    //                     clientName: res?.data?.msg[0]?.client_name || "",
+    //                     clientEmail: res?.data?.msg[0]?.email_id || "",
+    //                     clientGender: res?.data?.msg[0]?.gender || "",
+    //                     clientMobile: res?.data?.msg[0]?.client_mobile || "",
+    //                     guardianName: res?.data?.msg[0]?.gurd_name || "",
+    //                     guardianMobile: res?.data?.msg[0]?.gurd_mobile || "",
+    //                     clientAddress: res?.data?.msg[0]?.client_addr || "",
+    //                     clientPin: res?.data?.msg[0]?.pin_no || "",
+    //                     aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
+    //                     panNumber: res?.data?.msg[0]?.pan_no || "",
+    //                     religion: res?.data?.msg[0]?.religion || "",
+    //                     otherReligion: res?.data?.msg[0]?.other_religion || "",
+    //                     caste: res?.data?.msg[0]?.caste || "",
+    //                     otherCaste: res?.data?.msg[0]?.other_caste || "",
+    //                     education: res?.data?.msg[0]?.education ?? "",
+    //                     otherEducation: res?.data?.msg[0]?.other_education || "",
+    //                     groupCode: res?.data?.msg[0]?.prov_grp_code || "",
+    //                     groupCodeName: res?.data?.msg[0]?.group_name || "",
+    //                     dob: res?.data?.msg[0]?.dob ? new Date(res.data.msg[0].dob) : new Date(),
+    //                     grtDate: res?.data?.msg[0]?.grt_date ? new Date(res.data.msg[0].grt_date) : new Date(),
+    //                 })
+    //                 setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
-                    if (approvalStatus !== "U") {
-                        setGeolocationFetchedAddress(res?.data?.msg[0]?.co_gps_address || "")
-                    }
-                }
-            } else if (res?.data?.suc === 0) {
-                Alert.alert("On-going Loan", `${res?.data?.status}`, [{
-                    text: "OK",
-                    onPress: () => {
-                        setFormData({
-                            clientName: "",
-                            clientEmail: "",
-                            clientGender: "",
-                            clientMobile: "",
-                            guardianName: "",
-                            guardianMobile: "",
-                            clientAddress: "",
-                            clientPin: "",
-                            aadhaarNumber: "",
-                            panNumber: "",
-                            religion: "",
-                            otherReligion: "",
-                            caste: "",
-                            otherCaste: "",
-                            education: "",
-                            otherEducation: "",
-                            groupCode: "",
-                            groupCodeName: "",
-                            dob: new Date(),
-                            grtDate: new Date(),
-                        })
-                        setMemberCodeShowHide(false)
-                    }
-                }])
-            }
+    //                 if (approvalStatus !== "U") {
+    //                     setGeolocationFetchedAddress(res?.data?.msg[0]?.co_gps_address || "")
+    //                 }
+    //             }
+    //         } else if (res?.data?.suc === 0) {
+    //             Alert.alert("On-going Loan", `${res?.data?.status}`, [{
+    //                 text: "OK",
+    //                 onPress: () => {
+    //                     setFormData({
+    //                         clientName: "",
+    //                         clientEmail: "",
+    //                         clientGender: "",
+    //                         clientMobile: "",
+    //                         guardianName: "",
+    //                         guardianMobile: "",
+    //                         clientAddress: "",
+    //                         clientPin: "",
+    //                         aadhaarNumber: "",
+    //                         panNumber: "",
+    //                         religion: "",
+    //                         otherReligion: "",
+    //                         caste: "",
+    //                         otherCaste: "",
+    //                         education: "",
+    //                         otherEducation: "",
+    //                         groupCode: "",
+    //                         groupCodeName: "",
+    //                         dob: new Date(),
+    //                         grtDate: new Date(),
+    //                     })
+    //                     setMemberCodeShowHide(false)
+    //                 }
+    //             }])
+    //         }
 
-        }).catch(err => {
-            ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
-        })
-        // setLoading(false)
-        setOngoingLoanCheckFlag(false)
-    }
+    //     }).catch(err => {
+    //         ToastAndroid.show("Some error occurred while fetching data", ToastAndroid.SHORT)
+    //     })
+    //     // setLoading(false)
+    //     setOngoingLoanCheckFlag(false)
+    // }
 
     const fetchBasicDetails = async () => {
         setLoading(true)
@@ -643,26 +643,52 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     />
 
 
-                    <InputPaper label="Mobile No.*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.clientMobile} onChangeText={(txt: any) => handleFormChange("clientMobile", txt)} onBlur={() => {
-                        formData.clientMobile &&
-                            fetchClientDetails("M", formData.clientMobile)
-                    }} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={disableCondition(approvalStatus, branchCode)} />
+                    <InputPaper
+                        label="Mobile No.*"
+                        maxLength={10}
+                        leftIcon='phone'
+                        keyboardType="phone-pad"
+                        value={formData.clientMobile}
+                        onChangeText={(txt: any) => handleFormChange("clientMobile", txt)}
+                        // onBlur={() => {
+                        //     formData.clientMobile &&
+                        //         fetchClientDetails("M", formData.clientMobile)
+                        // }}
+                        customStyle={{
+                            backgroundColor: theme.colors.background,
+                        }}
+                        disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Aadhaar No.*" maxLength={12} leftIcon='card-account-details-star-outline' keyboardType="numeric" value={formData.aadhaarNumber} onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)} onBlur={() => {
-                        formData.aadhaarNumber &&
-                            fetchClientDetails("A", formData.aadhaarNumber)
-                    }} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={disableCondition(approvalStatus, branchCode)} />
+                    <InputPaper
+                        label="Aadhaar No.*"
+                        maxLength={12}
+                        leftIcon='card-account-details-star-outline'
+                        keyboardType="numeric" value={formData.aadhaarNumber}
+                        onChangeText={(txt: any) => handleFormChange("aadhaarNumber", txt)}
+                        // onBlur={() => {
+                        //     formData.aadhaarNumber &&
+                        //         fetchClientDetails("A", formData.aadhaarNumber)
+                        // }}
+                        customStyle={{
+                            backgroundColor: theme.colors.background,
+                        }}
+                        disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="PAN No.*" maxLength={10} leftIcon='card-account-details-outline' keyboardType="default" value={formData.panNumber} onChangeText={(txt: any) => handleFormChange("panNumber", txt)} onBlur={() => {
-                        formData.panNumber &&
-                            fetchClientDetails("P", formData.panNumber)
-                    }} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={disableCondition(approvalStatus, branchCode)} />
+                    <InputPaper
+                        label="PAN No.*"
+                        maxLength={10}
+                        leftIcon='card-account-details-outline'
+                        keyboardType="default"
+                        value={formData.panNumber}
+                        onChangeText={(txt: any) => handleFormChange("panNumber", txt)}
+                        // onBlur={() => {
+                        //     formData.panNumber &&
+                        //         fetchClientDetails("P", formData.panNumber)
+                        // }}
+                        customStyle={{
+                            backgroundColor: theme.colors.background,
+                        }}
+                        disabled={disableCondition(approvalStatus, branchCode)} />
 
                     <InputPaper label="Member Name*" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
