@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid } from 'react-native'
+import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import { SCREEN_HEIGHT } from 'react-native-normalize'
@@ -228,7 +228,7 @@ const SearchLoanRecoveryScreen = () => {
                                 }
                                 onPress={() => {
                                     if (item?.memb_dtls?.length === 0) {
-                                        ToastAndroid.show("No members found.", ToastAndroid.SHORT)
+                                        Alert.alert("Alert", "No members with ongoing outstanding found.")
                                         return
                                     }
                                     navigation.dispatch(CommonActions.navigate({
