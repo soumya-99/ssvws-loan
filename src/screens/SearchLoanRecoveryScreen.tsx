@@ -19,15 +19,15 @@ const SearchLoanRecoveryScreen = () => {
     const navigation = useNavigation()
     const isFocused = useIsFocused()
     const [openFromDate, setOpenFromDate] = useState(() => false);
-    const [reportData,setReportData] = useState(()=>[])
+    const [reportData, setReportData] = useState(() => [])
     const [fromDate, setFromDate] = useState(() => new Date());
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
     const [loading, setLoading] = useState(() => false)
-    const [isDisabled,setDisabled] = useState(()=>false)
+    const [isDisabled, setDisabled] = useState(() => false)
     const [search, setSearch] = useState(() => "")
-    const [demand_click,setDemandClick]=useState(()=>false)
+    const [demand_click, setDemandClick] = useState(() => false)
     const [formsData, setFormsData] = useState<any[]>(() => [])
-    const [group_code,setGroupCode] = useState([])
+    const [group_code, setGroupCode] = useState([])
 
     // const [isApproved, setIsApproved] = useState<string>(() => "U")
 
@@ -45,7 +45,7 @@ const SearchLoanRecoveryScreen = () => {
         setDemandClick(false)
         const creds = {
             grp_dtls: src,
-            get_date:new Date()
+            get_date: new Date()
         }
 
         await axios.post(`${ADDRESSES.SEARCH_GROUP_RECOVERY}`, creds).then(res => {
@@ -58,34 +58,35 @@ const SearchLoanRecoveryScreen = () => {
         })
         setLoading(false)
     }
-    const getDemandReportData = ()=>{
+    const getDemandReportData = () => {
         console.log("hello")
         setLoading(true)
         setDisabled(true)
-       axios.post(`${ADDRESSES.DEMANDREPORT}`, {get_date:formattedDate(fromDate)}).then(res=>{console.log('report_date',res?.data);
-        setGroupCode(Object.keys(res?.data?.msg))
-        setDisabled(false)
-        setLoading(false)
+        axios.post(`${ADDRESSES.DEMANDREPORT}`, { get_date: formattedDate(fromDate) }).then(res => {
+            console.log('report_date', res?.data);
+            setGroupCode(Object.keys(res?.data?.msg))
+            setDisabled(false)
+            setLoading(false)
             // setReportData(res?.data?.msg)
             // reportData.length=0
             setReportData([])
-            for(let i of Object.keys(res?.data?.msg)){
-                var sum = 0,name='',count=0,t=[]
-                for(let j of res?.data?.msg[i]){
-                  sum+=j.demand.demand.ld_demand
-                  name=j.group_name
-                //   f=Object.keys(j).length
-                  t.push({mem_code:j.member_code,demand:j.demand.demand.ld_demand})
-                  count++
+            for (let i of Object.keys(res?.data?.msg)) {
+                var sum = 0, name = '', count = 0, t = []
+                for (let j of res?.data?.msg[i]) {
+                    sum += j.demand.demand.ld_demand
+                    name = j.group_name
+                    //   f=Object.keys(j).length
+                    t.push({ mem_code: j.member_code, demand: j.demand.demand.ld_demand })
+                    count++
                 }
 
                 // console.log(res?.data?.msg[i].length,count,'len')
                 setReportData(prev => [...prev, {
-                    code:i,
-                    demand:sum,
-                    name:name,
-                    count:res?.data?.msg[i].length,
-                    members:t
+                    code: i,
+                    demand: sum,
+                    name: name,
+                    count: res?.data?.msg[i].length,
+                    members: t
                     // members:res?.data?.msg[i]
                 }])
                 setDemandClick(true)
@@ -93,12 +94,12 @@ const SearchLoanRecoveryScreen = () => {
             }
             // setReportData(reportData)
             console.log('====================================')
-            console.log(reportData[0].members,"dataaaaaaa")
+            console.log(reportData[0].members, "dataaaaaaa")
             console.log('====================================')
 
             // setDemandClick(false)
-        }).catch(err=>console.log('error',err))
-      }
+        }).catch(err => console.log('error', err))
+    }
     return (
         <SafeAreaView>
             <ScrollView style={{
@@ -110,8 +111,8 @@ const SearchLoanRecoveryScreen = () => {
                 <View style={{
                     paddingHorizontal: 20
                 }}>
-                  
-                  {/* <View
+
+                    {/* <View
                     style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
@@ -157,14 +158,14 @@ const SearchLoanRecoveryScreen = () => {
                         SUBMIT
                     </ButtonPaper>
                 </View> */}
-                  
+
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-evenly",
                         alignItems: "center",
                         gap: 5
                     }}>
-                      
+
                         <Searchbar
                             autoFocus
                             placeholder={"Search by Group Name/Code"}
@@ -199,7 +200,7 @@ const SearchLoanRecoveryScreen = () => {
                     </View>
                 </View>
 
-               {!demand_click && <View style={{
+                {!demand_click && <View style={{
                     padding: 20,
                     paddingBottom: 120
                 }}>
@@ -226,6 +227,10 @@ const SearchLoanRecoveryScreen = () => {
                                     </View>
                                 }
                                 onPress={() => {
+                                    if (item?.memb_dtls?.length === 0) {
+                                        ToastAndroid.show("No members found.", ToastAndroid.SHORT)
+                                        return
+                                    }
                                     navigation.dispatch(CommonActions.navigate({
                                         name: navigationRoutes.recoveryGroupScreen,
                                         params: {
@@ -256,7 +261,7 @@ const SearchLoanRecoveryScreen = () => {
                     padding: 20,
                     paddingBottom: 120
                 }}>
-                    {reportData.length>0 && reportData?.map((item, i) => (
+                    {reportData.length > 0 && reportData?.map((item, i) => (
                         <React.Fragment key={i}>
                             <List.Item
                                 titleStyle={{
@@ -271,20 +276,21 @@ const SearchLoanRecoveryScreen = () => {
                                     <View>
                                         <Text style={{
                                             color: theme.colors.green
-                                        }}>Demand Amount - {item.demand+'/-'}</Text>
+                                        }}>Demand Amount - {item.demand + '/-'}</Text>
                                         <Text style={{
                                             color: theme.colors.green
                                         }}>Members - {item.count}</Text>
-                                        {item?.members?.map((mem,index)=>(
-                                             <React.Fragment key={index}>
-                                          
-                                            <View>
-                                            <Text style={{
-                                            color: theme.colors.secondary}}>Member code - {mem.mem_code}, Demand - {mem.demand}/-</Text>
-                                            </View>
+                                        {item?.members?.map((mem, index) => (
+                                            <React.Fragment key={index}>
+
+                                                <View>
+                                                    <Text style={{
+                                                        color: theme.colors.secondary
+                                                    }}>Member code - {mem.mem_code}, Demand - {mem.demand}/-</Text>
+                                                </View>
                                             </React.Fragment>
-                    ))}
-                                       
+                                        ))}
+
                                     </View>
                                 }
                                 onPress={() => {
