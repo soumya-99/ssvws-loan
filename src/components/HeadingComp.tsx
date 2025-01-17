@@ -1,8 +1,9 @@
 import { StyleSheet, View } from 'react-native'
 import { IconButton, MD2Colors, Text } from 'react-native-paper'
-import React from 'react'
+import React, { useContext } from 'react'
 import { usePaperColorScheme } from "../theme/theme"
 import { CommonActions, useNavigation } from '@react-navigation/native'
+import { AppStore } from '../context/AppContext'
 
 const HeadingComp = ({
     title,
@@ -13,6 +14,10 @@ const HeadingComp = ({
 }) => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
+
+    const {
+        uat
+    } = useContext<any>(AppStore)
 
     return (
         <View style={{
@@ -26,6 +31,19 @@ const HeadingComp = ({
                 position: "absolute"
             }}>
                 <IconButton icon="arrow-left" iconColor={theme.colors.onSecondaryContainer} size={20} onPress={() => navigation.dispatch(CommonActions.goBack())} />
+            </View>}
+            {uat && <View style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                padding: 5,
+                backgroundColor: MD2Colors.yellow400,
+                borderRadius: 5,
+            }}>
+                <Text style={{
+                    color: MD2Colors.red500,
+                    fontWeight: "bold"
+                }}>UAT</Text>
             </View>}
             <View style={{
                 padding: 15,

@@ -8,6 +8,8 @@ export const AppStore = createContext<any>(null)
 
 const AppContext = ({ children }) => {
     const appState = useRef(AppState.currentState)
+    // debugging
+    const uat = true
 
     const [isLogin, setIsLogin] = useState<boolean>(() => false)
     const [isLoading, setIsLoading] = useState<boolean>(() => false)
@@ -66,7 +68,8 @@ const AppContext = ({ children }) => {
             isLogin,
             isLoading,
             handleLogin,
-            handleLogout
+            handleLogout,
+            uat
         }}>
             {children}
         </AppStore.Provider>

@@ -1,5 +1,5 @@
 import { PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
-import { Text } from 'react-native-paper'
+import { MD2Colors, Text } from 'react-native-paper'
 import React, { useContext, useEffect, useState } from 'react'
 import ButtonPaper from '../components/ButtonPaper'
 import InputPaper from '../components/InputPaper'
@@ -12,7 +12,8 @@ const LoginScreen = () => {
 
     const {
         handleLogin,
-        isLoading
+        isLoading,
+        uat
     } = useContext<any>(AppStore)
 
     const [username, setUsername] = useState(() => "")
@@ -90,6 +91,20 @@ const LoginScreen = () => {
                         borderTopRightRadius: normalize(50),
                         borderBottomLeftRadius: normalize(50)
                     }}>
+                        {uat && <View style={{
+                            position: "absolute",
+                            top: 10,
+                            right: 10,
+                            padding: 5,
+                            backgroundColor: MD2Colors.yellow400,
+                            borderRadius: 5,
+                        }}>
+                            <Text style={{
+                                color: MD2Colors.red500,
+                                fontWeight: "bold",
+                                fontSize: 22
+                            }}>UAT</Text>
+                        </View>}
                         <View>
                             <Text variant='displayMedium' style={{
                                 color: theme.colors.primary
