@@ -203,7 +203,7 @@ const HomeScreen = () => {
                 }
             // onScroll={onScroll}
             >
-                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Credit Officer" : "Branch Manager"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
+                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Credit Officer" : loginStore?.id === 2 ? "Branch Manager" : loginStore?.id === 3 ? "MIS Asst." : "Admin"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
                 <View style={{
                     // paddingHorizontal: 20,
                     // paddingBottom: 120,
