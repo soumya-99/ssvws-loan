@@ -631,8 +631,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         mode="date"
                         open={openDate2}
                         date={formData.grtDate}
-                        minimumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 55))}
-                        maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+                        // minimumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 55))}
+                        // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
                         onConfirm={date => {
                             setOpenDate2(false)
                             handleFormChange("grtDate", date)
@@ -737,10 +737,10 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         CHOOSE D.O.B. {isToday(formData.dob) ? "(BIRTH DATE)*" : formData.dob?.toLocaleDateString("en-GB")}
                     </ButtonPaper>
                     <DatePicker
-                        // maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 10))}
                         modal
                         mode="date"
-                        // minimumDate={toDate.setMonth(toDate.getMonth() - 1)}
+                        minimumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 55))}
+                        maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
                         open={openDate}
                         date={formData.dob}
                         onConfirm={date => {
