@@ -1,9 +1,9 @@
-import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl, ToastAndroid } from 'react-native'
+import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl, ToastAndroid, Alert, Linking } from 'react-native'
 import { Icon, IconButton, MD2Colors, Text } from "react-native-paper"
 import React, { useCallback, useEffect, useState } from 'react'
 import RNRestart from 'react-native-restart'
 import { usePaperColorScheme } from '../theme/theme'
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
 import HeadingComp from "../components/HeadingComp"
 import ListCard from "../components/ListCard"
 import { loginStorage } from '../storage/appStorage'
@@ -17,10 +17,19 @@ import RadioComp from '../components/RadioComp'
 import AnimatedFABPaper from "../components/AnimatedFABPaper"
 import navigationRoutes from '../routes/routes'
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import SlideButton from 'rn-slide-button'
+import ButtonPaper from '../components/ButtonPaper'
+import useGeoLocation from '../hooks/useGeoLocation'
+
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
+    const isFocused = useIsFocused()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
+
+    const { location, error } = useGeoLocation()
+    const [geolocationFetchedAddress, setGeolocationFetchedAddress] = useState(() => "")
 
     const [refreshing, setRefreshing] = useState(() => false)
     const [loading, setLoading] = useState(() => false)
@@ -38,12 +47,38 @@ const HomeScreen = () => {
     const formattedChoosenDate = formattedDate(choosenDate)
 
     const [isExtended, setIsExtended] = useState<boolean>(() => true)
+    const [isClockedIn, setIsClockedIn] = useState<boolean>(() => false)
 
     // const onScroll = ({ nativeEvent }) => {
     //     const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0
 
     //     setIsExtended(currentScrollPosition <= 0)
     // }
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert("Turn on Geolocation", "Give access to Location or Turn on GPS from app settings.", [{
+                text: "Go to Settings",
+                onPress: () => { navigation.dispatch(CommonActions.goBack()); Linking.openSettings() }
+            }])
+        }
+    }, [isFocused, error])
+
+    // console.log("LOcAtion", location)
+    // console.log("LOcAtion ERRR", error)
+
+    const fetchGeoLocaltionAddress = async () => {
+        console.log("REVERSE GEO ENCODING API CALLING...")
+        await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+            setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
+        })
+    }
+
+    useEffect(() => {
+        if (location?.latitude && location.longitude && !geolocationFetchedAddress) {
+            fetchGeoLocaltionAddress()
+        }
+    }, [location])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -191,6 +226,7 @@ const HomeScreen = () => {
     return (
         <SafeAreaView>
             {/* <ActivityIndicator size={'large'} /> */}
+            {/* <GestureHandlerRootView style={{ flex: 1 }}> */}
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 style={{
@@ -203,7 +239,7 @@ const HomeScreen = () => {
                 }
             // onScroll={onScroll}
             >
-                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Credit Officer" : loginStore?.id === 2 ? "Branch Manager" : loginStore?.id === 3 ? "MIS Asst." : "Admin"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
+                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Credit Officer" : loginStore?.id === 2 ? "Branch Manager" : loginStore?.id === 3 ? "MIS Assistant" : "Administrator"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
                 <View style={{
                     // paddingHorizontal: 20,
                     // paddingBottom: 120,
@@ -214,6 +250,101 @@ const HomeScreen = () => {
                     minHeight: SCREEN_HEIGHT,
                     height: "auto",
                 }}>
+
+                    {!isClockedIn ? <View style={{
+                        backgroundColor: MD2Colors.green50,
+                        width: SCREEN_WIDTH / 1.1,
+                        height: "auto",
+                        marginBottom: 10,
+                        borderTopRightRadius: 30,
+                        borderBottomLeftRadius: 30,
+                        padding: 15,
+                        gap: 10,
+                    }}>
+                        <ButtonPaper
+                            icon={"clock-outline"}
+                            onPress={
+                                () => Alert.alert("Clock In", `Are you sure you want to Clock In?\nTime: ${currentTime.toLocaleTimeString("en-GB")}\nLocation: ${geolocationFetchedAddress}`, [
+                                    { "text": "Cancel", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" },
+                                    { "text": "CLOCK IN", "onPress": () => setIsClockedIn(true) }
+                                ])
+                            }
+                            mode='elevated'
+                            buttonColor={MD2Colors.green600}
+                            textColor={MD2Colors.green50}
+                            style={{
+                                borderRadius: 0,
+                                borderTopRightRadius: 15,
+                                borderBottomLeftRadius: 15,
+                            }}>Clock In</ButtonPaper>
+                    </View>
+                        : <View style={{
+                            backgroundColor: MD2Colors.pink50,
+                            width: SCREEN_WIDTH / 1.1,
+                            height: "auto",
+                            marginBottom: 10,
+                            borderTopRightRadius: 30,
+                            borderBottomLeftRadius: 30,
+                            padding: 15,
+                            gap: 10,
+                        }}>
+                            <ButtonPaper
+                                icon={"clock-out"}
+                                onPress={
+                                    () => Alert.alert("Clock Out", `Are you sure you want to Clock Out?\nTime: ${currentTime.toLocaleTimeString("en-GB")}\nLocation: ${geolocationFetchedAddress}`, [
+                                        { "text": "Cancel", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" },
+                                        { "text": "CLOCK OUT", "onPress": () => setIsClockedIn(false) }
+                                    ])
+                                }
+                                mode='elevated'
+                                buttonColor={MD2Colors.pink600}
+                                textColor={MD2Colors.pink50}
+                                style={{
+                                    borderRadius: 0,
+                                    borderTopRightRadius: 15,
+                                    borderBottomLeftRadius: 15,
+                                }}>Clock Out</ButtonPaper>
+                            <View style={{
+                                // dashed border outside inside text
+                                borderWidth: 1,
+                                borderColor: MD2Colors.pink900,
+                                borderStyle: "dashed",
+                                borderRadius: 15,
+                                borderTopLeftRadius: 0,
+                                borderTopRightRadius: 0,
+                                padding: 10,
+                                marginTop: 5,
+                                justifyContent: "center",
+                            }}>
+                                <View style={{
+                                    flexDirection: "row",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center",
+                                    gap: 10
+                                }}>
+                                    <Icon source={"clock-in"} size={20} color={MD2Colors.pink900} />
+                                    <Text variant='bodyLarge' style={{
+                                        color: MD2Colors.pink900
+                                    }}>{new Date("2025-01-21").toLocaleTimeString("en-GB")}</Text>
+                                </View>
+                                <View style={{
+                                    flexDirection: "row",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center",
+                                    gap: 10,
+                                }}>
+                                    <Icon source={"map-marker-outline"} size={20} color={MD2Colors.pink900} />
+                                    <Text variant='bodyLarge' style={{
+                                        color: MD2Colors.pink900,
+                                    }}>
+                                        {geolocationFetchedAddress?.length > 10 ? `${geolocationFetchedAddress?.substring(0, 30)}...` : geolocationFetchedAddress}
+                                    </Text>
+                                </View>
+
+                            </View>
+                        </View>}
+
+
                     {/* <Text variant='bodyLarge'>{JSON.stringify(loginStore)}</Text> */}
 
                     {/* Dashboard Starts From Here... */}
@@ -254,6 +385,7 @@ const HomeScreen = () => {
                         {/* <Text variant='bodyLarge' style={{
                             color: MD2Colors.blue900
                         }}>Branch - {loginStore?.branch_name}</Text> */}
+
                         <View style={{
                             height: 80,
                             width: "100%",
@@ -325,8 +457,13 @@ const HomeScreen = () => {
                         />
 
                     </View>
+
+
                 </View>
             </ScrollView>
+
+            {/* <GestureHandlerRootView> */}
+            {/* <SlideButton title="Slide To Unlock" /> */}
 
 
             {loginStore?.id === 2 && <AnimatedFABPaper
@@ -364,9 +501,10 @@ const HomeScreen = () => {
                 iconMode="dynamic"
                 customStyle={[styles.fabStyle, { backgroundColor: theme.colors.tertiaryContainer }]}
             />}
+            {/* </GestureHandlerRootView> */}
 
-
-        </SafeAreaView>
+            {/* </GestureHandlerRootView> */}
+        </SafeAreaView >
     )
 }
 
