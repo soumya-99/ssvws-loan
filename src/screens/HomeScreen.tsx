@@ -50,6 +50,7 @@ const HomeScreen = () => {
     const [isClockedIn, setIsClockedIn] = useState<boolean>(() => false)
     const [clockedInDateTime, setClockedInDateTime] = useState(() => "")
     const [clockedInFetchedAddress, setClockedInFetchedAddress] = useState(() => "")
+    const [clockInStatus, setClockInStatus] = useState<string>(() => "")
 
     // const onScroll = ({ nativeEvent }) => {
     //     const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0
@@ -114,15 +115,25 @@ const HomeScreen = () => {
         }
         await axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
             console.log("CLOCK IN RES", res?.data)
-            setIsClockedIn(true)
+            setIsClockedIn(!isClockedIn)
         }).catch(err => {
             console.log("CLOCK IN ERR", err)
         })
     }
 
     const handleClockOut = async () => {
+        // {
+        //     "emp_id" : "",
+        // "in_date_time":""
+        //     "out_date_time" : "",
+        //     "out_lat" : "",
+        //     "out_long" : "",
+        //     "out_addr" : "",
+        //     "modified_by" : ""
+        // }
         const creds = {
             emp_id: loginStore?.emp_id,
+            in_date_time: formattedDateTime(new Date(clockedInDateTime)),
             out_date_time: formattedDateTime(currentTime),
             out_lat: location?.latitude,
             out_long: location?.longitude,
@@ -131,7 +142,7 @@ const HomeScreen = () => {
         }
         await axios.post(`${ADDRESSES.CLOCK_OUT}`, creds).then(res => {
             console.log("CLOCK OUT RES", res?.data)
-            setIsClockedIn(false)
+            setIsClockedIn(!isClockedIn)
         }).catch(err => {
             console.log("CLOCK OUT ERR", err)
         })
@@ -142,18 +153,21 @@ const HomeScreen = () => {
             emp_id: loginStore?.emp_id,
         }
         await axios.post(`${ADDRESSES.CLOCKED_IN_DATE_TIME}`, creds).then(res => {
+            if (res?.data?.msg?.length === 0) {
+                setIsClockedIn(false)
+                return
+            }
             console.log("CLOCK IN RES================", res?.data)
             setClockedInDateTime(res?.data?.msg[0]?.in_date_time)
             setClockedInFetchedAddress(res?.data?.msg[0]?.in_addr)
+            setClockInStatus(res?.data?.msg[0]?.clock_status)
         }).catch(err => {
             console.log("CLOCK IN ERR", err)
         })
     }
 
     useEffect(() => {
-        if (isClockedIn) {
-            fetchClockedInDateTime()
-        }
+        fetchClockedInDateTime()
     }, [isClockedIn])
 
     const fetchDashboardDetails = async () => {
@@ -307,7 +321,8 @@ const HomeScreen = () => {
                     height: "auto",
                 }}>
 
-                    {!isClockedIn ? <View style={{
+                    {console.log("+++++++++++++++++", clockInStatus, isClockedIn)}
+                    {clockInStatus === "O" || !clockInStatus ? <View style={{
                         backgroundColor: MD2Colors.green50,
                         width: SCREEN_WIDTH / 1.1,
                         height: "auto",
@@ -316,6 +331,8 @@ const HomeScreen = () => {
                         borderBottomLeftRadius: 30,
                         padding: 15,
                         gap: 10,
+                        // flexDirection: "row",
+                        // justifyContent: "space-between",
                     }}>
                         <ButtonPaper
                             icon={"clock-outline"}
@@ -337,6 +354,7 @@ const HomeScreen = () => {
                                 borderBottomLeftRadius: 15,
                             }}
                             disabled={!geolocationFetchedAddress}>{!geolocationFetchedAddress ? "Fetching Address..." : "Clock In"}</ButtonPaper>
+                        {/* <IconButton icon={"table-large"} onPress={() => null} iconColor={MD2Colors.green900} /> */}
                     </View>
                         : <View style={{
                             backgroundColor: MD2Colors.pink50,
