@@ -48,6 +48,10 @@ export const ADDRESSES = {
     DELETE_TNX: `${BASE_URL}/remove_trans`,
     GET_BANKS: `${BASE_URL}/get_bank`,
 
+    CLOCK_IN: `${BASE_URL}/save_in_attendance`,
+    CLOCK_OUT: `${BASE_URL}/save_out_attendance`,
+    CLOCKED_IN_DATE_TIME: `${BASE_URL}/get_attendance_dtls`,
+
     DASHBOARD_DETAILS: `${BASE_URL}/dashboard_dtls`,
     DASHBOARD_CASH_RECOV_DETAILS: `${BASE_URL}/dashboard_dtls_cash_recov`,
     DASHBOARD_BANK_RECOV_DETAILS: `${BASE_URL}/dashboard_dtls_bank_recov`,

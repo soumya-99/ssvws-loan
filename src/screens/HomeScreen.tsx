@@ -11,7 +11,7 @@ import normalize, { SCREEN_HEIGHT, SCREEN_WIDTH } from 'react-native-normalize'
 import DatePicker from 'react-native-date-picker'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
-import { formattedDate } from '../utils/dateFormatter'
+import { formattedDate, formattedDateTime } from '../utils/dateFormatter'
 import LoadingOverlay from '../components/LoadingOverlay'
 import RadioComp from '../components/RadioComp'
 import AnimatedFABPaper from "../components/AnimatedFABPaper"
@@ -48,6 +48,8 @@ const HomeScreen = () => {
 
     const [isExtended, setIsExtended] = useState<boolean>(() => true)
     const [isClockedIn, setIsClockedIn] = useState<boolean>(() => false)
+    const [clockedInDateTime, setClockedInDateTime] = useState(() => "")
+    const [clockedInFetchedAddress, setClockedInFetchedAddress] = useState(() => "")
 
     // const onScroll = ({ nativeEvent }) => {
     //     const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0
@@ -99,6 +101,60 @@ const HomeScreen = () => {
             setRefreshing(false)
         }, 2000)
     }, [])
+
+    const handleClockIn = async () => {
+        console.log(`KLIKKK ${formattedDateTime(currentTime)}`)
+        const creds = {
+            emp_id: loginStore?.emp_id,
+            in_date_time: formattedDateTime(currentTime),
+            in_lat: location?.latitude,
+            in_long: location?.longitude,
+            in_addr: geolocationFetchedAddress,
+            created_by: loginStore?.emp_id
+        }
+        await axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
+            console.log("CLOCK IN RES", res?.data)
+            setIsClockedIn(true)
+        }).catch(err => {
+            console.log("CLOCK IN ERR", err)
+        })
+    }
+
+    const handleClockOut = async () => {
+        const creds = {
+            emp_id: loginStore?.emp_id,
+            out_date_time: formattedDateTime(currentTime),
+            out_lat: location?.latitude,
+            out_long: location?.longitude,
+            out_addr: geolocationFetchedAddress,
+            modified_by: loginStore?.emp_id
+        }
+        await axios.post(`${ADDRESSES.CLOCK_OUT}`, creds).then(res => {
+            console.log("CLOCK OUT RES", res?.data)
+            setIsClockedIn(false)
+        }).catch(err => {
+            console.log("CLOCK OUT ERR", err)
+        })
+    }
+
+    const fetchClockedInDateTime = async () => {
+        const creds = {
+            emp_id: loginStore?.emp_id,
+        }
+        await axios.post(`${ADDRESSES.CLOCKED_IN_DATE_TIME}`, creds).then(res => {
+            console.log("CLOCK IN RES================", res?.data)
+            setClockedInDateTime(res?.data?.msg[0]?.in_date_time)
+            setClockedInFetchedAddress(res?.data?.msg[0]?.in_addr)
+        }).catch(err => {
+            console.log("CLOCK IN ERR", err)
+        })
+    }
+
+    useEffect(() => {
+        if (isClockedIn) {
+            fetchClockedInDateTime()
+        }
+    }, [isClockedIn])
 
     const fetchDashboardDetails = async () => {
         // setLoading(true)
@@ -264,10 +320,13 @@ const HomeScreen = () => {
                         <ButtonPaper
                             icon={"clock-outline"}
                             onPress={
-                                () => Alert.alert("Clock In", `Are you sure you want to Clock In?\nTime: ${currentTime.toLocaleTimeString("en-GB")}\nLocation: ${geolocationFetchedAddress}`, [
-                                    { "text": "Cancel", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" },
-                                    { "text": "CLOCK IN", "onPress": () => setIsClockedIn(true) }
-                                ])
+                                () => {
+                                    !geolocationFetchedAddress && fetchGeoLocaltionAddress()
+                                    Alert.alert("Clock In", `Are you sure you want to Clock In?\nTime: ${currentTime.toLocaleTimeString("en-GB")}\nLocation: ${geolocationFetchedAddress || "Fetching..."}`, [
+                                        { "text": "Cancel", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" },
+                                        { "text": "CLOCK IN", "onPress": async () => await handleClockIn() }
+                                    ])
+                                }
                             }
                             mode='elevated'
                             buttonColor={MD2Colors.green600}
@@ -276,7 +335,8 @@ const HomeScreen = () => {
                                 borderRadius: 0,
                                 borderTopRightRadius: 15,
                                 borderBottomLeftRadius: 15,
-                            }}>Clock In</ButtonPaper>
+                            }}
+                            disabled={!geolocationFetchedAddress}>{!geolocationFetchedAddress ? "Fetching Address..." : "Clock In"}</ButtonPaper>
                     </View>
                         : <View style={{
                             backgroundColor: MD2Colors.pink50,
@@ -293,7 +353,7 @@ const HomeScreen = () => {
                                 onPress={
                                     () => Alert.alert("Clock Out", `Are you sure you want to Clock Out?\nTime: ${currentTime.toLocaleTimeString("en-GB")}\nLocation: ${geolocationFetchedAddress}`, [
                                         { "text": "Cancel", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" },
-                                        { "text": "CLOCK OUT", "onPress": () => setIsClockedIn(false) }
+                                        { "text": "CLOCK OUT", "onPress": async () => await handleClockOut() }
                                     ])
                                 }
                                 mode='elevated'
@@ -303,7 +363,8 @@ const HomeScreen = () => {
                                     borderRadius: 0,
                                     borderTopRightRadius: 15,
                                     borderBottomLeftRadius: 15,
-                                }}>Clock Out</ButtonPaper>
+                                }}
+                                disabled={!geolocationFetchedAddress}>Clock Out</ButtonPaper>
                             <View style={{
                                 // dashed border outside inside text
                                 borderWidth: 1,
@@ -325,7 +386,7 @@ const HomeScreen = () => {
                                     <Icon source={"clock-in"} size={20} color={MD2Colors.pink900} />
                                     <Text variant='bodyLarge' style={{
                                         color: MD2Colors.pink900
-                                    }}>{new Date("2025-01-21").toLocaleTimeString("en-GB")}</Text>
+                                    }}>{new Date(clockedInDateTime).toLocaleTimeString("en-GB")}</Text>
                                 </View>
                                 <View style={{
                                     flexDirection: "row",
@@ -337,7 +398,7 @@ const HomeScreen = () => {
                                     <Text variant='bodyLarge' style={{
                                         color: MD2Colors.pink900,
                                     }}>
-                                        {geolocationFetchedAddress?.length > 10 ? `${geolocationFetchedAddress?.substring(0, 30)}...` : geolocationFetchedAddress}
+                                        {clockedInFetchedAddress?.length > 10 ? `${clockedInFetchedAddress?.substring(0, 30)}...` : clockedInFetchedAddress}
                                     </Text>
                                 </View>
 
