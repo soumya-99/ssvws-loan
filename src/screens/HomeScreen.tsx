@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl, ToastAndroid, Alert, Linking } from 'react-native'
+import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl, ToastAndroid, Alert, Linking, BackHandler } from 'react-native'
 import { Icon, IconButton, MD2Colors, Text } from "react-native-paper"
 import React, { useCallback, useEffect, useState } from 'react'
 import RNRestart from 'react-native-restart'
@@ -17,16 +17,19 @@ import RadioComp from '../components/RadioComp'
 import AnimatedFABPaper from "../components/AnimatedFABPaper"
 import navigationRoutes from '../routes/routes'
 
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import SlideButton from 'rn-slide-button'
 import ButtonPaper from '../components/ButtonPaper'
 import useGeoLocation from '../hooks/useGeoLocation'
+import RNMockLocationDetector from "react-native-mock-location-detector"
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const isFocused = useIsFocused()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
+
+    const [isLocationMocked, setIsLocationMocked] = useState(() => false)
 
     const { location, error } = useGeoLocation()
     const [geolocationFetchedAddress, setGeolocationFetchedAddress] = useState(() => "")
@@ -57,6 +60,24 @@ const HomeScreen = () => {
 
     //     setIsExtended(currentScrollPosition <= 0)
     // }
+
+    const handleCheckMockLocation = async () => {
+        await RNMockLocationDetector.checkMockLocationProvider().then(res => {
+            console.log("MOCKKKKKKK", res)
+            setIsLocationMocked(res)
+
+            if (res === true) {
+                Alert.alert("Mock Location Detected", "Please turn off Mock Location from Developer Options.", [{
+                    text: "EXIT",
+                    onPress: () => { BackHandler.exitApp() }
+                }])
+            }
+        })
+    }
+
+    useEffect(() => {
+        handleCheckMockLocation()
+    }, [isFocused])
 
     useEffect(() => {
         if (error) {
@@ -321,7 +342,6 @@ const HomeScreen = () => {
                     height: "auto",
                 }}>
 
-                    {console.log("+++++++++++++++++", clockInStatus, isClockedIn)}
                     {clockInStatus === "O" || !clockInStatus ? <View style={{
                         backgroundColor: MD2Colors.green50,
                         width: SCREEN_WIDTH / 1.1,
