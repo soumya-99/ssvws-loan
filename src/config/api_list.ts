@@ -62,4 +62,5 @@ export const ADDRESSES = {
     // MEMBERWISE_RECOVERY_REPORT: `${BASE_URL}/member_wise_recovery`,
     MEMBERWISE_RECOVERY_REPORT: `${BASE_URL}/memb_wise_recov_app`,
     MEMBERWISE_DISBURSEMENT_REPORT: `${BASE_URL}/member_wise_disb`,
+    ATTENDANCE_REPORT: `${BASE_URL}/attendance_report`,
 }

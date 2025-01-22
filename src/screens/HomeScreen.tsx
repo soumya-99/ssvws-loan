@@ -21,7 +21,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import SlideButton from 'rn-slide-button'
 import ButtonPaper from '../components/ButtonPaper'
 import useGeoLocation from '../hooks/useGeoLocation'
-import RNMockLocationDetector from "react-native-mock-location-detector"
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
@@ -29,7 +28,7 @@ const HomeScreen = () => {
     const isFocused = useIsFocused()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
-    const [isLocationMocked, setIsLocationMocked] = useState(() => false)
+    // const [isLocationMocked, setIsLocationMocked] = useState(() => false)
 
     const { location, error } = useGeoLocation()
     const [geolocationFetchedAddress, setGeolocationFetchedAddress] = useState(() => "")
@@ -61,23 +60,23 @@ const HomeScreen = () => {
     //     setIsExtended(currentScrollPosition <= 0)
     // }
 
-    const handleCheckMockLocation = async () => {
-        await RNMockLocationDetector.checkMockLocationProvider().then(res => {
-            console.log("MOCKKKKKKK", res)
-            setIsLocationMocked(res)
+    // const handleCheckMockLocation = async () => {
+    //     await RNMockLocationDetector.checkMockLocationProvider().then(res => {
+    //         console.log("MOCKKKKKKK", res)
+    //         setIsLocationMocked(res)
 
-            if (res === true) {
-                Alert.alert("Mock Location Detected", "Please turn off Mock Location from Developer Options.", [{
-                    text: "EXIT",
-                    onPress: () => { BackHandler.exitApp() }
-                }])
-            }
-        })
-    }
+    //         // if (res === true) {
+    //         //     Alert.alert("Mock Location Detected", "Please turn off Mock Location from Developer Options.", [{
+    //         //         text: "EXIT",
+    //         //         onPress: () => { BackHandler.exitApp() }
+    //         //     }])
+    //         // }
+    //     })
+    // }
 
-    useEffect(() => {
-        handleCheckMockLocation()
-    }, [isFocused])
+    // useEffect(() => {
+    //     handleCheckMockLocation()
+    // }, [isFocused])
 
     useEffect(() => {
         if (error) {
@@ -94,12 +93,13 @@ const HomeScreen = () => {
     const fetchGeoLocaltionAddress = async () => {
         console.log("REVERSE GEO ENCODING API CALLING...")
         await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+            console.log("REVERSE GEO ENCODING RES =============", res?.data?.results[0])
             setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
         })
     }
 
     useEffect(() => {
-        if (location?.latitude && location.longitude && !geolocationFetchedAddress) {
+        if (location?.latitude && location.longitude) {
             fetchGeoLocaltionAddress()
         }
     }, [location])

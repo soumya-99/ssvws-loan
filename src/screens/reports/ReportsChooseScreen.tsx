@@ -29,7 +29,7 @@ const ReportsChooseScreen = () => {
                     gap: 10
                 }}>
                     <CollectionButtonsWrapper>
-                        <CollectionButton
+                        {/* <CollectionButton
                             icon={"table-refresh"}
                             text="Memberwise Recovery Report"
                             color={theme.colors.secondaryContainer}
@@ -39,7 +39,7 @@ const ReportsChooseScreen = () => {
                                     name: navigationRoutes.recoveryReportScreen
                                 }))
                             }}
-                        />
+                        /> */}
                         {/* <CollectionButton
                             icon={"table-clock"}
                             text="Disburse Report"
@@ -51,7 +51,7 @@ const ReportsChooseScreen = () => {
                                 }))
                             }}
                         /> */}
-                         <CollectionButton
+                        {/* <CollectionButton
                             icon={"table-refresh"}
                             text="Groupwise Recovery Report"
                             color={theme.colors.tertiaryContainer}
@@ -61,8 +61,8 @@ const ReportsChooseScreen = () => {
                                     name: navigationRoutes.groupwiseRecovery
                                 }))
                             }}
-                        />
-                         <CollectionButton
+                        /> */}
+                        {/* <CollectionButton
                             icon={"table-refresh"}
                             text="Demand Report"
                             color={theme.colors.secondaryContainer}
@@ -70,6 +70,17 @@ const ReportsChooseScreen = () => {
                             onPress={() => {
                                 navigation.dispatch(CommonActions.navigate({
                                     name: navigationRoutes.demandReport
+                                }))
+                            }}
+                        /> */}
+                        <CollectionButton
+                            icon={"table-refresh"}
+                            text="Attendance Report"
+                            color={theme.colors.secondaryContainer}
+                            textColor={theme.colors.onSecondaryContainer}
+                            onPress={() => {
+                                navigation.dispatch(CommonActions.navigate({
+                                    name: navigationRoutes.attendanceReportScreen
                                 }))
                             }}
                         />
