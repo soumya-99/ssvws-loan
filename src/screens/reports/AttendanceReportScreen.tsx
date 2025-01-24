@@ -353,7 +353,7 @@ const AttendanceReportScreen = () => {
                                         await fetchEmployeeAttendanceDetails(item?.sl_no);
                                         setVisible(true)
                                     }}
-                                    style={{ backgroundColor: theme.colors.background, padding: 10, borderRadius: 15, width: '100%', borderWidth: 1, borderColor: theme.colors.secondary, borderStyle: "dashed", marginBottom: 8 }}>
+                                    style={{ backgroundColor: theme.colors.background, padding: 10, borderRadius: 0, width: '100%', borderWidth: 1, borderColor: theme.colors.secondary, borderStyle: "dashed", marginBottom: 8 }}>
                                     <View style={{
                                         paddingHorizontal: 5,
                                     }}>
