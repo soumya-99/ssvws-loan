@@ -376,7 +376,7 @@ const HomeScreen = () => {
                             }}
                             disabled={!geolocationFetchedAddress}>{!geolocationFetchedAddress ? "Fetching Address..." : "Clock In"}</ButtonPaper>
 
-                        <ButtonPaper
+                        {/* <ButtonPaper
                             mode='text'
                             onPress={() => navigation.dispatch(
                                 CommonActions.navigate(navigationRoutes.attendanceReportScreen)
@@ -392,7 +392,7 @@ const HomeScreen = () => {
                                 borderTopRightRadius: 0,
                                 marginTop: 5,
                                 justifyContent: "center",
-                            }}>Report</ButtonPaper>
+                            }}>Report</ButtonPaper> */}
                     </View>
                         : <View style={{
                             backgroundColor: MD2Colors.pink50,
@@ -460,7 +460,7 @@ const HomeScreen = () => {
 
                             </View>
 
-                            <ButtonPaper
+                            {/* <ButtonPaper
                                 mode='text'
                                 onPress={() => navigation.dispatch(
                                     CommonActions.navigate(navigationRoutes.attendanceReportScreen)
@@ -476,7 +476,7 @@ const HomeScreen = () => {
                                     borderTopRightRadius: 0,
                                     marginTop: 5,
                                     justifyContent: "center",
-                                }}>Report</ButtonPaper>
+                                }}>Report</ButtonPaper> */}
                         </View>}
 
 

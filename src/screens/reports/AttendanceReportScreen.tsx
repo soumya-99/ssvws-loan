@@ -141,7 +141,7 @@ const AttendanceReportScreen = () => {
                                 textColor={theme.colors.onTertiary}
                                 onPress={() => setOpenFromDate(true)}
                                 mode="text">
-                                CHOOSE MONTH : {fromDate?.toLocaleDateString('en-GB')}
+                                Choose : {fromDate?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
                             </ButtonPaper>
                             {/* <ButtonPaper
                                 textColor={theme.colors.onTertiary}
@@ -163,6 +163,7 @@ const AttendanceReportScreen = () => {
                                 onCancel={() => {
                                     setOpenFromDate(false);
                                 }}
+                                role='group'
                             />
                             {/* <DatePicker
                                 modal
@@ -455,6 +456,9 @@ const AttendanceReportScreen = () => {
                                                 <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
                                                 <Icon size={15} source={"snail"} color={theme.colors.error} /></>
                                             : <Text>Error</Text>}
+
+                                    <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                    <Text variant='bodySmall' style={{ color: item?.attan_status === "A" ? theme.colors.tertiary : theme.colors.primary, fontWeight: 'thin' }}>{item?.attan_status === "A" ? "Approved" : item?.attan_status === "R" ? "Rejected" : "Error"}</Text>
                                 </View>
 
                                 <View style={{
