@@ -24,7 +24,7 @@ export default function HomeNavigation() {
             <Stack.Screen name={navigationRoutes.bmPendingLoansScreen} component={BMPendingLoansScreen} />
             <Stack.Screen name={navigationRoutes.bmPendingLoanFormScreen} component={BMPendingLoanFormScreen} />
             <Stack.Screen name={navigationRoutes.grtFormScreen} component={GRTFormScreen} />
-            <Stack.Screen name={navigationRoutes.attendanceReportScreen} component={AttendanceReportScreen} />
+            {/* <Stack.Screen name={navigationRoutes.attendanceReportScreen} component={AttendanceReportScreen} /> */}
 
         </Stack.Navigator>
     )
