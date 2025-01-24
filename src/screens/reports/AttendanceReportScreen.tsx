@@ -377,6 +377,10 @@ const AttendanceReportScreen = () => {
                                                         <Icon size={15} source={"snail"} color={theme.colors.error} /></>
                                                     : <Text>Error</Text>}
 
+                                            {item?.early_out === "N" ? null : <><Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text><Text variant='bodySmall' style={{ color: theme.colors.primary, fontWeight: 'thin' }}>Early Out</Text>
+                                                <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                                <Icon size={15} source={"flash-outline"} color={theme.colors.primary} /></>}
+
                                         </View>
 
                                         <View style={{
@@ -402,7 +406,7 @@ const AttendanceReportScreen = () => {
                                                     Clock Out
                                                 </Text>
 
-                                                <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                                <Text variant='bodySmall' style={{ color: item?.early_out === "N" ? theme.colors.green : theme.colors.error }}>
                                                     {new Date(item?.out_date_time)?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'AM').replace('pm', 'PM')}
                                                 </Text>
                                             </View>
@@ -457,6 +461,10 @@ const AttendanceReportScreen = () => {
                                                 <Icon size={15} source={"snail"} color={theme.colors.error} /></>
                                             : <Text>Error</Text>}
 
+                                    {item?.early_out === "N" ? null : <><Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text><Text variant='bodySmall' style={{ color: theme.colors.primary, fontWeight: 'thin' }}>Early Out</Text>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                        <Icon size={15} source={"flash-outline"} color={theme.colors.primary} /></>}
+
                                     <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
                                     <Text variant='bodySmall' style={{ color: item?.attan_status === "A" ? theme.colors.tertiary : theme.colors.primary, fontWeight: 'thin' }}>{item?.attan_status === "A" ? "Approved" : item?.attan_status === "R" ? "Rejected" : "Error"}</Text>
                                 </View>
@@ -484,7 +492,7 @@ const AttendanceReportScreen = () => {
                                             Clock Out
                                         </Text>
 
-                                        <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                        <Text variant='bodySmall' style={{ color: item?.early_out === "N" ? theme.colors.green : theme.colors.error }}>
                                             {new Date(item?.out_date_time)?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'AM').replace('pm', 'PM')}
                                         </Text>
                                     </View>

@@ -342,7 +342,7 @@ const HomeScreen = () => {
                     height: "auto",
                 }}>
 
-                    {clockInStatus === "O" || !clockInStatus ? <View style={{
+                    {clockInStatus === "O" || clockInStatus === "E" || !clockInStatus ? <View style={{
                         backgroundColor: MD2Colors.green50,
                         width: SCREEN_WIDTH / 1.1,
                         height: "auto",
@@ -359,7 +359,7 @@ const HomeScreen = () => {
                             onPress={
                                 () => {
                                     !geolocationFetchedAddress && fetchGeoLocaltionAddress()
-                                    Alert.alert("Clock In", `Are you sure you want to Clock In?\nTime: ${currentTime.toLocaleTimeString("en-GB")}\nLocation: ${geolocationFetchedAddress || "Fetching..."}`, [
+                                    Alert.alert("Clock In", `Are you sure you want to Clock In?\nTime: ${currentTime.toLocaleTimeString("en-GB")}`, [
                                         { "text": "Cancel", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" },
                                         { "text": "CLOCK IN", "onPress": async () => await handleClockIn() }
                                     ])
@@ -407,7 +407,7 @@ const HomeScreen = () => {
                             <ButtonPaper
                                 icon={"clock-out"}
                                 onPress={
-                                    () => Alert.alert("Clock Out", `Are you sure you want to Clock Out?\nTime: ${currentTime.toLocaleTimeString("en-GB")}\nLocation: ${geolocationFetchedAddress}`, [
+                                    () => Alert.alert("Clock Out", `Are you sure you want to Clock Out?\nTime: ${currentTime.toLocaleTimeString("en-GB")}`, [
                                         { "text": "Cancel", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" },
                                         { "text": "CLOCK OUT", "onPress": async () => await handleClockOut() }
                                     ])
