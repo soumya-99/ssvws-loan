@@ -6,6 +6,7 @@ import GroupFormScreen from "../screens/GroupFormScreen"
 import BMPendingLoansScreen from '../screens/BMPendingLoansScreen'
 import BMPendingLoanFormScreen from '../screens/BMPendingLoanFormScreen'
 import GRTFormScreen from '../screens/GRTFormScreen'
+import AttendanceReportScreen from '../screens/reports/AttendanceReportScreen'
 
 export default function HomeNavigation() {
     const Stack = createNativeStackNavigator()
@@ -23,6 +24,7 @@ export default function HomeNavigation() {
             <Stack.Screen name={navigationRoutes.bmPendingLoansScreen} component={BMPendingLoansScreen} />
             <Stack.Screen name={navigationRoutes.bmPendingLoanFormScreen} component={BMPendingLoanFormScreen} />
             <Stack.Screen name={navigationRoutes.grtFormScreen} component={GRTFormScreen} />
+            <Stack.Screen name={navigationRoutes.attendanceReportScreen} component={AttendanceReportScreen} />
 
         </Stack.Navigator>
     )

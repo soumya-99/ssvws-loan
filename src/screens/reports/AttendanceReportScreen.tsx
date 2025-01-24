@@ -5,10 +5,15 @@ import {
     ScrollView,
     TextStyle,
     ViewStyle,
+    Alert,
 } from 'react-native';
 import {
+    Chip,
+    Icon,
     List,
+    MD2Colors,
     Text,
+    TouchableRipple,
 } from 'react-native-paper';
 import React, { useEffect, useState } from 'react';
 import { usePaperColorScheme } from '../../theme/theme';
@@ -22,6 +27,7 @@ import DatePicker from 'react-native-date-picker';
 import { formattedDate } from '../../utils/dateFormatter';
 import axios from 'axios';
 import { ADDRESSES } from '../../config/api_list';
+import DialogBox from '../../components/DialogBox';
 
 const AttendanceReportScreen = () => {
     const theme = usePaperColorScheme();
@@ -40,6 +46,10 @@ const AttendanceReportScreen = () => {
     const formattedToDate = formattedDate(toDate);
 
     const [reportData, setReportData] = useState(() => []);
+    const [detailedReportData, setDetailedReportData] = useState(() => []);
+
+    const [visible, setVisible] = React.useState(false);
+    const hide = () => setVisible(false);
 
     const titleTextStyle: TextStyle = {
         color: theme.colors.onPrimaryContainer,
@@ -53,10 +63,10 @@ const AttendanceReportScreen = () => {
         setIsLoading(true);
         setIsDisabled(true);
         const creds = {
-            from_dt: formattedFromDate,
-            to_dt: formattedToDate,
-            emp_id: loginStore?.emp_id,
-        };
+            "get_year": formattedDate(fromDate).split('-')[0],
+            "get_month": formattedDate(fromDate).split('-')[1],
+            "emp_id": loginStore?.emp_id
+        }
         await axios
             .post(`${ADDRESSES.ATTENDANCE_REPORT}`, creds)
             .then(res => {
@@ -69,6 +79,26 @@ const AttendanceReportScreen = () => {
         setIsLoading(false);
         setIsDisabled(false);
     };
+
+    const fetchEmployeeAttendanceDetails = async (slNo: string) => {
+        setIsLoading(true);
+        setIsDisabled(true);
+        const creds = {
+            "emp_id": loginStore?.emp_id,
+            "sl_no": slNo
+        }
+        await axios
+            .post(`${ADDRESSES.FETCH_EMP_ATTENDANCE_DETAILS}`, creds)
+            .then(res => {
+                console.log('>>>>>>', res?.data);
+                setDetailedReportData(res?.data?.msg);
+            })
+            .catch(err => {
+                console.log('<<<<<<', err);
+            });
+        setIsLoading(false);
+        setIsDisabled(false);
+    }
 
     return (
         <SafeAreaView>
@@ -111,18 +141,19 @@ const AttendanceReportScreen = () => {
                                 textColor={theme.colors.onTertiary}
                                 onPress={() => setOpenFromDate(true)}
                                 mode="text">
-                                FROM: {fromDate?.toLocaleDateString('en-GB')}
+                                CHOOSE MONTH : {fromDate?.toLocaleDateString('en-GB')}
                             </ButtonPaper>
-                            <ButtonPaper
+                            {/* <ButtonPaper
                                 textColor={theme.colors.onTertiary}
                                 onPress={() => setOpenToDate(true)}
                                 mode="text">
                                 TO: {toDate?.toLocaleDateString('en-GB')}
-                            </ButtonPaper>
+                            </ButtonPaper> */}
 
                             <DatePicker
                                 modal
                                 mode="date"
+                                title='Select Month'
                                 open={openFromDate}
                                 date={fromDate}
                                 onConfirm={date => {
@@ -133,7 +164,7 @@ const AttendanceReportScreen = () => {
                                     setOpenFromDate(false);
                                 }}
                             />
-                            <DatePicker
+                            {/* <DatePicker
                                 modal
                                 mode="date"
                                 open={openToDate}
@@ -145,7 +176,7 @@ const AttendanceReportScreen = () => {
                                 onCancel={() => {
                                     setOpenToDate(false);
                                 }}
-                            />
+                            /> */}
                         </View>
                         <View>
                             <ButtonPaper
@@ -161,48 +192,222 @@ const AttendanceReportScreen = () => {
                     </View>
 
                     <View>
-                        <SurfacePaper backgroundColor={theme.colors.surface}>
-                            {reportData?.map((item, index) => (
-                                <>
-                                    <View style={{ backgroundColor: theme.colors.primaryContainer, width: '100%', alignItems: 'center', padding: 10, borderRadius: 10 }}>
-                                        <Text>{new Date(item.entry_dt)?.toLocaleDateString("en-GB")}</Text>
+                        <SurfacePaper style={{
+                            padding: normalize(10),
+                        }} backgroundColor={theme.colors.surface}>
+
+                            {/* <TouchableRipple onPress={() => null} style={{ backgroundColor: theme.colors.background, padding: 10, borderRadius: 15, width: '100%', borderWidth: 1, borderColor: theme.colors.secondary, borderStyle: "dashed", marginBottom: 8 }}>
+                                <View style={{
+                                    paddingHorizontal: 5,
+                                }}>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'center',
+                                        gap: 5,
+                                    }}>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>
+                                            Jan 24
+                                        </Text>
+
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.tertiary, fontWeight: 'thin' }}>On Time</Text>
                                     </View>
-                                    {item.memb_dtls_app?.map((mem, i) => (
-                                        <React.Fragment key={i}>
-                                            <List.Item
 
-                                                key={i}
-                                                title={
-                                                    <View>
-                                                        <Text style={{ color: theme.colors.green, fontSize: 15 }}>
-                                                            Entry Date -{mem?.entry_dt}
-                                                        </Text>
-                                                        <Text >
-                                                            Name -{mem?.client_name}
-                                                        </Text>
-                                                        <Text>
-                                                            Credit -{mem?.credit}/-
-                                                        </Text>
-                                                        <Text>
-                                                            Balance -{mem?.balance}/-
-                                                        </Text>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        marginTop: 5,
+                                    }}>
+                                        <View style={{
+                                            alignItems: 'flex-start',
+                                        }}>
+                                            <Text>
+                                                Clock In
+                                            </Text>
 
-                                                    </View>
+                                            <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                                09:58 AM
+                                            </Text>
+                                        </View>
+                                        <View style={{
+                                            alignItems: 'flex-end',
+                                        }}>
+                                            <Text>
+                                                Clock Out
+                                            </Text>
 
+                                            <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                                07:58 PM
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </TouchableRipple>
+                            <TouchableRipple onPress={() => null} style={{ backgroundColor: theme.colors.background, padding: 10, borderRadius: 15, width: '100%', borderWidth: 1, borderColor: theme.colors.secondary, borderStyle: "dashed", marginBottom: 8 }}>
+                                <View style={{
+                                    paddingHorizontal: 5,
+                                }}>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'center',
+                                        gap: 5,
+                                    }}>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>
+                                            Jan 25
+                                        </Text>
 
-                                                }
-                                                description={
-                                                    <View>
-                                                        <Text
-                                                        >
-                                                            {mem?.member_name}
-                                                        </Text>
-                                                    </View>
-                                                }
-                                            />
-                                        </React.Fragment>
-                                    ))}
-                                </>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.error, fontWeight: 'thin' }}>Late In</Text>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                        <Icon size={15} source={"snail"} color={theme.colors.error} />
+                                    </View>
+
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        marginTop: 5,
+                                    }}>
+                                        <View style={{
+                                            alignItems: 'flex-start',
+                                        }}>
+                                            <Text>
+                                                Clock In
+                                            </Text>
+
+                                            <Text variant='bodySmall' style={{ color: theme.colors.error }}>
+                                                10:58 AM
+                                            </Text>
+                                        </View>
+                                        <View style={{
+                                            alignItems: 'flex-end',
+                                        }}>
+                                            <Text>
+                                                Clock Out
+                                            </Text>
+
+                                            <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                                07:58 PM
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </TouchableRipple>
+                            <TouchableRipple onPress={() => null} style={{ backgroundColor: theme.colors.background, padding: 10, borderRadius: 15, width: '100%', borderWidth: 1, borderColor: theme.colors.secondary, borderStyle: "dashed", marginBottom: 8 }}>
+                                <View style={{
+                                    paddingHorizontal: 5,
+                                }}>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'center',
+                                        gap: 5,
+                                    }}>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>
+                                            Jan 26
+                                        </Text>
+
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.primary, fontWeight: 'thin' }}>Early Out</Text>
+                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                        <Icon size={15} source={"flash-outline"} color={theme.colors.primary} />
+                                    </View>
+
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        marginTop: 5,
+                                    }}>
+                                        <View style={{
+                                            alignItems: 'flex-start',
+                                        }}>
+                                            <Text>
+                                                Clock In
+                                            </Text>
+
+                                            <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                                09:58 AM
+                                            </Text>
+                                        </View>
+                                        <View style={{
+                                            alignItems: 'flex-end',
+                                        }}>
+                                            <Text>
+                                                Clock Out
+                                            </Text>
+
+                                            <Text variant='bodySmall' style={{ color: theme.colors.error }}>
+                                                05:01 PM
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </TouchableRipple> */}
+
+                            {reportData?.map((item, index) => (
+                                <TouchableRipple
+                                    key={index}
+                                    onPress={async () => {
+                                        await fetchEmployeeAttendanceDetails(item?.sl_no);
+                                        setVisible(true)
+                                    }}
+                                    style={{ backgroundColor: theme.colors.background, padding: 10, borderRadius: 15, width: '100%', borderWidth: 1, borderColor: theme.colors.secondary, borderStyle: "dashed", marginBottom: 8 }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                    }}>
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'flex-start',
+                                            alignItems: 'center',
+                                            gap: 5,
+                                        }}>
+                                            <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>
+                                                {/* Jan 24 */}
+                                                {new Date(item?.entry_dt)?.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                                            </Text>
+
+                                            <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                            {item?.late_in === "N"
+                                                ? <Text variant='bodySmall' style={{ color: theme.colors.tertiary, fontWeight: 'thin' }}>On Time</Text>
+                                                : item?.late_in === "Y"
+                                                    ? <><Text variant='bodySmall' style={{ color: theme.colors.error, fontWeight: 'thin' }}>Late In</Text>
+                                                        <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                                        <Icon size={15} source={"snail"} color={theme.colors.error} /></>
+                                                    : <Text>Error</Text>}
+
+                                        </View>
+
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            marginTop: 5,
+                                        }}>
+                                            <View style={{
+                                                alignItems: 'flex-start',
+                                            }}>
+                                                <Text>
+                                                    Clock In
+                                                </Text>
+
+                                                <Text variant='bodySmall' style={{ color: item?.late_in === "N" ? theme.colors.green : theme.colors.error }}>
+                                                    {new Date(item?.in_date_time)?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'AM').replace('pm', 'PM')}
+                                                </Text>
+                                            </View>
+                                            <View style={{
+                                                alignItems: 'flex-end',
+                                            }}>
+                                                <Text>
+                                                    Clock Out
+                                                </Text>
+
+                                                <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                                    {new Date(item?.out_date_time)?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'AM').replace('pm', 'PM')}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </TouchableRipple>
                             ))}
                             {/* </ScrollView> */}
                             {/* <View style={{padding: normalize(10)}}>
@@ -216,6 +421,110 @@ const AttendanceReportScreen = () => {
                     </View>
                 </View>
             </ScrollView>
+
+
+            <DialogBox
+                hide={hide}
+                visible={visible}
+                title="Attendance Report"
+                btnSuccess='OK'
+                onSuccess={hide}
+            >
+                <View>
+                    {detailedReportData?.map((item, index) => (
+                        <View
+                            key={index}
+                            style={{ backgroundColor: theme.colors.background, padding: 10, borderRadius: 15, width: '100%', borderWidth: 1, borderColor: theme.colors.secondary, borderStyle: "dashed", marginBottom: 8 }}>
+                            <View style={{
+                                paddingHorizontal: 5,
+                            }}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    gap: 5,
+                                }}>
+                                    {/* <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>
+                                        {new Date(item?.entry_dt)?.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                                    </Text> */}
+
+                                    {/* <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text> */}
+                                    {item?.late_in === "N" ? <Text variant='bodySmall' style={{ color: theme.colors.tertiary, fontWeight: 'thin' }}>On Time</Text>
+                                        : item?.late_in === "Y"
+                                            ? <><Text variant='bodySmall' style={{ color: theme.colors.error, fontWeight: 'thin' }}>Late In</Text>
+                                                <Text variant='bodySmall' style={{ color: theme.colors.onBackground, fontWeight: 'bold' }}>•</Text>
+                                                <Icon size={15} source={"snail"} color={theme.colors.error} /></>
+                                            : <Text>Error</Text>}
+                                </View>
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    marginTop: 5,
+                                }}>
+                                    <View style={{
+                                        alignItems: 'flex-start',
+                                    }}>
+                                        <Text>
+                                            Clock In
+                                        </Text>
+
+                                        <Text variant='bodySmall' style={{ color: item?.late_in === "N" ? theme.colors.green : theme.colors.error }}>
+                                            {new Date(item?.in_date_time)?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'AM').replace('pm', 'PM')}
+                                        </Text>
+                                    </View>
+                                    <View style={{
+                                        alignItems: 'flex-end',
+                                    }}>
+                                        <Text>
+                                            Clock Out
+                                        </Text>
+
+                                        <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                            {new Date(item?.out_date_time)?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'AM').replace('pm', 'PM')}
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    marginTop: 5,
+                                }}>
+                                    <View style={{
+                                        alignItems: 'flex-start',
+                                    }}>
+                                        <Text>
+                                            Location
+                                        </Text>
+
+                                        <Text variant='bodySmall' style={{ color: theme.colors.green }}>
+                                            {item?.in_addr}
+                                        </Text>
+                                    </View>
+                                </View>
+                                {item?.attn_reject_remarks && <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    marginTop: 5,
+                                }}>
+                                    <View style={{
+                                        alignItems: 'flex-start',
+                                    }}>
+                                        <Text>
+                                            Rejection Reason
+                                        </Text>
+
+                                        <Text variant='bodySmall' style={{ color: theme.colors.error }}>
+                                            {item?.attn_reject_remarks}
+                                        </Text>
+                                    </View>
+                                </View>}
+                            </View>
+                        </View>
+                    ))}
+                </View>
+            </DialogBox>
         </SafeAreaView>
     );
 };

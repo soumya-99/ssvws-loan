@@ -372,9 +372,27 @@ const HomeScreen = () => {
                                 borderRadius: 0,
                                 borderTopRightRadius: 15,
                                 borderBottomLeftRadius: 15,
+                                padding: 5,
                             }}
                             disabled={!geolocationFetchedAddress}>{!geolocationFetchedAddress ? "Fetching Address..." : "Clock In"}</ButtonPaper>
-                        {/* <IconButton icon={"table-large"} onPress={() => null} iconColor={MD2Colors.green900} /> */}
+
+                        <ButtonPaper
+                            mode='text'
+                            onPress={() => navigation.dispatch(
+                                CommonActions.navigate(navigationRoutes.attendanceReportScreen)
+                            )}
+                            textColor={MD2Colors.green600}
+                            icon={"timetable"}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: MD2Colors.green900,
+                                borderStyle: "dashed",
+                                borderRadius: 15,
+                                borderTopLeftRadius: 15,
+                                borderTopRightRadius: 0,
+                                marginTop: 5,
+                                justifyContent: "center",
+                            }}>Report</ButtonPaper>
                     </View>
                         : <View style={{
                             backgroundColor: MD2Colors.pink50,
@@ -441,6 +459,24 @@ const HomeScreen = () => {
                                 </View>
 
                             </View>
+
+                            <ButtonPaper
+                                mode='text'
+                                onPress={() => navigation.dispatch(
+                                    CommonActions.navigate(navigationRoutes.attendanceReportScreen)
+                                )}
+                                textColor={MD2Colors.pink600}
+                                icon={"timetable"}
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: MD2Colors.pink900,
+                                    borderStyle: "dashed",
+                                    borderRadius: 15,
+                                    borderTopLeftRadius: 15,
+                                    borderTopRightRadius: 0,
+                                    marginTop: 5,
+                                    justifyContent: "center",
+                                }}>Report</ButtonPaper>
                         </View>}
 
 
