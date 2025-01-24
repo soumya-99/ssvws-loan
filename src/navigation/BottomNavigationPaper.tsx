@@ -141,8 +141,8 @@ function BottomNavigationPaper() {
                 )
                     : (null)
             }
-{/* ===========================to be enabled================= */}
-            {/* <Tab.Screen
+            {/* ===========================to be enabled================= */}
+            <Tab.Screen
                 name={navigationRoutes.reportsNavigation}
                 component={ReportsNavigation}
                 options={{
@@ -158,10 +158,10 @@ function BottomNavigationPaper() {
                             <MaterialCommunityIcons name="table-headers-eye" color={color} size={26} />
                         ),
                 }}
-            /> */}
-{/* ===========================to be enabled================= */}
+            />
+            {/* ===========================to be enabled================= */}
 
-            <Tab.Screen
+            {!(loginStore?.id === 3 || loginStore?.id === 4) && <Tab.Screen
                 name={navigationRoutes.loanRecoveryNavigation}
                 component={LoanRecoveryNavigation}
                 options={{
@@ -177,7 +177,7 @@ function BottomNavigationPaper() {
                             <MaterialCommunityIcons name="refresh-circle" color={color} size={26} />
                         ),
                 }}
-            />
+            />}
 
             <Tab.Screen
                 name={navigationRoutes.searchNavigation}
@@ -196,7 +196,7 @@ function BottomNavigationPaper() {
                         ),
                 }}
             />
- {/* <Tab.Screen
+            {/* <Tab.Screen
                 name={navigationRoutes.DemandNavigation}
                 component={DemandNavigation}
                 options={{

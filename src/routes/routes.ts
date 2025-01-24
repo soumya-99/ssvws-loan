@@ -38,6 +38,8 @@ const navigationRoutes = {
     settingsScreen: "SettingsScreen",
     printerConnectScreen: "PrinterConnectScreen",
     noInternetScreen: "NoInternetScreen",
+    
+    attendanceReportScreen: "AttendanceReportScreen",
 
     bmPendingLoansNavigation: "BMPendingLoansNavigation",
     bmPendingLoansScreen: "BMPendingLoansScreen",
