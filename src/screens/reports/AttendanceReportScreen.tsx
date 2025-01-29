@@ -28,12 +28,14 @@ import { formattedDate } from '../../utils/dateFormatter';
 import axios from 'axios';
 import { ADDRESSES } from '../../config/api_list';
 import DialogBox from '../../components/DialogBox';
+import DateTimePicker from 'react-native-ui-datepicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 const AttendanceReportScreen = () => {
     const theme = usePaperColorScheme();
     const navigation = useNavigation();
     const loginStore = JSON.parse(loginStorage?.getString('login-data') ?? '');
-
+    const [date, setDate] = useState(dayjs());
     const [isLoading, setIsLoading] = useState(() => false);
     const [isDisabled, setIsDisabled] = useState(() => false);
 
@@ -178,6 +180,15 @@ const AttendanceReportScreen = () => {
                                     setOpenToDate(false);
                                 }}
                             /> */}
+                            
+                        </View>
+                        <View>
+                        <DateTimePicker
+        mode="single"
+        date={date}
+        onChange={(params) =>{setDate(params.date);  console.log(params.date)}}
+      />
+
                         </View>
                         <View>
                             <ButtonPaper

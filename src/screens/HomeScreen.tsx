@@ -18,7 +18,7 @@ import AnimatedFABPaper from "../components/AnimatedFABPaper"
 import navigationRoutes from '../routes/routes'
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import SlideButton from 'rn-slide-button'
+// import SlideButton from 'rn-slide-button'
 import ButtonPaper from '../components/ButtonPaper'
 import useGeoLocation from '../hooks/useGeoLocation'
 
