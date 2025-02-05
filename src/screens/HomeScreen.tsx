@@ -126,20 +126,35 @@ const HomeScreen = () => {
 
     const handleClockIn = async () => {
         console.log(`KLIKKK ${formattedDateTime(currentTime)}`)
-        const creds = {
+        const check={
             emp_id: loginStore?.emp_id,
-            in_date_time: formattedDateTime(currentTime),
-            in_lat: location?.latitude,
-            in_long: location?.longitude,
-            in_addr: geolocationFetchedAddress,
-            created_by: loginStore?.emp_id
+           
         }
-        await axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
-            console.log("CLOCK IN RES", res?.data)
-            setIsClockedIn(!isClockedIn)
-        }).catch(err => {
-            console.log("CLOCK IN ERR", err)
-        })
+        await axios.post(`${ADDRESSES.FETCH_EMP_LOGGED_DTLS}`, check).then(res_dtls => {
+            console.log("CLOCK IN DTLS", res_dtls?.data)
+            if(res_dtls?.data?.fetch_emp_logged_dt?.msg[0]?.clock_status !== "O"){
+            const creds = {
+                emp_id: loginStore?.emp_id,
+                in_date_time: formattedDateTime(currentTime),
+                in_lat: location?.latitude,
+                in_long: location?.longitude,
+                in_addr: geolocationFetchedAddress,
+                created_by: loginStore?.emp_id
+            }
+            axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
+                console.log("CLOCK IN RES", res?.data)
+                setIsClockedIn(!isClockedIn)
+            }).catch(err => {
+                console.log("CLOCK IN ERR", err)
+            })
+        }
+        else{
+            Alert.alert("Clock In", `${res_dtls?.data?.msg}`, [
+                { "text": "OK", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" }
+            ])
+        }
+        }).catch(err => {console.log("CLOCK IN ERR", err)})
+       
     }
 
     const handleClockOut = async () => {
@@ -330,7 +345,7 @@ const HomeScreen = () => {
                 }
             // onScroll={onScroll}
             >
-                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Credit Officer" : loginStore?.id === 2 ? "Branch Manager" : loginStore?.id === 3 ? "MIS Assistant" : "Administrator"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
+                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Branch User" : loginStore?.id === 2 ? "Branch Admin" : loginStore?.id === 3 ? "MIS Assistant" : "Administrator"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
                 <View style={{
                     // paddingHorizontal: 20,
                     // paddingBottom: 120,

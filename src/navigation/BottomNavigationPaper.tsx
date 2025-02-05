@@ -30,7 +30,7 @@ function BottomNavigationPaper() {
 
     const shouldHideTabBar = ["BMPendingLoanFormScreen", "SearchByGroupScreen", "COGroupFormExtendedScreen", "SearchByMemberScreen", "MemberDetailsAllFormScreen", "BMPendingLoansScreen", "RecoveryGroupScreen", "RecoveryMemberScreen", "AvailableFormsScreen", "SearchByCOScreen", "FormsAgainstCOScreen", "SearchTransactionChooseScreen", "SearchApprovedLoansScreen", "SearchUnapprovedLoansScreen", "GRTFormScreen", "RecoveryReportScreen"].includes(currentRoute)
 
-    const checkBMOrCOFlag = loginStore?.id // 1-> CO, 2-> BM, 3-> MIS
+    const checkBMOrCOFlag = loginStore?.id // 1-> BU, 2-> BM, 3-> MIS
 
     return (
         <Tab.Navigator
@@ -64,7 +64,7 @@ function BottomNavigationPaper() {
                         ),
                 }}
             />
-            {checkBMOrCOFlag === 1 ? (
+            {checkBMOrCOFlag === 1 || checkBMOrCOFlag===2 ? (
                 <>
                     {/* <Tab.Screen
                         name={navigationRoutes.grtNavigation}
@@ -119,7 +119,7 @@ function BottomNavigationPaper() {
                     /> */}
                 </>
             )
-                : checkBMOrCOFlag === 2 ? (
+                : checkBMOrCOFlag === 1 || checkBMOrCOFlag === 2 ? (
                     // <Tab.Screen
                     //     name={navigationRoutes.bmPendingLoansNavigation}
                     //     component={BMPendingLoansNavigation}
@@ -142,7 +142,7 @@ function BottomNavigationPaper() {
                     : (null)
             }
             {/* ===========================to be enabled================= */}
-            <Tab.Screen
+            {(loginStore?.id === 1 || loginStore?.id === 2) &&   <Tab.Screen
                 name={navigationRoutes.reportsNavigation}
                 component={ReportsNavigation}
                 options={{
@@ -158,10 +158,10 @@ function BottomNavigationPaper() {
                             <MaterialCommunityIcons name="table-headers-eye" color={color} size={26} />
                         ),
                 }}
-            />
+            />}
             {/* ===========================to be enabled================= */}
 
-            {!(loginStore?.id === 3 || loginStore?.id === 4) && <Tab.Screen
+            {(loginStore?.id === 1 || loginStore?.id === 2) && <Tab.Screen
                 name={navigationRoutes.loanRecoveryNavigation}
                 component={LoanRecoveryNavigation}
                 options={{
@@ -179,7 +179,7 @@ function BottomNavigationPaper() {
                 }}
             />}
 
-            <Tab.Screen
+{(loginStore?.id === 1 || loginStore?.id === 2) &&  <Tab.Screen
                 name={navigationRoutes.searchNavigation}
                 component={SearchNavigation}
                 options={{
@@ -195,7 +195,7 @@ function BottomNavigationPaper() {
                             <MaterialCommunityIcons name="database-search" color={color} size={26} />
                         ),
                 }}
-            />
+            />}
             {/* <Tab.Screen
                 name={navigationRoutes.DemandNavigation}
                 component={DemandNavigation}
