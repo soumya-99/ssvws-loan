@@ -632,7 +632,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         open={openDate2}
                         date={formData.grtDate}
                         minimumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 55))}
-                        maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+                        maximumDate={new Date(new Date().setFullYear(new Date().getFullYear()))}
                         onConfirm={date => {
                             setOpenDate2(false)
                             handleFormChange("grtDate", date)

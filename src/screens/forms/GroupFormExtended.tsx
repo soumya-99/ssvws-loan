@@ -241,7 +241,7 @@ const GroupFormExtended = ({ fetchedData, approvalStatus = "U" }) => {
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
-                    <InputPaper label="IFSC Code*" leftIcon='numeric' keyboardType="default" value={formData.ifscCode} onChangeText={(txt: any) => handleFormChange("ifscCode", txt)} customStyle={{
+                    <InputPaper label="IFSC*" leftIcon='numeric' keyboardType="default" value={formData.ifscCode} onChangeText={(txt: any) => handleFormChange("ifscCode", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={approvalStatus === "A" || fetchedData.branch_code !== loginStore?.brn_code} />
 
