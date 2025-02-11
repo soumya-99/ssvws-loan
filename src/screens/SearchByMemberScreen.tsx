@@ -41,7 +41,7 @@ const SearchByMemberScreen = () => {
         setLoading(true)
 
         const creds = {
-            // branch_code: loginStore?.brn_code,
+            branch_code: loginStore?.brn_code,
             // flag: isApproved,
             search: search
         }
