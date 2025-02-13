@@ -163,7 +163,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             //         handleFormChange("groupCodeName", item?.group_name);
             //     }
             // }));
-            setGroupNames(response?.data?.msg?.map((item, _) => (
+            console.log('res=====',response?.data?.msg)
+            setGroupNames(response?.data?.msg.filter(e=>e.group_name)?.map((item, _) => (
                 { label: item?.group_name, value: item?.group_code }
             )));
         } catch (err) {
@@ -606,6 +607,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         searchPlaceholder="Search Group..."
                         value={formData?.groupCode}
                         onChange={item => {
+                            console.log("jjj")
                             console.log("??????????????????????", item)
                             // setValue(item.value);
                             handleFormChange("groupCode", item?.value);
