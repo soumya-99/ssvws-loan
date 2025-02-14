@@ -357,6 +357,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             "bank_name": formData?.bankName || "",
             "cheque_id": formData?.chequeId || 0,
             "chq_dt": formattedDate(formData?.chequeDate) || "",
+            "group_code": fetchedData?.group_code,
             // "prn_amt":formData?.prn_amt,
             // "balance": fetchedData?.balance,
             // "recovdtls": [{
@@ -598,6 +599,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             }
 
             for (const item of data) {
+                console.log("===========++++++++++++++++>>>>>>>>>>>", data)
                 tot_amt += item.credit
                 await BluetoothEscposPrinter.printColumn(
                     columnWidths,
