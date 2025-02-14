@@ -9,7 +9,7 @@ export const AppStore = createContext<any>(null)
 const AppContext = ({ children }) => {
     const appState = useRef(AppState.currentState)
     // debugging
-    const uat = true
+    const uat = false
 
     const [isLogin, setIsLogin] = useState<boolean>(() => false)
     const [isLoading, setIsLoading] = useState<boolean>(() => false)
