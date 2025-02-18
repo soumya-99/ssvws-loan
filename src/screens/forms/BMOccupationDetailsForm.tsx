@@ -2,7 +2,7 @@ import { Alert, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import InputPaper from '../../components/InputPaper'
-import { Divider, List } from 'react-native-paper'
+import { Divider, List, Text } from 'react-native-paper'
 import MenuPaper from '../../components/MenuPaper'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import RadioComp from '../../components/RadioComp'
@@ -20,6 +20,8 @@ interface BMOccupationDetailsFormProps {
     onSubmit?: any
 }
 
+var appliedDefaultAmt = 50000
+
 const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit = () => null }: BMOccupationDetailsFormProps) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
@@ -28,6 +30,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
 
     const [purposesOfLoan, setPurposesOfLoan] = useState(() => [])
     const [subPurposesOfLoan, setSubPurposesOfLoan] = useState(() => [])
+    const [defaultAmt, setDefaultAmt] = useState('')
 
     const [formData, setFormData] = useState({
         selfOccupation: "",
@@ -38,11 +41,14 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
         purposeOfLoanName: "",
         subPurposeOfLoan: "",
         subPurposeOfLoanName: "",
-        amountApplied: "",
+        // amountApplied: "",
+        amountApplied: defaultAmt.length > 0 ? defaultAmt : appliedDefaultAmt,
         checkOtherOngoingLoan: "N",
         otherLoanAmount: "",
         monthlyEmi: "",
     })
+
+    
 
     const handleFormChange = (field, value) => {
         setFormData((prev) => ({
@@ -70,10 +76,13 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                     subPurposeOfLoan: res?.data?.msg[0]?.sub_pupose || "",
                     subPurposeOfLoanName: res?.data?.msg[0]?.sub_purp_name || "",
                     amountApplied: res?.data?.msg[0]?.applied_amt || "",
+                    // amountApplied: res?.data?.msg[0]?.applied_amt == "" ? appliedDefaultAmt : res?.data?.msg[0]?.applied_amt,
                     checkOtherOngoingLoan: res?.data?.msg[0]?.other_loan_flag || "",
                     otherLoanAmount: res?.data?.msg[0]?.other_loan_amt || "",
                     monthlyEmi: res?.data?.msg[0]?.other_loan_emi || "",
                 })
+
+                setDefaultAmt(res?.data?.msg[0]?.applied_amt)
             }
         }).catch(err => {
             ToastAndroid.show("Some error occurred while fetching occupation details!", ToastAndroid.SHORT)
@@ -199,7 +208,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                         }}
                     />
 
-                    {formData.purposeOfLoan && <List.Item
+                    {/* {formData.purposeOfLoan && <List.Item
                         title="Sub Purpose*"
                         description={`Purpose: ${formData.subPurposeOfLoanName}`}
                         left={props => <List.Icon {...props} icon="file-question-outline" />}
@@ -209,11 +218,25 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                         descriptionStyle={{
                             color: theme.colors.tertiary,
                         }}
-                    />}
+                    />} */}
 
-                    <InputPaper label="Amount Applied*" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} customStyle={{
-                        backgroundColor: theme.colors.background,
-                    }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
+                    <InputPaper label="Amount Applied*" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} 
+                    // customStyle={{
+                    //     backgroundColor: theme.colors.background,
+                    // }} 
+                    customStyle={{
+                        backgroundColor: 'rgb(244, 228, 190)',
+                        // borderWidth: 2, // Highlight border
+                        borderColor: formData.amountApplied ? "green" : "red", // Change color dynamically
+                    }}
+                    disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
+                    
+                    {/* <>
+                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>JSON Data:</Text>
+                    <Text style={{ fontSize: 14, color: "blue", marginTop: 10 }}>
+                    {JSON.stringify(formData.amountApplied, null, 2)}
+                    </Text>
+                    </> */}
 
                     <RadioComp
                         title="Other Loans?*"
@@ -248,7 +271,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.selfOccupation || !formData.selfMonthlyIncome || !formData.purposeOfLoan || !formData.subPurposeOfLoan || !formData.amountApplied || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag) || formData.checkOtherOngoingLoan === "Y" && (!formData.otherLoanAmount || !formData.monthlyEmi)}
+                    }} disabled={loading || !formData.selfOccupation || !formData.selfMonthlyIncome || !formData.purposeOfLoan || !formData.amountApplied || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag) || formData.checkOtherOngoingLoan === "Y" && (!formData.otherLoanAmount || !formData.monthlyEmi)}
                         loading={loading}>UPDATE</ButtonPaper>
 
                 </View>
