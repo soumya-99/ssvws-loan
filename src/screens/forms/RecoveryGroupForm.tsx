@@ -19,6 +19,7 @@ import { formattedDate } from '../../utils/dateFormatter'
 import ThermalPrinterModule from 'react-native-thermal-printer'
 // import PRNTMSG from '../../../assets/msg.png'
 import { CONSTANTS } from "../../utils/constants"
+import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 
 const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
@@ -356,6 +357,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             "bank_name": formData?.bankName || "",
             "cheque_id": formData?.chequeId || 0,
             "chq_dt": formattedDate(formData?.chequeDate) || "",
+            "group_code": fetchedData?.group_code,
             // "prn_amt":formData?.prn_amt,
             // "balance": fetchedData?.balance,
             // "recovdtls": [{
@@ -393,69 +395,370 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         console.log("JJJJJJJJJJJJJJJJJJJJ", transformedObj)
         setLoading(false)
     }
+
     const handlePrint = async (data: any) => {
-        let tot_amt = 0
-        console.log('dataaaaaaaaaaaaaa', data)
-        console.log("Called Printer...")
-        setLoading(true)
-        let text =
-            `[C]SSVWS\n` +
-            `[C]RECEIPT\n` +
-            `[C]${data[0]?.branch_name}\n` +
-            `[C]=====================\n` +
-            // `[L]TXN. ID[C]:[R]${data?.tnx_id}\n` +
-            `[L]DATE[C]:[R]${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}\n` +
-            // `[L]RCPT DATE[C]:[R]${new Date().toLocaleDateString("en-GB")}\n` +
-            `[L]TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
-            `[L]GROUP[C]:[R]${(data[0]?.group_name as string)?.slice(0, 10)}\n` +
-            `[L]CODE[C]:[R]${data[0]?.group_code}\n` +
-            `[L]MODE[C]:[R]${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}\n`;
-        if (data[0]?.tr_mode == 'B')
-            text +=
-                `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
+        // let tot_amt = 0
+        // console.log('dataaaaaaaaaaaaaa', data)
+        // console.log("Called Printer...")
+        // setLoading(true)
+        // let text =
+        //     `[C]SSVWS\n` +
+        //     `[C]RECEIPT\n` +
+        //     `[C]${data[0]?.branch_name}\n` +
+        //     `[C]=====================\n` +
+        //     // `[L]TXN. ID[C]:[R]${data?.tnx_id}\n` +
+        //     `[L]DATE[C]:[R]${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}\n` +
+        //     // `[L]RCPT DATE[C]:[R]${new Date().toLocaleDateString("en-GB")}\n` +
+        //     `[L]TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
+        //     `[L]GROUP[C]:[R]${(data[0]?.group_name as string)?.slice(0, 10)}\n` +
+        //     `[L]CODE[C]:[R]${data[0]?.group_code}\n` +
+        //     `[L]MODE[C]:[R]${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}\n`;
+        // if (data[0]?.tr_mode == 'B')
+        //     text +=
+        //         `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
 
-                // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
-                // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
-                // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
-                // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
-                // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
-                // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
-                // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
-                `[C]**************X*************\n` +
+        //         // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
+        //         // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
+        //         // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
+        //         // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
+        //         // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
+        //         // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
+        //         // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
+        //         `[C]**************X*************\n` +
 
-                `[L]MEMBER[C]:[R]AMOUNT\n`;
+        //         `[L]MEMBER[C]:[R]AMOUNT\n`;
 
-        for (const item of data) {
-            tot_amt += item.credit
-            text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
+        // for (const item of data) {
+        //     tot_amt += item.credit
+        //     text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
+        // }
+        // text +=
+        //     `[L]TOTAL[C]:[R]${tot_amt}\n` +
+        //     `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
+        //     `[L]COLLECTOR[C]:[R]${data[0]?.collec_name}\n` +
+        //     `[L]CODE[C]:[R]${data[0]?.collec_code}\n` +
+        //     `[C]================================\n` +
+        //     `[C]HELPLINE: ${CONSTANTS.helplineNumeber}\n` +
+        //     // `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
+        //     `[C]================X===============\n` +
+        //     `[C]                                \n`;
+        // // `[L]BRANCH[C]:[R]\n` +
+        // await ThermalPrinterModule.printBluetooth({
+        //     payload: text,
+        //     printerNbrCharactersPerLine: 32,
+        //     // printerNbrCharactersPerLine: ,
+        //     printerDpi: 120,
+        //     printerWidthMM: 58,
+        //     mmFeedPaper: 25,
+        // }).then(res => {
+        //     console.log("RES", res)
+        // }).catch(err => {
+        //     console.log("ERR", err)
+        // })
+
+        // console.log("Called Printer...2")
+        // setLoading(false)
+
+
+
+
+
+        ////////////////////////////////////////////
+        ////////////////////////////////////////////
+        ////////////////////////////////////////////
+
+        // 12 1 19
+
+
+        try {
+            let tot_amt = 0
+            console.log('dataaaaaaaaaaaaaa', data)
+            console.log("Called Printer...")
+            setLoading(true)
+
+            let columnSingleRow = [32]
+            let columnWidths = [12, 1, 19]
+
+            // await BluetoothEscposPrinter.printText(
+            //     "SSVWS\r\n",
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`SSVWS`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`RECEIPT`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     "RECEIPT\r\n",
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`${data[0]?.branch_name}`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `${data[0]?.branch_name}\r\n`,
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`======================`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `======================\r\n`,
+            //     { align: "center" },
+            // )
+
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['DATE', ":", `${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['TIME', ":", `${new Date().toLocaleTimeString("en-GB")}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['GROUP', ":", `${(data[0]?.group_name as string)?.slice(0, 10)}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['CODE', ":", `${data[0]?.group_code}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['MODE', ":", `${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}`],
+                {},
+            );
+
+            if (data[0]?.tr_mode == 'B') {
+                await BluetoothEscposPrinter.printColumn(
+                    columnWidths,
+                    [
+                        BluetoothEscposPrinter.ALIGN.LEFT,
+                        BluetoothEscposPrinter.ALIGN.CENTER,
+                        BluetoothEscposPrinter.ALIGN.RIGHT,
+                    ],
+                    ['ID', ":", `${data[0]?.cheque_id?.slice(-6)}`],
+                    {},
+                );
+                await BluetoothEscposPrinter.printText(
+                    `**************X*************\r\n`,
+                    { align: "center" },
+                );
+                await BluetoothEscposPrinter.printColumn(
+                    columnWidths,
+                    [
+                        BluetoothEscposPrinter.ALIGN.LEFT,
+                        BluetoothEscposPrinter.ALIGN.CENTER,
+                        BluetoothEscposPrinter.ALIGN.RIGHT,
+                    ],
+                    ['MEMBER', ":", `AMOUNT`],
+                    {},
+                );
+            }
+
+            for (const item of data) {
+                console.log("===========++++++++++++++++>>>>>>>>>>>", data)
+                tot_amt += item.credit
+                await BluetoothEscposPrinter.printColumn(
+                    columnWidths,
+                    [
+                        BluetoothEscposPrinter.ALIGN.LEFT,
+                        BluetoothEscposPrinter.ALIGN.CENTER,
+                        BluetoothEscposPrinter.ALIGN.RIGHT,
+                    ],
+                    [`${item?.client_name?.slice(0, 10)}`, ":", `${+item?.credit}`],
+                    {},
+                );
+            }
+
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['TOTAL', ":", `${tot_amt}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['OUTSTANDING', ":", `${data[0]?.outstanding}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['COLLECTOR', ":", `${data[0]?.collec_name}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['CODE', ":", `${data[0]?.collec_code}`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `======================\r\n`,
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`======================`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['HELPLINE', ":", `${CONSTANTS.helplineNumeber}`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `===========X==========\r\n\r\n\r\n`,
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`===========X==========`],
+                {},
+            );
+            await BluetoothEscposPrinter.printText(
+                `\r\n\r\n`,
+                { align: "center" },
+            )
+
+            console.log("Called Printer...2")
+            setLoading(false)
+        } catch (e) {
+            console.log(e.message || "ERROR")
         }
-        text +=
-            `[L]TOTAL[C]:[R]${tot_amt}\n` +
-            `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
-            `[L]COLLECTOR[C]:[R]${data[0]?.collec_name}\n` +
-            `[L]CODE[C]:[R]${data[0]?.collec_code}\n` +
-            `[C]================================\n` +
-            `[C]HELPLINE: ${CONSTANTS.helplineNumeber}\n` +
-            // `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
-            `[C]================X===============\n` +
-            `[C]                                \n`;
-        // `[L]BRANCH[C]:[R]\n` +
-        await ThermalPrinterModule.printBluetooth({
-            payload: text,
-            printerNbrCharactersPerLine: 32,
-            // printerNbrCharactersPerLine: ,
-            printerDpi: 120,
-            printerWidthMM: 58,
-            mmFeedPaper: 25,
-        }).then(res => {
-            console.log("RES", res)
-        }).catch(err => {
-            console.log("ERR", err)
-        })
-
-        console.log("Called Printer...2")
-        setLoading(false)
     }
+
+    // const handlePrint = async (data: any) => {
+    //     let tot_amt = 0
+    //     console.log('dataaaaaaaaaaaaaa', data)
+    //     console.log("Called Printer...")
+    //     setLoading(true)
+    //     let text =
+    //         `[C]SSVWS\n` +
+    //         `[C]RECEIPT\n` +
+    //         `[C]${data[0]?.branch_name}\n` +
+    //         `[C]=====================\n` +
+    //         // `[L]TXN. ID[C]:[R]${data?.tnx_id}\n` +
+    //         `[L]DATE[C]:[R]${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}\n` +
+    //         // `[L]RCPT DATE[C]:[R]${new Date().toLocaleDateString("en-GB")}\n` +
+    //         `[L]TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
+    //         `[L]GROUP[C]:[R]${(data[0]?.group_name as string)?.slice(0, 10)}\n` +
+    //         `[L]CODE[C]:[R]${data[0]?.group_code}\n` +
+    //         `[L]MODE[C]:[R]${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}\n`;
+    //     if (data[0]?.tr_mode == 'B')
+    //         text +=
+    //             `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
+
+    //             // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
+    //             // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
+    //             // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
+    //             // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
+    //             // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
+    //             // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
+    //             // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
+    //             `[C]**************X*************\n` +
+
+    //             `[L]MEMBER[C]:[R]AMOUNT\n`;
+
+    //     for (const item of data) {
+    //         tot_amt += item.credit
+    //         text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
+    //     }
+    //     text +=
+    //         `[L]TOTAL[C]:[R]${tot_amt}\n` +
+    //         `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
+    //         `[L]COLLECTOR[C]:[R]${data[0]?.collec_name}\n` +
+    //         `[L]CODE[C]:[R]${data[0]?.collec_code}\n` +
+    //         `[C]================================\n` +
+    //         `[C]HELPLINE: ${CONSTANTS.helplineNumeber}\n` +
+    //         // `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
+    //         `[C]================X===============\n` +
+    //         `[C]                                \n`;
+    //     // `[L]BRANCH[C]:[R]\n` +
+    //     await ThermalPrinterModule.printBluetooth({
+    //         payload: text,
+    //         printerNbrCharactersPerLine: 32,
+    //         // printerNbrCharactersPerLine: ,
+    //         printerDpi: 120,
+    //         printerWidthMM: 58,
+    //         mmFeedPaper: 25,
+    //     }).then(res => {
+    //         console.log("RES", res)
+    //     }).catch(err => {
+    //         console.log("ERR", err)
+    //     })
+
+    //     console.log("Called Printer...2")
+    //     setLoading(false)
+    // }
+
     const inputDisableLogic = () => {
         return approvalStatus === "U"
     }
