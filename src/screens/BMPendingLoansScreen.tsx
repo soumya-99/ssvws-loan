@@ -31,6 +31,8 @@ const BMPendingLoansScreen = () => {
     const [formsData, setFormsData] = useState(() => [])
     const [filteredDataArray, setFilteredDataArray] = useState(() => [])
 
+    // const [AssignGroup, setAssignGroup] = useState(() => "")
+
     const [selectedForm, setSelectedForm] = useState({
         form_no: "",
         branch_code: "",
@@ -59,14 +61,30 @@ const BMPendingLoansScreen = () => {
             "bm_search_pending": search,
             "branch_code": loginStore?.brn_code
         }
+        
+        
 
         await axios.post(`${ADDRESSES.BM_SEARCH_PENDING_FORM}`, creds).then(res => {
             console.log(":::;;;:::", res?.data)
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
+                
+            } else {
+                setFormsData(() => [])
             }
+
+            // if(res?.data.group_code != undefined){
+            //     setAssignGroup(res?.data?.msg)
+            // } else {
+            //     setAssignGroup(() => "")
+            // }
+
+            
+            console.log('//////////////////////////////////', res?.data?.msg, '//////////////////////////////////');
+            
         }).catch(err => {
             ToastAndroid.show("Some error while fetching forms list!", ToastAndroid.SHORT)
+            
         })
 
         setLoading(false)
@@ -180,6 +198,9 @@ const BMPendingLoansScreen = () => {
                     </ButtonPaper>
                 </View>
 
+            
+            
+
                 <View style={{
                     padding: 20,
                     paddingBottom: 120
@@ -197,16 +218,21 @@ const BMPendingLoansScreen = () => {
                                 title={`${item?.client_name}`}
                                 description={
                                     <View>
+                                        {item?.prov_grp_code === 0 && (<Text style={{backgroundColor:'#b92b20', 
+                                            color:'#fff', fontSize:12, lineHeight:22, textAlign:'center', borderRadius:4}}>Group Not Assigned</Text>)}
                                         <Text>Form No: {item?.form_no}</Text>
                                         <Text>GRT Date - {item?.grt_date ? new Date(item?.grt_date).toLocaleDateString("en-GB") : "No Date"}</Text>
                                     </View>
                                 }
-                                onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}
+                                // onPress={() => handleFormListClick(item?.form_no, item?.branch_code)}
+                                onPress={item?.prov_grp_code === 0 ? null : () => handleFormListClick(item?.form_no, item?.branch_code)}
                                 left={props => <List.Icon {...props} icon="form-select" />}
                                 // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
+                                
                                 right={props => (
                                     <IconButton
                                         icon="trash-can-outline"
+
                                         onPress={() => {
                                             setSelectedForm({
                                                 form_no: item?.form_no,
@@ -215,6 +241,21 @@ const BMPendingLoansScreen = () => {
                                             });
                                             setVisible(true);
                                         }}
+
+                                        // onPress={
+                                        //     item?.prov_grp_code === 0
+                                        //         ? null // Disables button (unclickable)
+                                        //         : () => {
+                                        //             setSelectedForm({
+                                        //                 form_no: item?.form_no,
+                                        //                 branch_code: item?.branch_code,
+                                        //                 member_code: item?.member_code
+                                        //             });
+                                        //             setVisible(true);
+                                        //         }
+                                        // }
+
+
                                         size={28}
                                         iconColor={theme.colors.error}
                                         style={{

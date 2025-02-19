@@ -52,6 +52,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         clientGender: "",
         clientMobile: "",
         guardianName: "",
+        husband_name: "",
         clientEmail: "",
         guardianMobile: "",
         clientAddress: "",
@@ -337,6 +338,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     clientGender: res?.data?.msg[0]?.gender || "",
                     clientMobile: res?.data?.msg[0]?.client_mobile || "",
                     guardianName: res?.data?.msg[0]?.gurd_name || "",
+                    husband_name: res?.data?.msg[0]?.husband_name || "",
                     guardianMobile: res?.data?.msg[0]?.gurd_mobile || "",
                     clientAddress: res?.data?.msg[0]?.client_addr || "",
                     clientPin: res?.data?.msg[0]?.pin_no || "",
@@ -383,6 +385,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             client_mobile: formData.clientMobile,
             email_id: formData.clientEmail,
             gurd_name: formData.guardianName,
+            husband_name: formData.husband_name,
             gurd_mobile: formData.guardianMobile,
             client_addr: formData.clientAddress,
             pin_no: formData.clientPin,
@@ -421,6 +424,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             client_mobile: formData.clientMobile,
             email_id: formData.clientEmail,
             gurd_name: formData.guardianName,
+            husband_name: formData.husband_name,
             gurd_mobile: formData.guardianMobile,
             client_addr: formData.clientAddress,
             pin_no: formData.clientPin,
@@ -440,7 +444,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             created_by: loginStore?.emp_id,
         }
 
-        console.log("YYYYYYYYYYY", creds)
+        console.log("YYYYYYYYYYY", creds, "YYYYYYYYYYY")
 
         await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
             console.log("-----------", res?.data)
@@ -451,6 +455,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 clientGender: "",
                 clientMobile: "",
                 guardianName: "",
+                husband_name: "",
                 guardianMobile: "",
                 clientAddress: "",
                 clientPin: "",
@@ -489,6 +494,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     clientGender: "",
                     clientMobile: "",
                     guardianName: "",
+                    husband_name: "",
                     guardianMobile: "",
                     clientAddress: "",
                     clientPin: "",
@@ -587,7 +593,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     /> */}
 
                     {/* {console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", formData)} */}
-                    <Dropdown
+                    {/* <Dropdown
                         style={styles.dropdown}
                         placeholderStyle={[styles.placeholderStyle, { color: theme.colors.onBackground }]}
                         selectedTextStyle={[styles.selectedTextStyle, { color: theme.colors.primary }]}
@@ -618,7 +624,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         )}
                     />
 
-                    <Divider />
+                    <Divider /> */}
 
                     <ButtonPaper
                         textColor={theme.colors.primary}
@@ -712,11 +718,15 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    <InputPaper label="Guardian Name*" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
+                    <InputPaper label="Fathre Name*" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Guardian Mobile No.*" maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.guardianMobile} onChangeText={(txt: any) => handleFormChange("guardianMobile", txt)} customStyle={{
+                    <InputPaper label="Husband Name" leftIcon='account-cowboy-hat-outline' value={formData.husband_name} onChangeText={(txt: any) => handleFormChange("husband_name", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled={disableCondition(approvalStatus, branchCode)} />
+
+                    <InputPaper label="Father/Husband Mobile No." maxLength={10} leftIcon='phone' keyboardType="phone-pad" value={formData.guardianMobile} onChangeText={(txt: any) => handleFormChange("guardianMobile", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
@@ -725,7 +735,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         minHeight: 95,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="PIN No.*" leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
+                    <InputPaper maxLength={6} label="PIN No.*" leftIcon='map-marker-radius-outline' keyboardType="numeric" value={formData.clientPin} onChangeText={(txt: any) => handleFormChange("clientPin", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
