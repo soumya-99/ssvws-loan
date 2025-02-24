@@ -10,7 +10,6 @@ const AppContext = ({ children }) => {
     const appState = useRef(AppState.currentState)
     // debugging
     const uat = false
-
     const [isLogin, setIsLogin] = useState<boolean>(() => false)
     const [isLoading, setIsLoading] = useState<boolean>(() => false)
 
