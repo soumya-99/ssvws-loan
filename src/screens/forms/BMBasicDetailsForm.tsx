@@ -329,8 +329,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         await axios.post(`${ADDRESSES.FETCH_BASIC_DETAILS}`, creds).then(res => {
             if (res?.data?.suc === 1) {
                 console.log("LLLLLLLLLLLLLLLLL", res?.data?.msg[0]?.prov_grp_code)
-                console.log("LLLLLLLLLLLLLLLLL", res?.data)
-
+                console.log("//////////////////////////////////////////////", res?.data?.msg[0], '///////////////////////////////')
+                // Alert.alert("Success", "Basic Details Saved!", res.data.msg[0])
                 setMemberCodeShowHide(true)
                 setFormData({
                     clientName: res?.data?.msg[0]?.client_name || "",
@@ -354,6 +354,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     groupCodeName: res?.data?.msg[0]?.group_name || "",
                     dob: new Date(res?.data?.msg[0]?.dob) ?? new Date(),
                     grtDate: new Date(res?.data?.msg[0]?.grt_date) ?? new Date(), // fetch date later
+                    // group_name: new Date(res?.data?.msg[0]?.grt_date) ?? new Date(), // fetch date later
                 })
                 setReadonlyMemberId(res?.data?.msg[0]?.member_code || "")
 
@@ -650,6 +651,22 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
+                        <InputPaper
+                        label="Group Name"
+                        maxLength={10}
+                        leftIcon='account-group'
+                        // keyboardType="phone-pad"
+                        value={formData.groupCodeName}
+                        onChangeText={(txt: any) => handleFormChange("clientMobile", txt)}
+                        // onBlur={() => {
+                        //     formData.clientMobile &&
+                        //         fetchClientDetails("M", formData.clientMobile)
+                        // }}
+                        customStyle={{
+                            backgroundColor: theme.colors.background,
+                        }}
+                        disabled={true}
+                         />
 
                     <InputPaper
                         label="Mobile No.*"

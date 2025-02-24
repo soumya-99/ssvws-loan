@@ -11,6 +11,7 @@ import { ADDRESSES } from '../../config/api_list'
 import ButtonPaper from '../../components/ButtonPaper'
 import { loginStorage } from '../../storage/appStorage'
 import { disableConditionExceptBasicDetails } from '../../utils/disableCondition'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
 
 interface BMOccupationDetailsFormProps {
     formNumber?: any
@@ -225,7 +226,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                     //     backgroundColor: theme.colors.background,
                     // }} 
                     customStyle={{
-                        backgroundColor: 'rgb(244, 228, 190)',
+                        backgroundColor: 'rgb(228, 164, 15)', Colors:'black',
                         // borderWidth: 2, // Highlight border
                         borderColor: formData.amountApplied ? "green" : "red", // Change color dynamically
                     }}
