@@ -14,7 +14,7 @@ import { loginStorage } from '../../storage/appStorage'
 import LoadingOverlay from "../../components/LoadingOverlay"
 import useGeoLocation from '../../hooks/useGeoLocation'
 import { disableCondition } from "../../utils/disableCondition"
-import { Dropdown } from 'react-native-element-dropdown'
+// import { Dropdown } from 'react-native-element-dropdown'
 import { SCREEN_WIDTH } from 'react-native-normalize'
 
 interface BMBasicDetailsFormProps {
@@ -45,6 +45,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     const [educations, setEducations] = useState(() => [])
     const [groupNames, setGroupNames] = useState(() => [])
     const [memberGenders, setMemberGenders] = useState(() => [])
+    const [responseMemberCode, setResponseMemberCode] = useState(() => "")
 
     const [memberCodeShowHide, setMemberCodeShowHide] = useState(() => false)
     const [formData, setFormData] = useState({
@@ -53,12 +54,14 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         clientMobile: "",
         guardianName: "",
         husbandName: "",
+        nomineeName: "",
         clientEmail: "",
         guardianMobile: "",
         clientAddress: "",
         clientPin: "",
         aadhaarNumber: "",
         panNumber: "",
+        voterId: "",
         religion: "",
         otherReligion: "",
         caste: "",
@@ -339,11 +342,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     clientMobile: res?.data?.msg[0]?.client_mobile || "",
                     guardianName: res?.data?.msg[0]?.gurd_name || "",
                     husbandName: res?.data?.msg[0]?.husband_name || "",
+                    nomineeName: res?.data?.msg[0]?.nominee_name || "",
                     guardianMobile: res?.data?.msg[0]?.gurd_mobile || "",
                     clientAddress: res?.data?.msg[0]?.client_addr || "",
                     clientPin: res?.data?.msg[0]?.pin_no || "",
                     aadhaarNumber: res?.data?.msg[0]?.aadhar_no || "",
                     panNumber: res?.data?.msg[0]?.pan_no || "",
+                    voterId: res?.data?.msg[0]?.voter_id || "",
                     religion: res?.data?.msg[0]?.religion || "",
                     otherReligion: res?.data?.msg[0]?.other_religion || "",
                     caste: res?.data?.msg[0]?.caste || "",
@@ -392,6 +397,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             pin_no: formData.clientPin,
             aadhar_no: formData.aadhaarNumber,
             pan_no: formData.panNumber,
+            nominee_name: formData.nomineeName,
+            voter_id: formData.voterId,
             religion: formData.religion,
             other_religion: formData.otherReligion,
             caste: formData.caste,
@@ -426,6 +433,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             email_id: formData.clientEmail,
             gurd_name: formData.guardianName,
             husband_name: formData.husbandName,
+            voter_id: formData.voterId || "",
+            nominee_name: formData.nomineeName || "",
             gurd_mobile: formData.guardianMobile,
             client_addr: formData.clientAddress,
             pin_no: formData.clientPin,
@@ -449,7 +458,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
         await axios.post(`${ADDRESSES.SAVE_BASIC_DETAILS}`, creds).then(res => {
             console.log("-----------", res?.data)
-            Alert.alert("Success", "Basic Details Saved!")
+            Alert.alert("Success", `Basic Details Saved!\nMember Code: ${res?.data?.member_code}`)
             setFormData({
                 clientName: "",
                 clientEmail: "",
@@ -457,11 +466,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 clientMobile: "",
                 guardianName: "",
                 husbandName: "",
+                nomineeName: "",
                 guardianMobile: "",
                 clientAddress: "",
                 clientPin: "",
                 aadhaarNumber: "",
                 panNumber: "",
+                voterId: "",
                 religion: "",
                 otherReligion: "",
                 caste: "",
@@ -475,6 +486,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             })
             setMemberCodeShowHide(false)
             onSubmit()
+            // setResponseMemberCode(res?.data?.member_code)
         }).catch(err => {
             ToastAndroid.show("Some error occurred while submitting basic details", ToastAndroid.SHORT)
             console.log("SAVE_BASIC_DETAILS ERRRRR", err)
@@ -496,11 +508,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     clientMobile: "",
                     guardianName: "",
                     husbandName: "",
+                    nomineeName: "",
                     guardianMobile: "",
                     clientAddress: "",
                     clientPin: "",
                     aadhaarNumber: "",
                     panNumber: "",
+                    voterId: "",
                     religion: "",
                     otherReligion: "",
                     caste: "",
@@ -651,7 +665,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    <InputPaper
+                    {flag !== "CO" && <InputPaper
                         label="Group Name"
                         maxLength={10}
                         leftIcon='account-group'
@@ -666,7 +680,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                             backgroundColor: theme.colors.background,
                         }}
                         disabled={true}
-                    />
+                    />}
 
                     <InputPaper
                         label="Mobile No.*"
@@ -700,7 +714,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         disabled={disableCondition(approvalStatus, branchCode)} />
 
                     <InputPaper
-                        label="PAN No.*"
+                        label="PAN No."
                         maxLength={10}
                         leftIcon='card-account-details-outline'
                         keyboardType="default"
@@ -715,11 +729,27 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                         disabled={disableCondition(approvalStatus, branchCode)} />
 
+                    <InputPaper
+                        label="Voter ID"
+                        maxLength={20}
+                        leftIcon='card-account-details-outline'
+                        keyboardType="default"
+                        value={formData.voterId}
+                        onChangeText={(txt: any) => handleFormChange("voterId", txt)}
+                        // onBlur={() => {
+                        //     formData.panNumber &&
+                        //         fetchClientDetails("P", formData.panNumber)
+                        // }}
+                        customStyle={{
+                            backgroundColor: theme.colors.background,
+                        }}
+                        disabled={disableCondition(approvalStatus, branchCode)} />
+
                     <InputPaper label="Member Name*" leftIcon='account-circle-outline' value={formData.clientName} onChangeText={(txt: any) => handleFormChange("clientName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Member Email*" leftIcon='email-outline' keyboardType="email-address" value={formData.clientEmail} onChangeText={(txt: any) => handleFormChange("clientEmail", txt)} customStyle={{
+                    <InputPaper label="Member Email" leftIcon='email-outline' keyboardType="email-address" value={formData.clientEmail} onChangeText={(txt: any) => handleFormChange("clientEmail", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
@@ -735,11 +765,15 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                    <InputPaper label="Fathre Name*" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
+                    <InputPaper label="Father's Name*" leftIcon='account-cowboy-hat-outline' value={formData.guardianName} onChangeText={(txt: any) => handleFormChange("guardianName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Husband Name" leftIcon='account-cowboy-hat-outline' value={formData.husbandName} onChangeText={(txt: any) => handleFormChange("husbandName", txt)} customStyle={{
+                    <InputPaper label="Husband's Name" leftIcon='account-cowboy-hat-outline' value={formData.husbandName} onChangeText={(txt: any) => handleFormChange("husbandName", txt)} customStyle={{
+                        backgroundColor: theme.colors.background,
+                    }} disabled={disableCondition(approvalStatus, branchCode)} />
+
+                    <InputPaper label="Nominee Name" leftIcon='account-network' value={formData.nomineeName} onChangeText={(txt: any) => handleFormChange("nomineeName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
@@ -869,7 +903,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                                 { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
                             ])
                             console.log("FORM DATA ============>>>", formData)
-                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.panNumber || !formData.clientName || !formData.guardianName || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || disableCondition(approvalStatus, branchCode)}
+                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.clientName || !formData.guardianName || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || disableCondition(approvalStatus, branchCode)}
                             loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
                     </View>
 
