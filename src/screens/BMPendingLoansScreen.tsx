@@ -34,9 +34,9 @@ const BMPendingLoansScreen = () => {
     // const [AssignGroup, setAssignGroup] = useState(() => "")
 
     const [selectedForm, setSelectedForm] = useState({
-        form_no: "",
-        branch_code: "",
-        member_code: ""
+        formNo: "",
+        branchCode: "",
+        memberCode: ""
     })
 
     // const fetchPendingGRTForms = async () => {
@@ -61,14 +61,12 @@ const BMPendingLoansScreen = () => {
             "bm_search_pending": search,
             "branch_code": loginStore?.brn_code
         }
-        
-        
 
         await axios.post(`${ADDRESSES.BM_SEARCH_PENDING_FORM}`, creds).then(res => {
             console.log(":::;;;:::", res?.data)
             if (res?.data?.suc === 1) {
                 setFormsData(res?.data?.msg)
-                
+
             } else {
                 setFormsData(() => [])
             }
@@ -79,12 +77,9 @@ const BMPendingLoansScreen = () => {
             //     setAssignGroup(() => "")
             // }
 
-            
-            console.log('//////////////////////////////////', res?.data?.msg, '//////////////////////////////////');
-            
         }).catch(err => {
             ToastAndroid.show("Some error while fetching forms list!", ToastAndroid.SHORT)
-            
+
         })
 
         setLoading(false)
@@ -150,12 +145,12 @@ const BMPendingLoansScreen = () => {
     }
 
     const onDialogSuccess = () => {
-        Alert.alert("Delete Form?", `Are you sure you want to delete form ${selectedForm?.form_no}?`, [{
+        Alert.alert("Delete Form?", `Are you sure you want to delete form ${selectedForm?.formNo}?`, [{
             text: "NO",
             onPress: () => null
         }, {
             text: "YES",
-            onPress: () => remarks ? rejectForm(selectedForm?.form_no, selectedForm?.branch_code, selectedForm?.member_code) : ToastAndroid.show("Please write remarks!", ToastAndroid.SHORT)
+            onPress: () => remarks ? rejectForm(selectedForm?.formNo, selectedForm?.branchCode, selectedForm?.memberCode) : ToastAndroid.show("Please write remarks!", ToastAndroid.SHORT)
         }])
     }
 
@@ -198,8 +193,8 @@ const BMPendingLoansScreen = () => {
                     </ButtonPaper>
                 </View>
 
-            
-            
+
+
 
                 <View style={{
                     padding: 20,
@@ -218,8 +213,10 @@ const BMPendingLoansScreen = () => {
                                 title={`${item?.client_name}`}
                                 description={
                                     <View>
-                                        {item?.prov_grp_code === 0 && (<Text style={{backgroundColor:'#b92b20', 
-                                            color:'#fff', fontSize:12, lineHeight:22, textAlign:'center', borderRadius:4}}>Group Not Assigned</Text>)}
+                                        {item?.prov_grp_code === 0 && (<Text style={{
+                                            backgroundColor: theme.colors.errorContainer,
+                                            color: theme.colors.onErrorContainer, fontSize: 12, lineHeight: 22, textAlign: 'center', borderRadius: 4
+                                        }}>Group Not Assigned</Text>)}
                                         <Text>Form No: {item?.form_no}</Text>
                                         <Text>GRT Date - {item?.grt_date ? new Date(item?.grt_date).toLocaleDateString("en-GB") : "No Date"}</Text>
                                     </View>
@@ -228,16 +225,16 @@ const BMPendingLoansScreen = () => {
                                 onPress={item?.prov_grp_code === 0 ? null : () => handleFormListClick(item?.form_no, item?.branch_code)}
                                 left={props => <List.Icon {...props} icon="form-select" />}
                                 // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)
-                                
+
                                 right={props => (
                                     <IconButton
                                         icon="trash-can-outline"
 
                                         onPress={() => {
                                             setSelectedForm({
-                                                form_no: item?.form_no,
-                                                branch_code: item?.branch_code,
-                                                member_code: item?.member_code
+                                                formNo: item?.form_no,
+                                                branchCode: item?.branch_code,
+                                                memberCode: item?.member_code
                                             });
                                             setVisible(true);
                                         }}

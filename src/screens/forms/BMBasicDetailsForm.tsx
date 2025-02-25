@@ -52,7 +52,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
         clientGender: "",
         clientMobile: "",
         guardianName: "",
-        husband_name: "",
+        husbandName: "",
         clientEmail: "",
         guardianMobile: "",
         clientAddress: "",
@@ -164,8 +164,8 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             //         handleFormChange("groupCodeName", item?.group_name);
             //     }
             // }));
-            console.log('res=====',response?.data?.msg)
-            setGroupNames(response?.data?.msg.filter(e=>e.group_name)?.map((item, _) => (
+            console.log('res=====', response?.data?.msg)
+            setGroupNames(response?.data?.msg.filter(e => e.group_name)?.map((item, _) => (
                 { label: item?.group_name, value: item?.group_code }
             )));
         } catch (err) {
@@ -338,7 +338,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     clientGender: res?.data?.msg[0]?.gender || "",
                     clientMobile: res?.data?.msg[0]?.client_mobile || "",
                     guardianName: res?.data?.msg[0]?.gurd_name || "",
-                    husband_name: res?.data?.msg[0]?.husband_name || "",
+                    husbandName: res?.data?.msg[0]?.husband_name || "",
                     guardianMobile: res?.data?.msg[0]?.gurd_mobile || "",
                     clientAddress: res?.data?.msg[0]?.client_addr || "",
                     clientPin: res?.data?.msg[0]?.pin_no || "",
@@ -386,7 +386,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             client_mobile: formData.clientMobile,
             email_id: formData.clientEmail,
             gurd_name: formData.guardianName,
-            husband_name: formData.husband_name,
+            husband_name: formData.husbandName,
             gurd_mobile: formData.guardianMobile,
             client_addr: formData.clientAddress,
             pin_no: formData.clientPin,
@@ -425,7 +425,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             client_mobile: formData.clientMobile,
             email_id: formData.clientEmail,
             gurd_name: formData.guardianName,
-            husband_name: formData.husband_name,
+            husband_name: formData.husbandName,
             gurd_mobile: formData.guardianMobile,
             client_addr: formData.clientAddress,
             pin_no: formData.clientPin,
@@ -456,7 +456,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                 clientGender: "",
                 clientMobile: "",
                 guardianName: "",
-                husband_name: "",
+                husbandName: "",
                 guardianMobile: "",
                 clientAddress: "",
                 clientPin: "",
@@ -495,7 +495,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                     clientGender: "",
                     clientMobile: "",
                     guardianName: "",
-                    husband_name: "",
+                    husbandName: "",
                     guardianMobile: "",
                     clientAddress: "",
                     clientPin: "",
@@ -651,13 +651,13 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         }}
                     />
 
-                        <InputPaper
+                    <InputPaper
                         label="Group Name"
                         maxLength={10}
                         leftIcon='account-group'
                         // keyboardType="phone-pad"
                         value={formData.groupCodeName}
-                        onChangeText={(txt: any) => handleFormChange("clientMobile", txt)}
+                        onChangeText={(txt: any) => handleFormChange("groupCodeName", txt)}
                         // onBlur={() => {
                         //     formData.clientMobile &&
                         //         fetchClientDetails("M", formData.clientMobile)
@@ -666,7 +666,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                             backgroundColor: theme.colors.background,
                         }}
                         disabled={true}
-                         />
+                    />
 
                     <InputPaper
                         label="Mobile No.*"
@@ -739,7 +739,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 
-                    <InputPaper label="Husband Name" leftIcon='account-cowboy-hat-outline' value={formData.husband_name} onChangeText={(txt: any) => handleFormChange("husband_name", txt)} customStyle={{
+                    <InputPaper label="Husband Name" leftIcon='account-cowboy-hat-outline' value={formData.husbandName} onChangeText={(txt: any) => handleFormChange("husbandName", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableCondition(approvalStatus, branchCode)} />
 

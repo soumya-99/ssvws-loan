@@ -49,7 +49,7 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
         monthlyEmi: "",
     })
 
-    
+
 
     const handleFormChange = (field, value) => {
         setFormData((prev) => ({
@@ -221,17 +221,17 @@ const BMOccupationDetailsForm = ({ formNumber, branchCode, flag = "BM", approval
                         }}
                     />} */}
 
-                    <InputPaper label="Amount Applied*" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)} 
-                    // customStyle={{
-                    //     backgroundColor: theme.colors.background,
-                    // }} 
-                    customStyle={{
-                        backgroundColor: 'rgb(228, 164, 15)', Colors:'black',
-                        // borderWidth: 2, // Highlight border
-                        borderColor: formData.amountApplied ? "green" : "red", // Change color dynamically
-                    }}
-                    disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
-                    
+                    <InputPaper label="Amount Applied*" maxLength={15} leftIcon='cash-100' keyboardType="numeric" value={formData.amountApplied} onChangeText={(txt: any) => handleFormChange("amountApplied", txt)}
+                        // customStyle={{
+                        //     backgroundColor: theme.colors.background,
+                        // }} 
+                        customStyle={{
+                            backgroundColor: theme.colors.tertiaryContainer,
+                            // borderWidth: 2, // Highlight border
+                            borderColor: formData.amountApplied ? "green" : "red", // Change color dynamically
+                        }}
+                        disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
+
                     {/* <>
                     <Text style={{ fontSize: 16, fontWeight: "bold" }}>JSON Data:</Text>
                     <Text style={{ fontSize: 14, color: "blue", marginTop: 10 }}>

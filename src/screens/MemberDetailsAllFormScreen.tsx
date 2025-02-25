@@ -19,7 +19,8 @@ const MemberDetailsAllFormScreen = () => {
 
     const [currentPosition, setCurrentPosition] = useState(() => 0)
 
-    const labels = ["Basic Details", "Occupation Details", "Household Details", "Family Member Details"];
+    // const labels = ["Basic Details", "Occupation Details", "Household Details", "Family Member Details"];
+    const labels = ["Basic Details", "Occupation Details", "Household Details"];
 
     const customStyles = {
         stepIndicatorSize: 40,
@@ -67,7 +68,7 @@ const MemberDetailsAllFormScreen = () => {
                         customStyles={customStyles}
                         currentPosition={currentPosition}
                         labels={labels}
-                        stepCount={4}
+                        stepCount={3}
                         renderStepIndicator={
                             ({ position, stepStatus }) =>
                                 position === 0
@@ -76,23 +77,23 @@ const MemberDetailsAllFormScreen = () => {
                                         ? <Icon size={20} source="office-building-outline" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
                                         : position === 2
                                             ? <Icon size={20} source="home-city-outline" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
-                                            : position === 3
-                                                ? <Icon size={20} source="human-male-female-child" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
-                                                : null
+                                            // : position === 3
+                                            //     ? <Icon size={20} source="human-male-female-child" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
+                                            : null
                         }
                     />
 
                     {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={"BM"} approvalStatus={params?.member_details?.approval_status} />}
                     {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
                     {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
-                    {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
+                    {/* {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />} */}
 
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-around"
                     }}>
                         <ButtonPaper mode='outlined' icon="arrow-left-thick" onPress={() => setCurrentPosition(prev => prev - 1)} disabled={currentPosition === 0}>PREVIOUS</ButtonPaper>
-                        <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={() => setCurrentPosition(prev => prev + 1)} disabled={currentPosition === 3}>NEXT</ButtonPaper>
+                        <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={() => setCurrentPosition(prev => prev + 1)} disabled={currentPosition === 2}>NEXT</ButtonPaper>
                     </View>
                 </View>
             </ScrollView>
