@@ -74,7 +74,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         fetchCurrentVersion()
-    }, [])
+    }, [navigation])
 
     // const onScroll = ({ nativeEvent }) => {
     //     const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0
