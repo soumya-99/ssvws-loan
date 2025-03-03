@@ -1,6 +1,7 @@
 import { BASE_URL } from "./config"
 
 export const ADDRESSES = {
+    FETCH_APP_VERSION: `${BASE_URL}/fetch_app_version`,
     LOGIN: `${BASE_URL}/login_app`,
     // UPDATE_LOGIN_FLAG: `${BASE_URL}/api/update_login_status`,
     // RECEIPT_SETTINGS: `${BASE_URL}/api/receipt_settings`,

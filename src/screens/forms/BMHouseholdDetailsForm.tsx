@@ -130,7 +130,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
 
     const handleFinalSubmit = async () => {
         setLoading(true)
-        await handleFormUpdate() 
+        await handleFormUpdate()
 
         const creds = {
             modified_by: loginStore?.emp_id,
@@ -170,7 +170,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} /> */}
 
-                    <InputPaper label="Parental Address" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
+                    <InputPaper label="Parental Address*" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                         minHeight: 95,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
@@ -180,7 +180,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <List.Item
-                        title="House Type"
+                        title="House Type*"
                         description={`Purpose: ${formData.houseType}`}
                         left={props => <List.Icon {...props} icon="office-building-cog-outline" />}
                         right={props => {
@@ -192,7 +192,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                     />
 
                     <RadioComp
-                        title="Own or Rent?"
+                        title="Own or Rent?*"
                         icon="home-switch-outline"
                         dataArray={[
                             {
@@ -343,7 +343,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFinalSubmit() },
                         ])
-                    }} disabled={loading || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
+                    }} disabled={loading || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag) || !formData.parentalAddress || !formData.houseType || !formData.checkOwnOrRent}
                         loading={loading}>SEND</ButtonPaper>
                 </View>
             </ScrollView>

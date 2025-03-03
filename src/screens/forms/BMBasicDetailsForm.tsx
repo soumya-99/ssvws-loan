@@ -1,6 +1,6 @@
 import { StyleSheet, SafeAreaView, View, Alert, ToastAndroid, Linking } from 'react-native'
 import { Divider, Icon, List } from "react-native-paper"
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { formattedDate } from "../../utils/dateFormatter"
 import InputPaper from "../../components/InputPaper"
 import ButtonPaper from "../../components/ButtonPaper"
@@ -23,9 +23,17 @@ interface BMBasicDetailsFormProps {
     flag?: "CO" | "BM"
     approvalStatus?: "U" | "A" | "S"
     onSubmit?: any
+    onUpdateDisabledChange?: (disabled: boolean) => void
 }
 
-const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit = () => null }: BMBasicDetailsFormProps) => {
+const BMBasicDetailsForm = forwardRef(({
+    formNumber,
+    branchCode,
+    flag = "BM",
+    approvalStatus = "U",
+    onSubmit = () => null,
+    onUpdateDisabledChange = () => { }
+}: BMBasicDetailsFormProps, ref) => {
     const theme = usePaperColorScheme()
     // 110 -> Branch Code
     const navigation = useNavigation()
@@ -575,6 +583,39 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
     console.log("~~~~~~~~~~~~~~~~~", branchCode, loginStore?.brn_code)
     // console.log("FORM DATA ============>>>", branchCode, formData)
 
+
+    // Compute the disabled condition exactly as used for the UPDATE button.
+    const updateDisabled =
+        loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.clientName || !formData.guardianName || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || disableCondition(approvalStatus, branchCode);
+
+    // Inform parent about the current disabled state.
+    useEffect(() => {
+        onUpdateDisabledChange(updateDisabled)
+    }, [updateDisabled, onUpdateDisabledChange])
+
+    // This function is triggered when NEXT is pressed on BMPendingLoanFormScreen.
+    // Here we assume that if updateDisabled is false, we want to show the confirmation alert.
+    const triggerUpdateButton = () => {
+        if (updateDisabled) {
+            // Should not happen because parent's NEXT would be disabled.
+            return;
+        }
+        // Alert.alert("Update Basic Details", "Are you sure you want to update this?", [
+        //     { text: "No", onPress: () => null },
+        //     { text: "Yes", onPress: () => handleUpdateBasicDetails() },
+        // ])
+
+        Alert.alert("Submit Basic Details", "Are you sure you want to update this?", [
+            { text: "No", onPress: () => null },
+            { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
+        ])
+    }
+
+    // Expose the triggerUpdateButton function via ref.
+    useImperativeHandle(ref, () => ({
+        updateAndNext: triggerUpdateButton
+    }))
+
     return (
         <SafeAreaView>
             <>
@@ -731,7 +772,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
 
                     <InputPaper
                         label="Voter ID"
-                        maxLength={20}
+                        maxLength={10}
                         leftIcon='card-account-details-outline'
                         keyboardType="default"
                         value={formData.voterId}
@@ -897,13 +938,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
                         {flag === "CO" && <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore" disabled={disableCondition(approvalStatus, branchCode)}>
                             RESET FORM
                         </ButtonPaper>}
-                        <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
-                            Alert.alert("Submit Basic Details", "Are you sure you want to update this?", [
-                                { text: "No", onPress: () => null },
-                                { text: "Yes", onPress: () => { flag === "BM" ? handleUpdateBasicDetails() : handleSubmitBasicDetails() } },
-                            ])
-                            console.log("FORM DATA ============>>>", formData)
-                        }} disabled={loading || !formData.clientMobile || !formData.aadhaarNumber || !formData.clientName || !formData.guardianName || !formData.clientAddress || !formData.clientPin || !formData.dob || !formData.religion || !formData.caste || !formData.education || !geolocationFetchedAddress || disableCondition(approvalStatus, branchCode)}
+                        <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={triggerUpdateButton} disabled={updateDisabled}
                             loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
                     </View>
 
@@ -914,7 +949,7 @@ const BMBasicDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatu
             )}
         </SafeAreaView>
     )
-}
+})
 
 export default BMBasicDetailsForm
 

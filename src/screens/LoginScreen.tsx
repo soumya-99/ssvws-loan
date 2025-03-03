@@ -1,4 +1,4 @@
-import { PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
+import { Alert, BackHandler, PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import { MD2Colors, Text } from 'react-native-paper'
 import React, { useContext, useEffect, useState } from 'react'
 import ButtonPaper from '../components/ButtonPaper'
@@ -6,9 +6,13 @@ import InputPaper from '../components/InputPaper'
 import normalize, { SCREEN_HEIGHT } from "react-native-normalize"
 import { usePaperColorScheme } from '../theme/theme'
 import { AppStore } from '../context/AppContext'
+import DeviceInfo from "react-native-device-info"
+import axios from 'axios'
+import { ADDRESSES } from '../config/api_list'
 
 const LoginScreen = () => {
     const theme = usePaperColorScheme()
+    const appVersion = DeviceInfo.getVersion()
 
     const {
         handleLogin,
@@ -72,6 +76,28 @@ const LoginScreen = () => {
         handleLogin(username, password)
     }
 
+    console.log("Device Info Verison :", appVersion)
+
+    const fetchCurrentVersion = async () => {
+        await axios.get(ADDRESSES.FETCH_APP_VERSION).then(res => {
+            console.log("FETCH VERSION===RES", res?.data)
+
+            if (+res?.data?.msg[0]?.version !== +appVersion) {
+                Alert.alert("Version Mismatch!", "Please update the app to use.", [
+                    { text: "CLOSE APP", onPress: () => BackHandler.exitApp() },
+                    { text: "UPDATE", onPress: () => null },
+                ])
+            }
+
+        }).catch(err => {
+            console.log("VERSION FETCH ERR", err)
+        })
+    }
+
+    useEffect(() => {
+        fetchCurrentVersion()
+    }, [])
+
     return (
         <SafeAreaView>
             <ScrollView keyboardShouldPersistTaps="handled" style={{
@@ -123,6 +149,13 @@ const LoginScreen = () => {
                         }} loading={isLoading} disabled={isLoading || !username || !password}>
                             Login
                         </ButtonPaper>
+                        <View>
+                            <Text variant='bodyMedium' style={{
+                                position: "absolute",
+                                top: 40,
+                                left: 240,
+                            }}>App Version: {appVersion}</Text>
+                        </View>
                     </View>
 
                 </View>

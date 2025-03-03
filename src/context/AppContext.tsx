@@ -3,13 +3,16 @@ import React, { createContext, useEffect, useRef, useState } from "react"
 import { AppState, Alert, ToastAndroid } from "react-native"
 import { loginStorage } from "../storage/appStorage"
 import { ADDRESSES } from "../config/api_list"
+import DeviceInfo from "react-native-device-info"
 
 export const AppStore = createContext<any>(null)
 
 const AppContext = ({ children }) => {
     const appState = useRef(AppState.currentState)
+    const appVersion = DeviceInfo.getVersion()
     // debugging
-    const uat = false
+    const uat = true
+
     const [isLogin, setIsLogin] = useState<boolean>(() => false)
     const [isLoading, setIsLoading] = useState<boolean>(() => false)
 
@@ -17,12 +20,15 @@ const AppContext = ({ children }) => {
         setIsLoading(true)
         const creds = {
             emp_id: username,
-            password: password
+            password: password,
+            // "app_version": appVersion,
+            // "flag": "A"
         }
 
         console.log("LOGIN-----USERNAME-----PASS", creds)
 
         await axios.post(`${ADDRESSES.LOGIN}`, creds).then(res => {
+            console.log("LOGIN LOGGGG===", res?.data)
             if (res?.data?.suc === 1) {
                 ToastAndroid.show(`${res?.data?.msg}`, ToastAndroid.SHORT)
                 loginStorage.set("login-data", JSON.stringify(res?.data?.user_dtls))

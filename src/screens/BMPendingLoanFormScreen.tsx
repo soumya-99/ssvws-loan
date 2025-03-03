@@ -8,19 +8,17 @@ import { Icon } from 'react-native-paper'
 import BMBasicDetailsForm from "./forms/BMBasicDetailsForm"
 import BMOccupationDetailsForm from "./forms/BMOccupationDetailsForm"
 import BMHouseholdDetailsForm from "./forms/BMHouseholdDetailsForm"
-import BMFamilyMemberDetailsForm from "./forms/BMFamilyMemberDetailsForm"
+// import BMFamilyMemberDetailsForm from "./forms/BMFamilyMemberDetailsForm"
 import { useRoute } from '@react-navigation/native'
 
 const BMPendingLoanFormScreen = () => {
     const theme = usePaperColorScheme()
     const { params } = useRoute<any>()
+    const [currentPosition, setCurrentPosition] = useState(0)
+    const [basicDetailsUpdateDisabled, setBasicDetailsUpdateDisabled] = useState(true)
+    const [occupationUpdateDisabled, setOccupationUpdateDisabled] = useState(true)
 
-    console.log("WWWWWWWWWWWWWWWWWWWWWWW", params?.formNumber, params?.branchCode)
-
-    const [currentPosition, setCurrentPosition] = useState(() => 0)
-
-    // const labels = ["Basic Details", "Occupation Details", "Household Details", "Family Member Details"];
-    const labels = ["Basic Details", "Occupation Details", "Household Details"];
+    const labels = ["Basic Details", "Occupation Details", "Household Details"]
 
     const customStyles = {
         stepIndicatorSize: 40,
@@ -46,23 +44,36 @@ const BMPendingLoanFormScreen = () => {
         currentStepLabelColor: theme.colors.green,
     }
 
-    const handleNext = () => {
-        setCurrentPosition((prev) => prev + 1);
-    };
+    // Create a ref for the Basic & Occupation Details form.
+    const basicDetailsFormRef = useRef(null)
+    const occupationFormRef = useRef(null)
+
+    // onSubmit callback moves to the next step.
+    const handleFormSubmit = () => {
+        setCurrentPosition(prev => prev + 1)
+    }
+
+    // NEXT button handler.
+    // For the Basic Details and Occupation Details step, it triggers the update logic.
+    const handleNextButton = () => {
+        if (currentPosition === 0) {
+            basicDetailsFormRef.current?.updateAndNext()
+        }
+        else if (currentPosition === 1) {
+            occupationFormRef.current?.updateAndNext()
+        } else {
+            setCurrentPosition(prev => prev + 1)
+        }
+    }
 
     return (
         <SafeAreaView>
-            <ScrollView style={{
-                backgroundColor: theme.colors.background,
-                // minHeight: SCREEN_HEIGHT,
-                height: 'auto'
-            }}>
+            <ScrollView style={{ backgroundColor: theme.colors.background, height: 'auto' }}>
                 <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber}`} isBackEnabled />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 10,
                     gap: 10,
-                    // minHeight: SCREEN_HEIGHT,
                     paddingBottom: 20,
                     height: "auto",
                     justifyContent: "space-between",
@@ -76,29 +87,63 @@ const BMPendingLoanFormScreen = () => {
                         renderStepIndicator={
                             ({ position, stepStatus }) =>
                                 position === 0
-                                    ? <Icon size={20} source="account" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
+                                    ? <Icon size={20} source="account" color={(stepStatus === "current" || stepStatus === "unfinished") ? theme.colors.green : theme.colors.greenContainer} />
                                     : position === 1
-                                        ? <Icon size={20} source="office-building-outline" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
+                                        ? <Icon size={20} source="office-building-outline" color={(stepStatus === "current" || stepStatus === "unfinished") ? theme.colors.green : theme.colors.greenContainer} />
                                         : position === 2
-                                            ? <Icon size={20} source="home-city-outline" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
-                                            // : position === 3
-                                            //     ? <Icon size={20} source="human-male-female-child" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
-                                                : null
+                                            ? <Icon size={20} source="home-city-outline" color={(stepStatus === "current" || stepStatus === "unfinished") ? theme.colors.green : theme.colors.greenContainer} />
+                                            : null
                         }
                     />
 
-                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
-                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
-                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
-                    {/* {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />} */}
-
-
-                    <View style={{
-                        flexDirection: "row",
-                        justifyContent: "space-around"
-                    }}>
-                        <ButtonPaper mode='outlined' icon="arrow-left-thick" onPress={() => setCurrentPosition(prev => prev - 1)} disabled={currentPosition === 0}>PREVIOUS</ButtonPaper>
-                        <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={handleNext} disabled={currentPosition === 2}>NEXT</ButtonPaper>
+                    {currentPosition === 0 && (
+                        <BMBasicDetailsForm
+                            ref={basicDetailsFormRef}
+                            formNumber={params?.formNumber}
+                            branchCode={params?.branchCode}
+                            onSubmit={handleFormSubmit}
+                            onUpdateDisabledChange={setBasicDetailsUpdateDisabled}
+                        />
+                    )}
+                    {currentPosition === 1 && (
+                        <BMOccupationDetailsForm
+                            ref={occupationFormRef}
+                            formNumber={params?.formNumber}
+                            branchCode={params?.branchCode}
+                            onSubmit={handleFormSubmit}
+                            onUpdateDisabledChange={setOccupationUpdateDisabled}
+                        />
+                    )}
+                    {currentPosition === 2 && (
+                        <BMHouseholdDetailsForm
+                            formNumber={params?.formNumber}
+                            branchCode={params?.branchCode}
+                            onSubmit={handleFormSubmit}
+                        />
+                    )}
+                    {/* BMFamilyMemberDetailsForm can be added similarly */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <ButtonPaper
+                            mode='outlined'
+                            icon="arrow-left-thick"
+                            onPress={() => setCurrentPosition(prev => prev - 1)}
+                            disabled={currentPosition === 0}
+                        >
+                            PREVIOUS
+                        </ButtonPaper>
+                        <ButtonPaper
+                            mode='text'
+                            icon="arrow-right-bold-outline"
+                            onPress={handleNextButton}
+                            disabled={
+                                // If on the Occupation step, disable if the update button would be disabled.
+                                currentPosition === 2 ||
+                                (currentPosition === 1 && occupationUpdateDisabled) ||
+                                (currentPosition === 0 && basicDetailsUpdateDisabled)
+                            }
+                        >
+                            NEXT
+                        </ButtonPaper>
                     </View>
                 </View>
             </ScrollView>
