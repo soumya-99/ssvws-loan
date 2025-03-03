@@ -21,11 +21,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 // import SlideButton from 'rn-slide-button'
 import ButtonPaper from '../components/ButtonPaper'
 import useGeoLocation from '../hooks/useGeoLocation'
+import DeviceInfo from 'react-native-device-info'
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const isFocused = useIsFocused()
+    const appVersion = DeviceInfo.getVersion()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     // const [isLocationMocked, setIsLocationMocked] = useState(() => false)
@@ -53,6 +55,26 @@ const HomeScreen = () => {
     const [clockedInDateTime, setClockedInDateTime] = useState(() => "")
     const [clockedInFetchedAddress, setClockedInFetchedAddress] = useState(() => "")
     const [clockInStatus, setClockInStatus] = useState<string>(() => "")
+
+    const fetchCurrentVersion = async () => {
+        await axios.get(ADDRESSES.FETCH_APP_VERSION).then(res => {
+            console.log("FETCH VERSION===RES", res?.data)
+
+            if (+res?.data?.msg[0]?.version !== +appVersion) {
+                Alert.alert("Version Mismatch!", "Please update the app to use.", [
+                    { text: "CLOSE APP", onPress: () => BackHandler.exitApp() },
+                    { text: "UPDATE", onPress: () => null },
+                ], { cancelable: false })
+            }
+
+        }).catch(err => {
+            console.log("VERSION FETCH ERR", err)
+        })
+    }
+
+    useEffect(() => {
+        fetchCurrentVersion()
+    }, [])
 
     // const onScroll = ({ nativeEvent }) => {
     //     const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0
@@ -126,35 +148,35 @@ const HomeScreen = () => {
 
     const handleClockIn = async () => {
         console.log(`KLIKKK ${formattedDateTime(currentTime)}`)
-        const check={
+        const check = {
             emp_id: loginStore?.emp_id,
-           
+
         }
         await axios.post(`${ADDRESSES.FETCH_EMP_LOGGED_DTLS}`, check).then(res_dtls => {
             console.log("CLOCK IN DTLS", res_dtls?.data)
-            if(res_dtls?.data?.fetch_emp_logged_dt?.msg[0]?.clock_status !== "O"){
-            const creds = {
-                emp_id: loginStore?.emp_id,
-                in_date_time: formattedDateTime(currentTime),
-                in_lat: location?.latitude,
-                in_long: location?.longitude,
-                in_addr: geolocationFetchedAddress,
-                created_by: loginStore?.emp_id
+            if (res_dtls?.data?.fetch_emp_logged_dt?.msg[0]?.clock_status !== "O") {
+                const creds = {
+                    emp_id: loginStore?.emp_id,
+                    in_date_time: formattedDateTime(currentTime),
+                    in_lat: location?.latitude,
+                    in_long: location?.longitude,
+                    in_addr: geolocationFetchedAddress,
+                    created_by: loginStore?.emp_id
+                }
+                axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
+                    console.log("CLOCK IN RES", res?.data)
+                    setIsClockedIn(!isClockedIn)
+                }).catch(err => {
+                    console.log("CLOCK IN ERR", err)
+                })
             }
-            axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
-                console.log("CLOCK IN RES", res?.data)
-                setIsClockedIn(!isClockedIn)
-            }).catch(err => {
-                console.log("CLOCK IN ERR", err)
-            })
-        }
-        else{
-            Alert.alert("Clock In", `${res_dtls?.data?.msg}`, [
-                { "text": "OK", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" }
-            ])
-        }
-        }).catch(err => {console.log("CLOCK IN ERR", err)})
-       
+            else {
+                Alert.alert("Clock In", `${res_dtls?.data?.msg}`, [
+                    { "text": "OK", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" }
+                ])
+            }
+        }).catch(err => { console.log("CLOCK IN ERR", err) })
+
     }
 
     const handleClockOut = async () => {

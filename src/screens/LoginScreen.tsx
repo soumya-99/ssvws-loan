@@ -86,7 +86,7 @@ const LoginScreen = () => {
                 Alert.alert("Version Mismatch!", "Please update the app to use.", [
                     { text: "CLOSE APP", onPress: () => BackHandler.exitApp() },
                     { text: "UPDATE", onPress: () => null },
-                ])
+                ], { cancelable: false })
             }
 
         }).catch(err => {
