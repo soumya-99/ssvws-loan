@@ -140,6 +140,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
         }
 
         await axios.post(`${ADDRESSES.FINAL_SUBMIT}`, creds).then(res => {
+            console.log("FINAL SUBMIT RESSSSS=====", res?.data)
             ToastAndroid.show("Form sent to MIS Assistant.", ToastAndroid.SHORT)
             // navigation.dispatch(CommonActions.goBack())
             navigation.dispatch(

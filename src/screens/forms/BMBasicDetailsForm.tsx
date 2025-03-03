@@ -938,8 +938,13 @@ const BMBasicDetailsForm = forwardRef(({
                         {flag === "CO" && <ButtonPaper mode="text" textColor={theme.colors.error} onPress={handleResetForm} icon="backup-restore" disabled={disableCondition(approvalStatus, branchCode)}>
                             RESET FORM
                         </ButtonPaper>}
-                        <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={triggerUpdateButton} disabled={updateDisabled}
-                            loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper>
+                        {/* <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={triggerUpdateButton} disabled={updateDisabled}
+                            loading={loading}>{flag === "BM" ? "UPDATE" : "SUBMIT"}</ButtonPaper> */}
+
+                        {
+                            flag !== "BM" && <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={triggerUpdateButton} disabled={updateDisabled}
+                                loading={loading}>SUBMIT</ButtonPaper>
+                        }
                     </View>
 
                 </View>

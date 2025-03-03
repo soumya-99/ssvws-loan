@@ -243,7 +243,7 @@ const BMOccupationDetailsForm = forwardRef(({
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <InputPaper
-                        label="Spouse Occupation*"
+                        label="Spouse Occupation"
                         maxLength={50}
                         leftIcon='bag-personal-outline'
                         keyboardType="default"
@@ -253,7 +253,7 @@ const BMOccupationDetailsForm = forwardRef(({
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <InputPaper
-                        label="Spouse Monthly Income*"
+                        label="Spouse Monthly Income"
                         maxLength={15}
                         leftIcon='account-cash-outline'
                         keyboardType="numeric"
@@ -328,7 +328,7 @@ const BMOccupationDetailsForm = forwardRef(({
                         />
                     )}
                     {/* The existing UPDATE button remains for manual updates */}
-                    <ButtonPaper
+                    {/* <ButtonPaper
                         mode='text'
                         icon="cloud-upload-outline"
                         onPress={triggerUpdateButton}
@@ -336,7 +336,7 @@ const BMOccupationDetailsForm = forwardRef(({
                         loading={loading}
                     >
                         UPDATE
-                    </ButtonPaper>
+                    </ButtonPaper> */}
                 </View>
             </ScrollView>
             {loading && <LoadingOverlay />}

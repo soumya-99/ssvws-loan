@@ -48,6 +48,7 @@ export const ADDRESSES = {
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
     DELETE_TNX: `${BASE_URL}/remove_trans`,
     GET_BANKS: `${BASE_URL}/get_bank`,
+    VERIFY_RECOVERY: `${BASE_URL}/verify_recovery`,
 
     CLOCK_IN: `${BASE_URL}/save_in_attendance`,
     CLOCK_OUT: `${BASE_URL}/save_out_attendance`,
