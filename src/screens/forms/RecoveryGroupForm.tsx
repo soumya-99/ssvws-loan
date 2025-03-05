@@ -375,6 +375,15 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
         console.log("PAYLOAD---RECOVERY", creds)
         await axios.post(ADDRESSES.LOAN_RECOVERY_EMI, creds).then(res => {
+            console.log("RESSSSS", res?.data)
+            if (res?.data?.suc === 0) {
+                Alert.alert("Alert", res?.data?.msg, [
+                    { text: "Back", onPress: () => navigation.goBack() }
+                ], {
+                    cancelable: false
+                })
+                return
+            }
             ToastAndroid.show("Loan recovery EMI installment done.", ToastAndroid.SHORT)
             console.log("Loan recovery EMI installment done.", res?.data)
 
