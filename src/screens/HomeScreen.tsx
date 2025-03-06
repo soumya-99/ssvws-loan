@@ -1,6 +1,6 @@
 import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl, ToastAndroid, Alert, Linking, BackHandler } from 'react-native'
 import { Icon, IconButton, MD2Colors, Text } from "react-native-paper"
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import RNRestart from 'react-native-restart'
 import { usePaperColorScheme } from '../theme/theme'
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
@@ -22,12 +22,16 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import ButtonPaper from '../components/ButtonPaper'
 import useGeoLocation from '../hooks/useGeoLocation'
 import DeviceInfo from 'react-native-device-info'
+import { AppStore } from '../context/AppContext'
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const isFocused = useIsFocused()
-    const appVersion = DeviceInfo.getVersion()
+    // const appVersion = DeviceInfo.getVersion()
+    const {
+        fetchCurrentVersion,
+    } = useContext<any>(AppStore)
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     // const [isLocationMocked, setIsLocationMocked] = useState(() => false)
@@ -55,22 +59,6 @@ const HomeScreen = () => {
     const [clockedInDateTime, setClockedInDateTime] = useState(() => "")
     const [clockedInFetchedAddress, setClockedInFetchedAddress] = useState(() => "")
     const [clockInStatus, setClockInStatus] = useState<string>(() => "")
-
-    const fetchCurrentVersion = async () => {
-        await axios.get(ADDRESSES.FETCH_APP_VERSION).then(res => {
-            console.log("FETCH VERSION===RES", res?.data)
-
-            if (+res?.data?.msg[0]?.version !== +appVersion) {
-                Alert.alert("Version Mismatch!", "Please update the app to use.", [
-                    { text: "CLOSE APP", onPress: () => BackHandler.exitApp() },
-                    { text: "UPDATE", onPress: () => null },
-                ], { cancelable: false })
-            }
-
-        }).catch(err => {
-            console.log("VERSION FETCH ERR", err)
-        })
-    }
 
     useEffect(() => {
         fetchCurrentVersion()

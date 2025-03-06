@@ -8,11 +8,11 @@ import {usePaperColorScheme} from './src/theme/theme';
 export default function Main() {
   const theme = usePaperColorScheme();
   return (
-    <AppContext>
-      <PaperProvider theme={theme} settings={{rippleEffectEnabled: true}}>
+    <PaperProvider theme={theme} settings={{rippleEffectEnabled: true}}>
+      <AppContext>
         <App />
-      </PaperProvider>
-    </AppContext>
+      </AppContext>
+    </PaperProvider>
   );
 }
 

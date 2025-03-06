@@ -6,17 +6,19 @@ import InputPaper from '../components/InputPaper'
 import normalize, { SCREEN_HEIGHT } from "react-native-normalize"
 import { usePaperColorScheme } from '../theme/theme'
 import { AppStore } from '../context/AppContext'
-import DeviceInfo from "react-native-device-info"
-import axios from 'axios'
-import { ADDRESSES } from '../config/api_list'
+// import DeviceInfo from "react-native-device-info"
+// import axios from 'axios'
+// import { ADDRESSES } from '../config/api_list'
 
 const LoginScreen = () => {
     const theme = usePaperColorScheme()
-    const appVersion = DeviceInfo.getVersion()
+    // const appVersion = DeviceInfo.getVersion()
 
     const {
         handleLogin,
         isLoading,
+        fetchCurrentVersion,
+        appVersion,
         uat
     } = useContext<any>(AppStore)
 
@@ -70,33 +72,34 @@ const LoginScreen = () => {
 
     useEffect(() => {
         requestPermissions()
+        fetchCurrentVersion()
     }, [])
 
     const login = () => {
         handleLogin(username, password)
     }
 
-    console.log("Device Info Verison :", appVersion)
+    // console.log("Device Info Verison :", appVersion)
 
-    const fetchCurrentVersion = async () => {
-        await axios.get(ADDRESSES.FETCH_APP_VERSION).then(res => {
-            console.log("FETCH VERSION===RES", res?.data)
+    // const fetchCurrentVersion = async () => {
+    //     await axios.get(ADDRESSES.FETCH_APP_VERSION).then(res => {
+    //         console.log("FETCH VERSION===RES", res?.data)
 
-            if (+res?.data?.msg[0]?.version !== +appVersion) {
-                Alert.alert("Version Mismatch!", "Please update the app to use.", [
-                    { text: "CLOSE APP", onPress: () => BackHandler.exitApp() },
-                    { text: "UPDATE", onPress: () => null },
-                ], { cancelable: false })
-            }
+    //         if (+res?.data?.msg[0]?.version !== +appVersion) {
+    //             Alert.alert("Version Mismatch!", "Please update the app to use.", [
+    //                 { text: "CLOSE APP", onPress: () => BackHandler.exitApp() },
+    //                 { text: "UPDATE", onPress: () => null },
+    //             ], { cancelable: false })
+    //         }
 
-        }).catch(err => {
-            console.log("VERSION FETCH ERR", err)
-        })
-    }
+    //     }).catch(err => {
+    //         console.log("VERSION FETCH ERR", err)
+    //     })
+    // }
 
-    useEffect(() => {
-        fetchCurrentVersion()
-    }, [])
+    // useEffect(() => {
+    //     fetchCurrentVersion()
+    // }, [])
 
     return (
         <SafeAreaView>
