@@ -1,5 +1,5 @@
 import { Alert, Linking, PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
-import { Checkbox, Chip, Icon, Text, TextInput } from "react-native-paper"
+import { Checkbox, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import { Divider, List } from 'react-native-paper'
@@ -15,11 +15,6 @@ import useGeoLocation from '../../hooks/useGeoLocation'
 import RadioComp from '../../components/RadioComp'
 import DatePicker from 'react-native-date-picker'
 import { formattedDate } from '../../utils/dateFormatter'
-// import LoadingOverlay from '../components/LoadingOverlay'
-import ThermalPrinterModule from 'react-native-thermal-printer'
-// import PRNTMSG from '../../../assets/msg.png'
-import { CONSTANTS } from "../../utils/constants"
-import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 import { useEscPosPrint } from "../../hooks/useEscPosPrint"
 
 const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
@@ -180,7 +175,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
     const currentPrincipalCalculate = (creditAmt: number) => {
         let roi = +fetchedData?.memb_dtls[0]?.curr_roi;
-        let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
+        // let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
+        let currentPrincipal = ((creditAmt / ((roi * +fetchedData?.memb_dtls[0]?.factor) + 100)) * 100);
         // return currentPrincipal?.toFixed(2)
         return Math.round(currentPrincipal)
     }
@@ -188,7 +184,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const currentInterestCalculate = (creditAmt: number) => {
         let roi = +fetchedData?.memb_dtls[0]?.curr_roi;
 
-        let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
+        // let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
+        let currentPrincipal = ((creditAmt / ((roi * +fetchedData?.memb_dtls[0]?.factor) + 100)) * 100);
         let currentInterest = creditAmt - currentPrincipal;
 
         // return currentInterest?.toFixed(2)

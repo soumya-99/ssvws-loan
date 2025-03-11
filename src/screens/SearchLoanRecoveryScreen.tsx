@@ -60,6 +60,7 @@ const SearchLoanRecoveryScreen = () => {
         })
         setLoading(false)
     }
+    
     const getDemandReportData = () => {
         console.log("hello")
         setLoading(true)
