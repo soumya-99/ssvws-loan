@@ -22,7 +22,8 @@ const AppContext = ({ children }) => {
             emp_id: username,
             password: password,
             "app_version": appVersion,
-            "flag": "A"
+            "flag": "A",
+            "session_id": 0
         }
 
         console.log("LOGIN-----USERNAME-----PASS", creds)
