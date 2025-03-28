@@ -102,10 +102,14 @@ const HomeScreen = () => {
 
     const fetchGeoLocaltionAddress = async () => {
         console.log("REVERSE GEO ENCODING API CALLING...")
-        await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+        await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyDdA5VPRPZXt3IiE3zP15pet1Nn200CRzg`).then(res => {
             console.log("REVERSE GEO ENCODING RES =============", res?.data?.results[0])
             setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
         })
+        // await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+        //     console.log("REVERSE GEO ENCODING RES =============", res?.data?.results[0])
+        //     setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
+        // })
     }
 
     useEffect(() => {
