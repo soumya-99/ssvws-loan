@@ -1,5 +1,5 @@
 import { Alert, Linking, PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
-import { Checkbox, Text } from "react-native-paper"
+import { Checkbox, Icon, Text } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import { Divider, List } from 'react-native-paper'
@@ -60,7 +60,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const [last_trn_dt, setLastTrnDt] = useState(fetchedData.memb_dtls[0].last_trn_dt)
     const [openDate, setOpenDate] = useState(() => false)
     const [openDate2, setOpenDate2] = useState(() => false)
-    const formattedTnxDate = formattedDate(formData?.txnDate)
+    // const formattedTnxDate = formattedDate(formData?.txnDate)
+    const [canTxnCheckFlag, setCanTxnCheckFlag] = useState<"D" | "F">(() => "F")
 
     const groupTypes = [
         {
@@ -278,6 +279,44 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     useEffect(() => {
         fetchBanks()
     }, [])
+
+    const checkCanTxn = async () => {
+        setLoading(true)
+        const transformedObj = memberDetailsArray.filter((item, i) => item.isChecked && item.credit > 0).map((item) => ({
+            loan_id: item.loan_id,
+            last_trn_dt: formattedDate(formData.txnDate),
+        }));
+
+        await axios.post(`${ADDRESSES.CHECK_CAN_TXN}`, {
+            checkdatedtls: transformedObj,
+        }).then(res => {
+            console.log("CAN TXN", res?.data)
+            setCanTxnCheckFlag(res?.data?.tr_flag)
+
+            if (res?.data?.tr_flag === "F") {
+                Alert.alert("Cannot proceed", "Some future transactions found! You cannot proceed this transaction. Try changing Txn Date instead.", [
+                    {
+                        text: "OK", onPress: () => null
+                    }
+                ])
+            } else if (res?.data?.tr_flag === "D") {
+                Alert.alert("Approved", "Now you can collect amount.", [
+                    {
+                        text: "OK", onPress: () => null
+                    }
+                ])
+            }
+        }
+        ).catch(err => {
+            console.log("CAN TXN ERR", err)
+            setCanTxnCheckFlag("F")
+        })
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        setCanTxnCheckFlag('F')
+    }, [memberDetailsArray, formData.txnDate])
 
     const sendRecoveryEMI = async () => {
         setLoading(true)
@@ -515,6 +554,27 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                         }}
                     />
 
+                    <ButtonPaper icon="alert-circle-check-outline" mode="contained" style={{
+                        backgroundColor: theme.colors.tertiary,
+                    }} onPress={async () => await checkCanTxn()} loading={loading} disabled={loading || memberDetailsArray.reduce((sum, item) => sum + +item.credit, 0) === 0 || memberDetailsArray.filter((item, _) => +item.credit > (+item.prn_amt + +item.intt_amt)).length > 0}>
+                        {"Check TXN Availability"}
+                    </ButtonPaper>
+
+                    <View style={{
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start",
+                        gap: 3,
+                        width: "100%",
+                    }}>
+                        <Icon source={"information-outline"} size={20} color={theme.colors.tertiary} />
+                        <Text variant='bodySmall' style={{
+                            color: theme.colors.onTertiaryContainer,
+                            fontStyle: "italic",
+                        }}>
+                            Always click above button to check if you can proceed the transaction, even after changing the members or txn date. If not, please change the Txn Date and re-check.
+                        </Text>
+                    </View>
+
                     <View>
                         <Text variant="labelLarge" style={{
                             marginBottom: 10,
@@ -659,7 +719,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                                 text: "Yes"
                             }])
 
-                        }} loading={loading} disabled={loading || memberDetailsArray.reduce((sum, item) => sum + +item.credit, 0) === 0 || memberDetailsArray.filter((item, _) => +item.credit > (+item.prn_amt + +item.intt_amt)).length > 0}>
+                        }} loading={loading} disabled={loading || canTxnCheckFlag === "F" || memberDetailsArray.reduce((sum, item) => sum + +item.credit, 0) === 0 || memberDetailsArray.filter((item, _) => +item.credit > (+item.prn_amt + +item.intt_amt)).length > 0}>
                             {!loading ? "Collect Amount" : "DON'T CLOSE THIS PAGE..."}
                         </ButtonPaper>
                     </View>

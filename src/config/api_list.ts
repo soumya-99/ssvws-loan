@@ -66,4 +66,5 @@ export const ADDRESSES = {
     MEMBERWISE_DISBURSEMENT_REPORT: `${BASE_URL}/member_wise_disb`,
     ATTENDANCE_REPORT: `${BASE_URL}/attendance_report`,
     FETCH_EMP_ATTENDANCE_DETAILS: `${BASE_URL}/fetch_emp_atten_dtls`,
+    CHECK_CAN_TXN: `${BASE_URL}/checking_date_before_transaction`,
 }
