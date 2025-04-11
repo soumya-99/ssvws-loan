@@ -186,11 +186,13 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     }
 
     const currentInterestCalculate = (creditAmt: number) => {
-        let roi = +fetchedData?.memb_dtls[0]?.curr_roi;
+        // let roi = +fetchedData?.memb_dtls[0]?.curr_roi;
 
         // let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
-        let currentPrincipal = ((creditAmt / ((roi * +fetchedData?.memb_dtls[0]?.factor) + 100)) * 100);
-        let currentInterest = creditAmt - currentPrincipal;
+        // let currentPrincipal = ((creditAmt / ((roi * +fetchedData?.memb_dtls[0]?.factor) + 100)) * 100);
+
+        // let currentInterest = creditAmt - currentPrincipal;
+        let currentInterest = creditAmt - currentPrincipalCalculate(creditAmt);
 
         // return currentInterest?.toFixed(2)
         return Math.round(currentInterest)
