@@ -531,8 +531,6 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                             mode="elevated"
                             icon="calendar"
                         // disabled={inputDisableLogic()}
-
-
                         >
                             {/* CHOOSE DOB: {formData.dob?.toLocaleDateString("en-GB")} */}
                             CHOOSE TXN. DATE: {formData.txnDate?.toLocaleDateString("en-GB")}
@@ -540,7 +538,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
                     </View>
                     <DatePicker
                         // maximumDate={new Date(new Date(fetchedData?.instl_end_dt))}
-                        // maximumDate={new Date()}
+                        maximumDate={new Date()}
                         // minimumDate={new Date(new Date().setDate(1))}
                         modal
                         mode="date"
