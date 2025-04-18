@@ -75,6 +75,10 @@ const LoginScreen = () => {
         fetchCurrentVersion()
     }, [])
 
+    useEffect(() => {
+        fetchCurrentVersion()
+    }, [username, password])
+
     const login = () => {
         handleLogin(username, password)
     }

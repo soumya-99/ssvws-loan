@@ -1,9 +1,10 @@
 import axios from "axios"
 import React, { createContext, useEffect, useRef, useState } from "react"
-import { AppState, Alert, ToastAndroid, BackHandler } from "react-native"
+import { AppState, ToastAndroid, BackHandler, Text } from "react-native"
 import { loginStorage } from "../storage/appStorage"
 import { ADDRESSES } from "../config/api_list"
 import DeviceInfo from "react-native-device-info"
+import DialogBox from "../components/DialogBox";
 
 export const AppStore = createContext<any>(null)
 
@@ -15,6 +16,7 @@ const AppContext = ({ children }) => {
 
     const [isLogin, setIsLogin] = useState<boolean>(() => false)
     const [isLoading, setIsLoading] = useState<boolean>(() => false)
+    const [dialogVisible, setDialogVisible] = useState(false);
 
     const handleLogin = async (username: string, password: string) => {
         setIsLoading(true)
@@ -51,10 +53,7 @@ const AppContext = ({ children }) => {
             console.log("FETCH VERSION===RES", res?.data)
 
             if (+res?.data?.msg[0]?.version !== +appVersion) {
-                Alert.alert("Version Mismatch!", "Please update the app to use.", [
-                    { text: "CLOSE APP", onPress: () => BackHandler.exitApp() },
-                    { text: "UPDATE", onPress: () => null },
-                ], { cancelable: false })
+                setDialogVisible(true);
             }
 
         }).catch(err => {
@@ -105,7 +104,18 @@ const AppContext = ({ children }) => {
             appVersion,
             uat
         }}>
-            {children}
+            <>
+                {children}
+                <DialogBox
+                    visible={dialogVisible}
+                    title="Version Mismatch!"
+                    btnSuccess="CLOSE APP"
+                    onSuccess={() => BackHandler.exitApp()}
+                    hide={() => setDialogVisible(false)}
+                    dismissable={false}>
+                    <Text>Please update the app to use.</Text>
+                </DialogBox>
+            </>
         </AppStore.Provider>
     )
 }
