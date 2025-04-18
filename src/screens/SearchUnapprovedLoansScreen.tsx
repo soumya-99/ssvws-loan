@@ -38,6 +38,7 @@ const SearchUnapprovedLoansScreen = () => {
         setLoading(true)
 
         const creds = {
+            "branch_code":loginStore?.brn_code,
             "loan_id": "0",
             "approval_status": "U"
         }

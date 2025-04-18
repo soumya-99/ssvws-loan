@@ -11,6 +11,8 @@ import axios from 'axios'
 import { ADDRESSES } from '../../config/api_list'
 import { loginStorage } from '../../storage/appStorage'
 import { disableConditionExceptBasicDetails } from '../../utils/disableCondition'
+import { CommonActions, useNavigation } from '@react-navigation/native'
+import navigationRoutes from '../../routes/routes'
 
 interface BMOccupationDetailsFormProps {
     formNumber?: any
@@ -23,6 +25,7 @@ interface BMOccupationDetailsFormProps {
 const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalStatus = "U", onSubmit = () => null }: BMOccupationDetailsFormProps) => {
     const theme = usePaperColorScheme()
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
+    const navigation = useNavigation()
 
     const [loading, setLoading] = useState(() => false)
 
@@ -108,6 +111,8 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
             created_by: loginStore?.emp_id
         }
 
+        console.log("//////////////", creds, "///////////////")
+
         await axios.post(`${ADDRESSES.SAVE_HOUSEHOLD_DETAILS}`, creds).then(res => {
             console.log("HOUSEHOLD====RES", res?.data)
 
@@ -120,6 +125,32 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
             ToastAndroid.show("Something went wrong while updating Household Details!", ToastAndroid.SHORT)
         })
 
+        setLoading(false)
+    }
+
+    const handleFinalSubmit = async () => {
+        setLoading(true)
+        await handleFormUpdate()
+
+        const creds = {
+            modified_by: loginStore?.emp_id,
+            form_no: formNumber,
+            branch_code: branchCode,
+            remarks: "",
+        }
+
+        await axios.post(`${ADDRESSES.FINAL_SUBMIT}`, creds).then(res => {
+            console.log("FINAL SUBMIT RESSSSS=====", res?.data)
+            ToastAndroid.show("Form sent to MIS Assistant.", ToastAndroid.SHORT)
+            // navigation.dispatch(CommonActions.goBack())
+            navigation.dispatch(
+                CommonActions.navigate({
+                    name: navigationRoutes.homeScreen,
+                }),
+            )
+        }).catch(err => {
+            ToastAndroid.show("Some error occurred while submitting the final data.", ToastAndroid.SHORT)
+        })
         setLoading(false)
     }
 
@@ -136,9 +167,9 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                 }}>
                     <Divider />
 
-                    <InputPaper label="No. of Rooms*" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
+                    {/* <InputPaper label="No. of Rooms*" maxLength={5} leftIcon='greenhouse' keyboardType="numeric" value={formData.noOfRooms} onChangeText={(txt: any) => handleFormChange("noOfRooms", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
-                    }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
+                    }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} /> */}
 
                     <InputPaper label="Parental Address*" multiline leftIcon='form-textbox' value={formData.parentalAddress} onChangeText={(txt: any) => handleFormChange("parentalAddress", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
@@ -183,12 +214,12 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
 
                     <Divider />
 
-                    <InputPaper label="Total Land (In Kathas)*" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
+                    <InputPaper label="Total Land (In Kathas)" maxLength={10} leftIcon='fence-electric' keyboardType="numeric" value={formData.totalLand} onChangeText={(txt: any) => handleFormChange("totalLand", txt)} customStyle={{
                         backgroundColor: theme.colors.background,
                     }} disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)} />
 
                     <RadioComp
-                        title="Politically Active?*"
+                        title="Politically Active?"
                         icon="police-badge-outline"
                         dataArray={[
                             {
@@ -207,7 +238,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Own a TV?*"
+                        title="Own a TV?"
                         icon="television-classic"
                         dataArray={[
                             {
@@ -226,7 +257,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Own a Bike?*"
+                        title="Own a Bike?"
                         icon="motorbike"
                         dataArray={[
                             {
@@ -245,7 +276,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Own a Fridge?*"
+                        title="Own a Fridge?"
                         icon="fridge-bottom"
                         dataArray={[
                             {
@@ -264,7 +295,7 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
                     <RadioComp
-                        title="Washing Machine?*"
+                        title="Washing Machine?"
                         icon="washing-machine"
                         dataArray={[
                             {
@@ -283,13 +314,38 @@ const BMHouseholdDetailsForm = ({ formNumber, branchCode, flag = "BM", approvalS
                         disabled={disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
                     />
 
-                    <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                    {/* <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
                         Alert.alert("Update Household Details", "Are you sure you want to update this?", [
                             { text: "No", onPress: () => null },
                             { text: "Yes", onPress: () => handleFormUpdate() },
                         ])
-                    }} disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.houseType || !formData.checkOwnOrRent || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
-                        loading={loading}>UPDATE</ButtonPaper>
+                    }} 
+                    // disabled={loading || !formData.noOfRooms || !formData.parentalAddress || !formData.houseType || !formData.checkOwnOrRent || !formData.politicallyActive || !formData.tvAvailable || !formData.fridgeAvailable || !formData.bikeAvailable || !formData.washingMachineAvailable || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
+                    disabled={loading || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
+                    loading={loading}>UPDATE</ButtonPaper> */}
+                </View>
+
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    paddingTop: 10,
+                    paddingBottom: 10
+                }}>
+                    {/* <ButtonPaper mode='text' icon="cloud-upload-outline" onPress={() => {
+                        Alert.alert("Update Family Members Details", "Are you sure you want to update this?", [
+                            { text: "No", onPress: () => null },
+                            { text: "Yes", onPress: () => handleFormUpdate() },
+                        ])
+                    }} disabled={loading || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag)}
+                        loading={loading}>UPDATE</ButtonPaper> */}
+
+                    <ButtonPaper mode='contained-tonal' icon="send-circle-outline" onPress={() => {
+                        Alert.alert("Final Submit", "Are you sure you want to finalize the whole form and send to MIS Assistant? Make sure you updated all the details properly. The action is not revertable.", [
+                            { text: "No", onPress: () => null },
+                            { text: "Yes", onPress: () => handleFinalSubmit() },
+                        ])
+                    }} disabled={loading || disableConditionExceptBasicDetails(approvalStatus, branchCode, flag) || !formData.parentalAddress || !formData.houseType || !formData.checkOwnOrRent}
+                        loading={loading}>SEND</ButtonPaper>
                 </View>
             </ScrollView>
             {loading && <LoadingOverlay />}

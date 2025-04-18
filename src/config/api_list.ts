@@ -1,6 +1,7 @@
 import { BASE_URL } from "./config"
 
 export const ADDRESSES = {
+    FETCH_APP_VERSION: `${BASE_URL}/fetch_app_version`,
     LOGIN: `${BASE_URL}/login_app`,
     // UPDATE_LOGIN_FLAG: `${BASE_URL}/api/update_login_status`,
     // RECEIPT_SETTINGS: `${BASE_URL}/api/receipt_settings`,
@@ -43,10 +44,11 @@ export const ADDRESSES = {
     GROUPWISERECOVERYREPORT: `${BASE_URL}/group_wise_recov_app`,
     LOAN_RECOVERY_EMI: `${BASE_URL}/recovery_transaction`,
     BM_SEARCH_PENDING_FORM: `${BASE_URL}/bm_search_pending_form`,
-
+    FETCH_EMP_LOGGED_DTLS: `${BASE_URL}/fetch_emp_logged_dtls`,
     VIEW_LOAN_TNX: `${BASE_URL}/view_transaction`,
     DELETE_TNX: `${BASE_URL}/remove_trans`,
     GET_BANKS: `${BASE_URL}/get_bank`,
+    VERIFY_RECOVERY: `${BASE_URL}/verify_recovery`,
 
     CLOCK_IN: `${BASE_URL}/save_in_attendance`,
     CLOCK_OUT: `${BASE_URL}/save_out_attendance`,

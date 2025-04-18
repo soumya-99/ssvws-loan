@@ -1,6 +1,6 @@
 import { StyleSheet, SafeAreaView, View, ScrollView, RefreshControl, ToastAndroid, Alert, Linking, BackHandler } from 'react-native'
 import { Icon, IconButton, MD2Colors, Text } from "react-native-paper"
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import RNRestart from 'react-native-restart'
 import { usePaperColorScheme } from '../theme/theme'
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
@@ -18,14 +18,20 @@ import AnimatedFABPaper from "../components/AnimatedFABPaper"
 import navigationRoutes from '../routes/routes'
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import SlideButton from 'rn-slide-button'
+// import SlideButton from 'rn-slide-button'
 import ButtonPaper from '../components/ButtonPaper'
 import useGeoLocation from '../hooks/useGeoLocation'
+import DeviceInfo from 'react-native-device-info'
+import { AppStore } from '../context/AppContext'
 
 const HomeScreen = () => {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
     const isFocused = useIsFocused()
+    // const appVersion = DeviceInfo.getVersion()
+    const {
+        fetchCurrentVersion,
+    } = useContext<any>(AppStore)
     const loginStore = JSON.parse(loginStorage?.getString("login-data") ?? "")
 
     // const [isLocationMocked, setIsLocationMocked] = useState(() => false)
@@ -53,6 +59,10 @@ const HomeScreen = () => {
     const [clockedInDateTime, setClockedInDateTime] = useState(() => "")
     const [clockedInFetchedAddress, setClockedInFetchedAddress] = useState(() => "")
     const [clockInStatus, setClockInStatus] = useState<string>(() => "")
+
+    useEffect(() => {
+        fetchCurrentVersion()
+    }, [navigation])
 
     // const onScroll = ({ nativeEvent }) => {
     //     const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0
@@ -92,10 +102,14 @@ const HomeScreen = () => {
 
     const fetchGeoLocaltionAddress = async () => {
         console.log("REVERSE GEO ENCODING API CALLING...")
-        await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+        await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyDdA5VPRPZXt3IiE3zP15pet1Nn200CRzg`).then(res => {
             console.log("REVERSE GEO ENCODING RES =============", res?.data?.results[0])
             setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
         })
+        // await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}&key=AIzaSyAhSuw5-ThQnJTZCGC4e_oBsL1iIUbJxts`).then(res => {
+        //     console.log("REVERSE GEO ENCODING RES =============", res?.data?.results[0])
+        //     setGeolocationFetchedAddress(res?.data?.results[0]?.formatted_address)
+        // })
     }
 
     useEffect(() => {
@@ -126,20 +140,35 @@ const HomeScreen = () => {
 
     const handleClockIn = async () => {
         console.log(`KLIKKK ${formattedDateTime(currentTime)}`)
-        const creds = {
+        const check = {
             emp_id: loginStore?.emp_id,
-            in_date_time: formattedDateTime(currentTime),
-            in_lat: location?.latitude,
-            in_long: location?.longitude,
-            in_addr: geolocationFetchedAddress,
-            created_by: loginStore?.emp_id
+
         }
-        await axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
-            console.log("CLOCK IN RES", res?.data)
-            setIsClockedIn(!isClockedIn)
-        }).catch(err => {
-            console.log("CLOCK IN ERR", err)
-        })
+        await axios.post(`${ADDRESSES.FETCH_EMP_LOGGED_DTLS}`, check).then(res_dtls => {
+            console.log("CLOCK IN DTLS", res_dtls?.data)
+            if (res_dtls?.data?.fetch_emp_logged_dt?.msg[0]?.clock_status !== "O") {
+                const creds = {
+                    emp_id: loginStore?.emp_id,
+                    in_date_time: formattedDateTime(currentTime),
+                    in_lat: location?.latitude,
+                    in_long: location?.longitude,
+                    in_addr: geolocationFetchedAddress,
+                    created_by: loginStore?.emp_id
+                }
+                axios.post(`${ADDRESSES.CLOCK_IN}`, creds).then(res => {
+                    console.log("CLOCK IN RES", res?.data)
+                    setIsClockedIn(!isClockedIn)
+                }).catch(err => {
+                    console.log("CLOCK IN ERR", err)
+                })
+            }
+            else {
+                Alert.alert("Clock In", `${res_dtls?.data?.msg}`, [
+                    { "text": "OK", "onPress": () => console.log("Cancel Pressed"), "style": "cancel" }
+                ])
+            }
+        }).catch(err => { console.log("CLOCK IN ERR", err) })
+
     }
 
     const handleClockOut = async () => {
@@ -330,7 +359,7 @@ const HomeScreen = () => {
                 }
             // onScroll={onScroll}
             >
-                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Credit Officer" : loginStore?.id === 2 ? "Branch Manager" : loginStore?.id === 3 ? "MIS Assistant" : "Administrator"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
+                <HeadingComp title={`Hi, ${(loginStore?.emp_name as string)?.split(" ")[0]}`} subtitle={`Welcome back, ${loginStore?.id === 1 ? "Branch User" : loginStore?.id === 2 ? "Branch Admin" : loginStore?.id === 3 ? "MIS Assistant" : "Administrator"}!`} background={MD2Colors.blue100} footerText={`Branch • ${loginStore?.branch_name}`} />
                 <View style={{
                     // paddingHorizontal: 20,
                     // paddingBottom: 120,

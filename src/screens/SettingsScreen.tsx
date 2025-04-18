@@ -8,19 +8,21 @@ import { usePaperColorScheme } from '../theme/theme'
 import { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
 
-import ThermalPrinterModule from 'react-native-thermal-printer'
-import LoadingOverlay from '../components/LoadingOverlay'
+// import ThermalPrinterModule from 'react-native-thermal-printer'
+// import LoadingOverlay from '../components/LoadingOverlay'
 // import CollectionButtonsWrapper from '../components/CollectionButtonsWrapper'
 // import CollectionButton from '../components/CollectionButton'
 //@ts-ignore
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
+// import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
+import CollectionButtonsWrapper from '../components/CollectionButtonsWrapper'
+import CollectionButton from '../components/CollectionButton'
 
 const SettingsScreen = () => {
   const theme = usePaperColorScheme()
   const navigation = useNavigation()
   const { handleLogout } = useContext<any>(AppStore)
 
-  const [loading, setLoading] = useState(() => false)
+  // const [loading, setLoading] = useState(() => false)
 
   const logginOut = () => {
     Alert.alert("Logging out", "Are you sure you want to log out?", [{
@@ -81,28 +83,28 @@ const SettingsScreen = () => {
     requestPermissions()
   }, [])
 
-  const testPrint = async () => {
-    console.log("Called Printer...")
-    setLoading(true)
-    const text =
-      '[L]BEAUTIFUL SHIRT[R]9.99e\n' +
-      // `[C]<img>file:///android_asset/msg.png</img>\n`+
-      '[L]Some text goes here...===';
-    await ThermalPrinterModule.printBluetooth({
-      payload: text,
-      printerNbrCharactersPerLine: 32,
-      printerDpi: 120,
-      printerWidthMM: 58,
-      mmFeedPaper: 25,
-    }).then(res => {
-      console.log("RES", res)
-    }).catch(err => {
-      console.log("ERR", err)
-    })
+  // const testPrint = async () => {
+  //   console.log("Called Printer...")
+  //   setLoading(true)
+  //   const text =
+  //     '[L]BEAUTIFUL SHIRT[R]9.99e\n' +
+  //     // `[C]<img>file:///android_asset/msg.png</img>\n`+
+  //     '[L]Some text goes here...===';
+  //   await ThermalPrinterModule.printBluetooth({
+  //     payload: text,
+  //     printerNbrCharactersPerLine: 32,
+  //     printerDpi: 120,
+  //     printerWidthMM: 58,
+  //     mmFeedPaper: 25,
+  //   }).then(res => {
+  //     console.log("RES", res)
+  //   }).catch(err => {
+  //     console.log("ERR", err)
+  //   })
 
-    console.log("Called Printer...2")
-    setLoading(false)
-  }
+  //   console.log("Called Printer...2")
+  //   setLoading(false)
+  // }
 
   return (
     <SafeAreaView>
@@ -110,38 +112,37 @@ const SettingsScreen = () => {
         backgroundColor: theme.colors.background
       }}>
         <HeadingComp title="Settings" subtitle="Manage Settings" />
-        <View style={{
+        {/* <View style={{
           paddingHorizontal: 20,
           minHeight: SCREEN_HEIGHT,
           height: "auto"
         }}>
-          <ButtonPaper mode='contained' icon="logout" onPress={logginOut}>LOG OUT</ButtonPaper>
           <ButtonPaper mode='elevated' icon="cloud-print-outline" onPress={testPrint} style={{ marginTop: 50 }} disabled={loading} loading={loading}>Test Print</ButtonPaper>
+        </View> */}
+
+
+
+        <View style={{
+          minHeight: SCREEN_HEIGHT,
+          height: "auto",
+          paddingHorizontal: 20,
+          gap: 10
+        }}>
+          <ButtonPaper mode='contained' icon="logout" onPress={logginOut}>LOG OUT</ButtonPaper>
+          <CollectionButtonsWrapper>
+            <CollectionButton
+              icon={"printer-outline"}
+              text="Printer Connect"
+              color={theme.colors.secondaryContainer}
+              textColor={theme.colors.onSecondaryContainer}
+              onPress={() => {
+                navigation.dispatch(CommonActions.navigate({
+                  name: navigationRoutes.printerConnectScreen
+                }))
+              }}
+            />
+          </CollectionButtonsWrapper>
         </View>
-
-
-
-        {/* <View style={{
-                    minHeight: SCREEN_HEIGHT,
-                    height: "auto",
-                    paddingHorizontal: 20,
-                    paddingTop: 10,
-                    gap: 10
-                }}>
-                    <CollectionButtonsWrapper>
-                        <CollectionButton
-                            icon={"printer-outline"}
-                            text="Printer Connect"
-                            color={theme.colors.secondaryContainer}
-                            textColor={theme.colors.onSecondaryContainer}
-                            onPress={() => {
-                                navigation.dispatch(CommonActions.navigate({
-                                    name: navigationRoutes.printerConnectScreen
-                                }))
-                            }}
-                        />
-                    </CollectionButtonsWrapper>
-                </View> */}
 
 
 

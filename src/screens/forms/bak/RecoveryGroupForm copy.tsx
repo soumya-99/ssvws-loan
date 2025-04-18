@@ -1,5 +1,5 @@
 import { Alert, Linking, PermissionsAndroid, Platform, SafeAreaView, ScrollView, StyleSheet, ToastAndroid, View } from 'react-native'
-import { Checkbox, Text } from "react-native-paper"
+import { Checkbox, Chip, Icon, Text, TextInput } from "react-native-paper"
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../../theme/theme'
 import { Divider, List } from 'react-native-paper'
@@ -15,7 +15,11 @@ import useGeoLocation from '../../hooks/useGeoLocation'
 import RadioComp from '../../components/RadioComp'
 import DatePicker from 'react-native-date-picker'
 import { formattedDate } from '../../utils/dateFormatter'
-import { useEscPosPrint } from "../../hooks/useEscPosPrint"
+// import LoadingOverlay from '../components/LoadingOverlay'
+import ThermalPrinterModule from 'react-native-thermal-printer'
+// import PRNTMSG from '../../../assets/msg.png'
+import { CONSTANTS } from "../../utils/constants"
+import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 
 const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const theme = usePaperColorScheme()
@@ -26,7 +30,6 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
     const { location, error } = useGeoLocation()
     const [geolocationFetchedAddress, setGeolocationFetchedAddress] = useState(() => "")
-    const { handlePrint } = useEscPosPrint()
 
     console.log("LOGIN DATAAA =============", loginStore)
     console.log("4444444444444444444ffffffffffffffff", fetchedData)
@@ -85,6 +88,8 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             [field]: value,
         }))
     }
+
+
 
     useEffect(() => {
         if (error) {
@@ -175,8 +180,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
 
     const currentPrincipalCalculate = (creditAmt: number) => {
         let roi = +fetchedData?.memb_dtls[0]?.curr_roi;
-        // let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
-        let currentPrincipal = ((creditAmt / ((roi * +fetchedData?.memb_dtls[0]?.factor) + 100)) * 100);
+        let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
         // return currentPrincipal?.toFixed(2)
         return Math.round(currentPrincipal)
     }
@@ -184,8 +188,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     const currentInterestCalculate = (creditAmt: number) => {
         let roi = +fetchedData?.memb_dtls[0]?.curr_roi;
 
-        // let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
-        let currentPrincipal = ((creditAmt / ((roi * +fetchedData?.memb_dtls[0]?.factor) + 100)) * 100);
+        let currentPrincipal = ((creditAmt / (roi + 100)) * 100);
         let currentInterest = creditAmt - currentPrincipal;
 
         // return currentInterest?.toFixed(2)
@@ -244,17 +247,66 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
     // const [totalEMI, setTotalEMI] = useState(() => "")
 
     const handleEMIChange = (txt: string, i: any) => {
+        // if (!txt) {
+        //     memberDetailsArray?.forEach((item, i) => {
+        //         console.log("UUUUUUU", item?.credit)
+        //         return(
+        //         handleEMIChange(item?.credit, i)
+        //     )
+        // })
+        // }
+
         console.log(memberDetailsArray.map(e => e.instl_paid), txt, "member details")
+        // setMemberDetailsArray(prevArray =>
+        //     prevArray.map((member, index) =>
+        //         index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid: countNoOfInstallments(+txt,index) } : member
+        //     )
+        // )
+
+
         console.log("TTTTTXXXXXXXTTTTTTTTT", txt)
         console.log("TTTTTXXXXXXXTTTTTTTTT IIIIIIIIIIII", currentInterestCalculate(+txt))
         console.log("TTTTTXXXXXXXTTTTTTTTT PPPPPPPPPPPP", currentPrincipalCalculate(+txt))
-
         setMemberDetailsArray(prevArray =>
             prevArray.map((member, index) =>
                 index === i ? { ...member, credit: txt, intt_emi: currentInterestCalculate(+txt), prn_emi: currentPrincipalCalculate(+txt), instl_paid: 0 } : member
             )
         )
     }
+
+    // useEffect(() => {
+    //     if (!initialized) {
+    //         memberDetailsArray.forEach((item, i) => {
+    //             handleEMIChange(item?.credit, i);
+    //         });
+    //         setInitialized(true);
+    //     }
+    // }, [initialized, memberDetailsArray]);
+
+    // const remainingLoanCalculation = (creditAmt: number) => {
+    //     let remainingInterest = +fetchedData?.intt_amt;
+    //     let remainingPrinciple = +fetchedData?.prn_amt;
+    //     let roi = +fetchedData?.curr_roi;
+    //     let updatedInterest: number;
+    //     let updatedPrinciple: number;
+    //     let updatedTotalAmount: number;
+
+    //     let currentPrinciple = ((creditAmt / (roi + 100)) * 100);
+    //     let currentInterest = creditAmt - currentPrinciple;
+
+    //     updatedInterest = Math.round(remainingInterest - currentInterest);
+    //     updatedPrinciple = Math.round(remainingPrinciple - currentPrinciple);
+
+    //     updatedTotalAmount = updatedInterest + updatedPrinciple;
+
+    //     // Update state with calculated values
+    //     setCurrentCreditAmtPrinciple(currentPrinciple.toString());
+    //     setCurrentCreditAmtInterest(currentInterest.toString());
+
+    //     // setRemainingTotalPrinciple(updatedPrinciple.toString());
+    //     // setRemainingTotalInterest(updatedInterest.toString());
+    //     // setRemainingTotalAmount(updatedTotalAmount.toString());
+    // };
 
     const fetchBanks = async () => {
         setBanks([]);
@@ -322,7 +374,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         }
 
         console.log("PAYLOAD---RECOVERY", creds)
-        await axios.post(ADDRESSES.LOAN_RECOVERY_EMI, creds).then(async res => {
+        await axios.post(ADDRESSES.LOAN_RECOVERY_EMI, creds).then(res => {
             console.log("RESSSSS", res?.data)
             if (res?.data?.suc === 0) {
                 Alert.alert("Alert", res?.data?.msg, [
@@ -335,8 +387,13 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             ToastAndroid.show("Loan recovery EMI installment done.", ToastAndroid.SHORT)
             console.log("Loan recovery EMI installment done.", res?.data)
 
-            await handlePrint(res?.data?.msg)
+            // navigation.goBack()
+            // recoveryResponse = res?.data?.msg[0] as any
 
+
+            handlePrint(res?.data?.msg)
+            // setRemainingTotalOutstandingRes(res?.data?.msg[0]?.outstanding)
+            // setCreditAmount(() => "")
             navigation.goBack()
         }).catch(err => {
             ToastAndroid.show("Some error occurred while submitting EMI.", ToastAndroid.SHORT)
@@ -347,6 +404,369 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
         console.log("JJJJJJJJJJJJJJJJJJJJ", transformedObj)
         setLoading(false)
     }
+
+    const handlePrint = async (data: any) => {
+        // let tot_amt = 0
+        // console.log('dataaaaaaaaaaaaaa', data)
+        // console.log("Called Printer...")
+        // setLoading(true)
+        // let text =
+        //     `[C]SSVWS\n` +
+        //     `[C]RECEIPT\n` +
+        //     `[C]${data[0]?.branch_name}\n` +
+        //     `[C]=====================\n` +
+        //     // `[L]TXN. ID[C]:[R]${data?.tnx_id}\n` +
+        //     `[L]DATE[C]:[R]${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}\n` +
+        //     // `[L]RCPT DATE[C]:[R]${new Date().toLocaleDateString("en-GB")}\n` +
+        //     `[L]TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
+        //     `[L]GROUP[C]:[R]${(data[0]?.group_name as string)?.slice(0, 10)}\n` +
+        //     `[L]CODE[C]:[R]${data[0]?.group_code}\n` +
+        //     `[L]MODE[C]:[R]${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}\n`;
+        // if (data[0]?.tr_mode == 'B')
+        //     text +=
+        //         `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
+
+        //         // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
+        //         // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
+        //         // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
+        //         // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
+        //         // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
+        //         // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
+        //         // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
+        //         `[C]**************X*************\n` +
+
+        //         `[L]MEMBER[C]:[R]AMOUNT\n`;
+
+        // for (const item of data) {
+        //     tot_amt += item.credit
+        //     text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
+        // }
+        // text +=
+        //     `[L]TOTAL[C]:[R]${tot_amt}\n` +
+        //     `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
+        //     `[L]COLLECTOR[C]:[R]${data[0]?.collec_name}\n` +
+        //     `[L]CODE[C]:[R]${data[0]?.collec_code}\n` +
+        //     `[C]================================\n` +
+        //     `[C]HELPLINE: ${CONSTANTS.helplineNumeber}\n` +
+        //     // `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
+        //     `[C]================X===============\n` +
+        //     `[C]                                \n`;
+        // // `[L]BRANCH[C]:[R]\n` +
+        // await ThermalPrinterModule.printBluetooth({
+        //     payload: text,
+        //     printerNbrCharactersPerLine: 32,
+        //     // printerNbrCharactersPerLine: ,
+        //     printerDpi: 120,
+        //     printerWidthMM: 58,
+        //     mmFeedPaper: 25,
+        // }).then(res => {
+        //     console.log("RES", res)
+        // }).catch(err => {
+        //     console.log("ERR", err)
+        // })
+
+        // console.log("Called Printer...2")
+        // setLoading(false)
+
+
+
+
+
+        ////////////////////////////////////////////
+        ////////////////////////////////////////////
+        ////////////////////////////////////////////
+
+        // 12 1 19
+
+
+        try {
+            let tot_amt = 0
+            console.log('dataaaaaaaaaaaaaa', data)
+            console.log("Called Printer...")
+            setLoading(true)
+
+            let columnSingleRow = [32]
+            let columnWidths = [12, 1, 19]
+
+            // await BluetoothEscposPrinter.printText(
+            //     "SSVWS\r\n",
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`SSVWS`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`RECEIPT`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     "RECEIPT\r\n",
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`${data[0]?.branch_name}`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `${data[0]?.branch_name}\r\n`,
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`======================`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `======================\r\n`,
+            //     { align: "center" },
+            // )
+
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['DATE', ":", `${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['TIME', ":", `${new Date().toLocaleTimeString("en-GB")}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['GROUP', ":", `${(data[0]?.group_name as string)?.slice(0, 10)}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['CODE', ":", `${data[0]?.group_code}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['MODE', ":", `${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}`],
+                {},
+            );
+
+            if (data[0]?.tr_mode == 'B') {
+                await BluetoothEscposPrinter.printColumn(
+                    columnWidths,
+                    [
+                        BluetoothEscposPrinter.ALIGN.LEFT,
+                        BluetoothEscposPrinter.ALIGN.CENTER,
+                        BluetoothEscposPrinter.ALIGN.RIGHT,
+                    ],
+                    ['ID', ":", `${data[0]?.cheque_id?.slice(-6)}`],
+                    {},
+                );
+                await BluetoothEscposPrinter.printText(
+                    `**************X*************\r\n`,
+                    { align: "center" },
+                );
+                await BluetoothEscposPrinter.printColumn(
+                    columnWidths,
+                    [
+                        BluetoothEscposPrinter.ALIGN.LEFT,
+                        BluetoothEscposPrinter.ALIGN.CENTER,
+                        BluetoothEscposPrinter.ALIGN.RIGHT,
+                    ],
+                    ['MEMBER', ":", `AMOUNT`],
+                    {},
+                );
+            }
+
+            for (const item of data) {
+                console.log("===========++++++++++++++++>>>>>>>>>>>", data)
+                tot_amt += item.credit
+                await BluetoothEscposPrinter.printColumn(
+                    columnWidths,
+                    [
+                        BluetoothEscposPrinter.ALIGN.LEFT,
+                        BluetoothEscposPrinter.ALIGN.CENTER,
+                        BluetoothEscposPrinter.ALIGN.RIGHT,
+                    ],
+                    [`${item?.client_name?.slice(0, 10)}`, ":", `${+item?.credit}`],
+                    {},
+                );
+            }
+
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['TOTAL', ":", `${tot_amt}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['OUTSTANDING', ":", `${data[0]?.outstanding}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['COLLECTOR', ":", `${data[0]?.collec_name}`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['CODE', ":", `${data[0]?.collec_code}`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `======================\r\n`,
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`======================`],
+                {},
+            );
+            await BluetoothEscposPrinter.printColumn(
+                columnWidths,
+                [
+                    BluetoothEscposPrinter.ALIGN.LEFT,
+                    BluetoothEscposPrinter.ALIGN.CENTER,
+                    BluetoothEscposPrinter.ALIGN.RIGHT,
+                ],
+                ['HELPLINE', ":", `${CONSTANTS.helplineNumeber}`],
+                {},
+            );
+            // await BluetoothEscposPrinter.printText(
+            //     `===========X==========\r\n\r\n\r\n`,
+            //     { align: "center" },
+            // )
+            await BluetoothEscposPrinter.printColumn(
+                columnSingleRow,
+                [BluetoothEscposPrinter.ALIGN.CENTER],
+                [`===========X==========`],
+                {},
+            );
+            await BluetoothEscposPrinter.printText(
+                `\r\n\r\n`,
+                { align: "center" },
+            )
+
+            console.log("Called Printer...2")
+            setLoading(false)
+        } catch (e) {
+            console.log(e.message || "ERROR")
+        }
+    }
+
+    // const handlePrint = async (data: any) => {
+    //     let tot_amt = 0
+    //     console.log('dataaaaaaaaaaaaaa', data)
+    //     console.log("Called Printer...")
+    //     setLoading(true)
+    //     let text =
+    //         `[C]SSVWS\n` +
+    //         `[C]RECEIPT\n` +
+    //         `[C]${data[0]?.branch_name}\n` +
+    //         `[C]=====================\n` +
+    //         // `[L]TXN. ID[C]:[R]${data?.tnx_id}\n` +
+    //         `[L]DATE[C]:[R]${new Date(data[0]?.tnx_date).toLocaleDateString("en-GB")}\n` +
+    //         // `[L]RCPT DATE[C]:[R]${new Date().toLocaleDateString("en-GB")}\n` +
+    //         `[L]TIME[C]:[R]${new Date().toLocaleTimeString("en-GB")}\n` +
+    //         `[L]GROUP[C]:[R]${(data[0]?.group_name as string)?.slice(0, 10)}\n` +
+    //         `[L]CODE[C]:[R]${data[0]?.group_code}\n` +
+    //         `[L]MODE[C]:[R]${data[0]?.tr_mode == 'B' ? 'UPI' : 'CASH'}\n`;
+    //     if (data[0]?.tr_mode == 'B')
+    //         text +=
+    //             `[L]ID[C]:[R]${data[0]?.cheque_id?.slice(-6)}\n` +
+
+    //             // `[L]LOAN ID[C]:[R]${data?.loan_id}\n` +
+    //             // `[L]MEM. CODE[C]:[R]${data?.member_code}\n` +
+    //             // `[L]MEM. NAME[C]:[R]${(data?.client_name as string)?.slice(0, 10)}\n` +
+    //             // `[L]PREV. BAL[C]:[R]${data?.prev_balance}\n` +
+    //             // `[L]DEPOSIT[C]:[R]${data?.credit}\n` +
+    //             // `[L]CURR. BAL[C]:[R]${data?.curr_balance}\n` +
+    //             // `বিঃ দ্রঃ - দোয়া করে এই রশিদটির একটি ফটোকপি রাখবেন। `+
+    //             `[C]**************X*************\n` +
+
+    //             `[L]MEMBER[C]:[R]AMOUNT\n`;
+
+    //     for (const item of data) {
+    //         tot_amt += item.credit
+    //         text += `[L]${item?.client_name?.slice(0, 10)}[C]:[R]${+item?.credit}\n`
+    //     }
+    //     text +=
+    //         `[L]TOTAL[C]:[R]${tot_amt}\n` +
+    //         `[L]OUTSTANDING[C]:[R]${data[0]?.outstanding}\n` +
+    //         `[L]COLLECTOR[C]:[R]${data[0]?.collec_name}\n` +
+    //         `[L]CODE[C]:[R]${data[0]?.collec_code}\n` +
+    //         `[C]================================\n` +
+    //         `[C]HELPLINE: ${CONSTANTS.helplineNumeber}\n` +
+    //         // `[C]\n<img>file:///android_asset/msg.png</img>\n\n`+
+    //         `[C]================X===============\n` +
+    //         `[C]                                \n`;
+    //     // `[L]BRANCH[C]:[R]\n` +
+    //     await ThermalPrinterModule.printBluetooth({
+    //         payload: text,
+    //         printerNbrCharactersPerLine: 32,
+    //         // printerNbrCharactersPerLine: ,
+    //         printerDpi: 120,
+    //         printerWidthMM: 58,
+    //         mmFeedPaper: 25,
+    //     }).then(res => {
+    //         console.log("RES", res)
+    //     }).catch(err => {
+    //         console.log("ERR", err)
+    //     })
+
+    //     console.log("Called Printer...2")
+    //     setLoading(false)
+    // }
 
     const inputDisableLogic = () => {
         return approvalStatus === "U"

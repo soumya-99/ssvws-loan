@@ -28,6 +28,7 @@ const SearchLoanRecoveryScreen = () => {
     const [demand_click, setDemandClick] = useState(() => false)
     const [formsData, setFormsData] = useState<any[]>(() => [])
     const [group_code, setGroupCode] = useState([])
+    const [alreadyRecovered, setAlreadyRecovered] = useState(() => false)
 
     // const [isApproved, setIsApproved] = useState<string>(() => "U")
 
@@ -45,7 +46,8 @@ const SearchLoanRecoveryScreen = () => {
         setDemandClick(false)
         const creds = {
             grp_dtls: src,
-            get_date: new Date()
+            get_date: new Date(),
+            branch_code: loginStore?.brn_code
         }
 
         await axios.post(`${ADDRESSES.SEARCH_GROUP_RECOVERY}`, creds).then(res => {
@@ -58,6 +60,7 @@ const SearchLoanRecoveryScreen = () => {
         })
         setLoading(false)
     }
+    
     const getDemandReportData = () => {
         console.log("hello")
         setLoading(true)
@@ -100,6 +103,22 @@ const SearchLoanRecoveryScreen = () => {
             // setDemandClick(false)
         }).catch(err => console.log('error', err))
     }
+
+    // const verifyRecovery = async (grpCode: string) => {
+    //     await axios.post(ADDRESSES.VERIFY_RECOVERY, {
+    //         "group_code": grpCode
+    //     }).then(res => {
+    //         console.log("VERIFY_RECOV", res?.data)
+    //         if (res?.data?.suc === 1) {
+    //             setAlreadyRecovered(true)
+    //         } else {
+    //             setAlreadyRecovered(false)
+    //         }
+    //     }).catch(err => {
+    //         console.log("VERIFY_RECOV ERRRRRRRR", err)
+    //     })
+    // }
+
     return (
         <SafeAreaView>
             <ScrollView style={{
@@ -226,18 +245,41 @@ const SearchLoanRecoveryScreen = () => {
                                         }}>Interest Amount - {item?.total_intt_amt}{item?.total_intt_amt && "/-"}</Text> */}
                                     </View>
                                 }
-                                onPress={() => {
+                                onPress={async () => {
                                     if (item?.memb_dtls?.length === 0) {
                                         Alert.alert("Alert", "No members with ongoing outstanding found.")
                                         return
                                     }
-                                    navigation.dispatch(CommonActions.navigate({
-                                        name: navigationRoutes.recoveryGroupScreen,
-                                        params: {
-                                            group_details: item,
-                                            // approvalFlag: isApproved
+
+                                    await axios.post(ADDRESSES.VERIFY_RECOVERY, {
+                                        "group_code": item?.group_code
+                                    }).then(res => {
+                                        console.log("VERIFY_RECOV", res?.data)
+                                        if (res?.data?.suc === 1) {
+                                            Alert.alert("Alert", "Recovery already done today. Do you want to recover again?", [
+                                                {
+                                                    text: "YES", onPress: () => navigation.dispatch(CommonActions.navigate({
+                                                        name: navigationRoutes.recoveryGroupScreen,
+                                                        params: {
+                                                            group_details: item,
+                                                            // approvalFlag: isApproved
+                                                        }
+                                                    }))
+                                                },
+                                                { text: "NO", onPress: () => null },
+                                            ])
+                                        } else {
+                                            navigation.dispatch(CommonActions.navigate({
+                                                name: navigationRoutes.recoveryGroupScreen,
+                                                params: {
+                                                    group_details: item,
+                                                    // approvalFlag: isApproved
+                                                }
+                                            }))
                                         }
-                                    }))
+                                    }).catch(err => {
+                                        console.log("VERIFY_RECOV ERRRRRRRR", err)
+                                    })
                                 }}
                                 left={props => <List.Icon {...props} icon="form-select" />}
                                 // console.log("------XXX", item?.branch_code, item?.form_no, item?.member_code)

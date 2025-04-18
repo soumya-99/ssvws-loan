@@ -102,6 +102,7 @@ export const usePaperColorScheme = () => {
                 "backdrop": "rgba(55, 47, 36, 0.4)",
 
                 "green": "rgb(156, 216, 73)",
+                "red": "rgb(216, 83, 73)",
                 "onGreen": "rgb(32, 54, 0)",
                 "greenContainer": "rgb(49, 79, 0)",
                 "onGreenContainer": "rgb(183, 245, 99)"
@@ -154,6 +155,7 @@ export const usePaperColorScheme = () => {
                 "backdrop": "rgba(55, 47, 36, 0.4)",
 
                 "green": "rgb(66, 105, 0)",
+                "red": "rgb(216, 68, 9)",
                 "onGreen": "rgb(255, 255, 255)",
                 "greenContainer": "rgb(183, 245, 99)",
                 "onGreenContainer": "rgb(17, 32, 0)"

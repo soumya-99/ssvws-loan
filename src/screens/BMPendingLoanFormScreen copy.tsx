@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, ScrollView, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import StepIndicator from 'react-native-step-indicator'
 import HeadingComp from '../components/HeadingComp'
@@ -11,11 +11,11 @@ import BMHouseholdDetailsForm from "./forms/BMHouseholdDetailsForm"
 import BMFamilyMemberDetailsForm from "./forms/BMFamilyMemberDetailsForm"
 import { useRoute } from '@react-navigation/native'
 
-const MemberDetailsAllFormScreen = () => {
+const BMPendingLoanFormScreen = () => {
     const theme = usePaperColorScheme()
     const { params } = useRoute<any>()
 
-    console.log("WWWWWWWWWWWWWWWWWWWWWWW", params?.formNumber, params?.branchCode, params?.userFlag)
+    console.log("WWWWWWWWWWWWWWWWWWWWWWW", params?.formNumber, params?.branchCode)
 
     const [currentPosition, setCurrentPosition] = useState(() => 0)
 
@@ -46,6 +46,10 @@ const MemberDetailsAllFormScreen = () => {
         currentStepLabelColor: theme.colors.green,
     }
 
+    const handleNext = () => {
+        setCurrentPosition((prev) => prev + 1);
+    };
+
     return (
         <SafeAreaView>
             <ScrollView style={{
@@ -53,7 +57,7 @@ const MemberDetailsAllFormScreen = () => {
                 // minHeight: SCREEN_HEIGHT,
                 height: 'auto'
             }}>
-                <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber} / Branch - ${params?.branchCode}`} isBackEnabled />
+                <HeadingComp title="GRT Form" subtitle={`Form no. ${params?.formNumber}`} isBackEnabled />
                 <View style={{
                     paddingHorizontal: 20,
                     paddingTop: 10,
@@ -79,21 +83,22 @@ const MemberDetailsAllFormScreen = () => {
                                             ? <Icon size={20} source="home-city-outline" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
                                             // : position === 3
                                             //     ? <Icon size={20} source="human-male-female-child" color={stepStatus === "current" || stepStatus === "unfinished" ? theme.colors.green : theme.colors.greenContainer} />
-                                            : null
+                                                : null
                         }
                     />
 
-                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={"BM"} approvalStatus={params?.member_details?.approval_status} />}
-                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
-                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />}
-                    {/* {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} flag={params?.userFlag} approvalStatus={params?.member_details?.approval_status} />} */}
+                    {currentPosition === 0 && <BMBasicDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
+                    {currentPosition === 1 && <BMOccupationDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
+                    {currentPosition === 2 && <BMHouseholdDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} onSubmit={handleNext} />}
+                    {/* {currentPosition === 3 && <BMFamilyMemberDetailsForm formNumber={params?.formNumber} branchCode={params?.branchCode} />} */}
+
 
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-around"
                     }}>
                         <ButtonPaper mode='outlined' icon="arrow-left-thick" onPress={() => setCurrentPosition(prev => prev - 1)} disabled={currentPosition === 0}>PREVIOUS</ButtonPaper>
-                        <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={() => setCurrentPosition(prev => prev + 1)} disabled={currentPosition === 2}>NEXT</ButtonPaper>
+                        <ButtonPaper mode='text' icon="arrow-right-bold-outline" onPress={handleNext} disabled={currentPosition === 2}>NEXT</ButtonPaper>
                     </View>
                 </View>
             </ScrollView>
@@ -101,6 +106,6 @@ const MemberDetailsAllFormScreen = () => {
     )
 }
 
-export default MemberDetailsAllFormScreen
+export default BMPendingLoanFormScreen
 
 const styles = StyleSheet.create({})
