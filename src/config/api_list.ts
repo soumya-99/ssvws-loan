@@ -67,4 +67,6 @@ export const ADDRESSES = {
     ATTENDANCE_REPORT: `${BASE_URL}/attendance_report`,
     FETCH_EMP_ATTENDANCE_DETAILS: `${BASE_URL}/fetch_emp_atten_dtls`,
     CHECK_CAN_TXN: `${BASE_URL}/checking_date_before_transaction`,
+
+    DUPLICATE_PRINT: `${BASE_URL}/fetch_group_dtls_fr_duplicate_print`
 }

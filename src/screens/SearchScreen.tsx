@@ -72,6 +72,17 @@ const SearchScreen = () => {
                                 }))
                             }}
                         />
+                        <CollectionButton
+                            icon={"receipt"}
+                            text="Duplicate Receipt"
+                            color={theme.colors.tertiaryContainer}
+                            textColor={theme.colors.onTertiaryContainer}
+                            onPress={() => {
+                                navigation.dispatch(CommonActions.navigate({
+                                    name: navigationRoutes.duplicateReceiptScreen
+                                }))
+                            }}
+                        />
                     </CollectionButtonsWrapper>
                 </View>
             </ScrollView>

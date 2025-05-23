@@ -224,6 +224,7 @@ const HomeScreen = () => {
         // setLoading(true)
         const creds = {
             emp_id: loginStore?.emp_id,
+            branch_code: loginStore?.branch_code,
             datetime: formattedChoosenDate
         }
         await axios.post(`${ADDRESSES.DASHBOARD_DETAILS}`, creds).then(res => {

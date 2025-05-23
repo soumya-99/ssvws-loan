@@ -15,21 +15,21 @@ import {
   Text,
   TouchableRipple,
 } from 'react-native-paper';
-import React, {SetStateAction, useEffect, useState} from 'react';
-import {usePaperColorScheme} from '../../theme/theme';
+import React, { SetStateAction, useEffect, useState } from 'react';
+import { usePaperColorScheme } from '../../theme/theme';
 import HeadingComp from '../../components/HeadingComp';
-import normalize, {SCREEN_HEIGHT, SCREEN_WIDTH} from 'react-native-normalize';
-import {CommonActions, useNavigation} from '@react-navigation/native';
-import {loginStorage} from '../../storage/appStorage';
+import normalize, { SCREEN_HEIGHT, SCREEN_WIDTH } from 'react-native-normalize';
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { loginStorage } from '../../storage/appStorage';
 import ButtonPaper from '../../components/ButtonPaper';
 import SurfacePaper from '../../components/SurfacePaper';
 import DatePicker from 'react-native-date-picker';
-import {formattedDate} from '../../utils/dateFormatter';
+import { formattedDate } from '../../utils/dateFormatter';
 import axios from 'axios';
-import {ADDRESSES} from '../../config/api_list';
+import { ADDRESSES } from '../../config/api_list';
 import DialogBox from '../../components/DialogBox';
-import DateTimePicker from 'react-native-ui-datepicker';
-import dayjs, {Dayjs} from 'dayjs';
+import DateTimePicker, { useDefaultStyles } from 'react-native-ui-datepicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 const AttendanceReportScreen = () => {
   const theme = usePaperColorScheme();
@@ -52,6 +52,8 @@ const AttendanceReportScreen = () => {
 
   const [visible, setVisible] = React.useState(false);
   const hide = () => setVisible(false);
+
+  const defaultStyles = useDefaultStyles();
 
   const titleTextStyle: TextStyle = {
     color: theme.colors.onPrimaryContainer,
@@ -176,7 +178,24 @@ const AttendanceReportScreen = () => {
             {/* </View> */}
             <View>
               <DateTimePicker
-                selectedItemColor={theme.colors.primary}
+                // selectedItemColor={theme.colors.primary}
+                styles={{
+                  ...defaultStyles,
+                  selected: {
+                    backgroundColor: theme.colors.primary,
+                    color: theme.colors.onPrimary
+                  },
+                  header: {
+                    backgroundColor: theme.colors.tertiaryContainer,
+                    borderRadius: 10
+                  },
+                  button_next: {
+                    color: theme.colors.onPrimaryContainer
+                  },
+                  button_prev: {
+                    color: theme.colors.onPrimaryContainer
+                  }
+                }}
                 mode="single"
                 minDate={new Date().setMonth(new Date().getMonth() - 6)}
                 maxDate={new Date()}
@@ -547,7 +566,7 @@ const AttendanceReportScreen = () => {
         onSuccess={hide}>
         <View>
           {/* {detailedReportData?.map((item, index) => ( */}
-          {reportData.length==0 && <Text>No Data</Text>}
+          {reportData.length == 0 && <Text>No Data</Text>}
           {reportData?.map((item, index) => (
             <View
               key={index}
@@ -584,13 +603,13 @@ const AttendanceReportScreen = () => {
                         color: theme.colors.tertiary,
                         fontWeight: 'thin',
                       }}>
-                     {item?.clock_status=='O'? 'Out':'In'}
+                      {item?.clock_status == 'O' ? 'Out' : 'In'}
                     </Text>
                   ) : item?.late_in === 'L' ? (
                     <>
                       <Text
                         variant="bodySmall"
-                        style={{color: theme.colors.error, fontWeight: 'thin'}}>
+                        style={{ color: theme.colors.error, fontWeight: 'thin' }}>
                         Late In
                       </Text>
                       <Text
@@ -610,7 +629,7 @@ const AttendanceReportScreen = () => {
                   ) : (""
                   )}
 
-                  {item?.late_in === 'E' ?  (
+                  {item?.late_in === 'E' ? (
                     <>
                       {/* <Text
                         variant="bodySmall"
@@ -642,7 +661,7 @@ const AttendanceReportScreen = () => {
                         color={theme.colors.primary}
                       />
                     </>
-                  ):null}
+                  ) : null}
 
                   <Text
                     variant="bodySmall"
@@ -664,8 +683,8 @@ const AttendanceReportScreen = () => {
                     {item?.attan_status === 'A'
                       ? 'Approved'
                       : item?.attan_status === 'R'
-                      ? 'Rejected'
-                      : 'Error'}
+                        ? 'Rejected'
+                        : 'Error'}
                   </Text>
                 </View>
 
@@ -713,14 +732,14 @@ const AttendanceReportScreen = () => {
                             ? theme.colors.green
                             : theme.colors.error,
                       }}>
-                      {item?.out_date_time?new Date(item?.out_date_time)
+                      {item?.out_date_time ? new Date(item?.out_date_time)
                         ?.toLocaleTimeString('en-GB', {
                           hour: '2-digit',
                           minute: '2-digit',
                           hour12: true,
                         })
                         .replace('am', 'AM')
-                        .replace('pm', 'PM'):'Yet to clock out'}
+                        .replace('pm', 'PM') : 'Yet to clock out'}
                     </Text>
                   </View>
                 </View>
@@ -730,7 +749,7 @@ const AttendanceReportScreen = () => {
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     marginTop: 5,
-                    marginVertical:10
+                    marginVertical: 10
                   }}>
                   <View
                     style={{
@@ -740,7 +759,7 @@ const AttendanceReportScreen = () => {
 
                     <Text
                       variant="bodySmall"
-                      style={{color: theme.colors.green}}>
+                      style={{ color: theme.colors.green }}>
                       {item?.in_addr}
                     </Text>
                   </View>
@@ -752,11 +771,11 @@ const AttendanceReportScreen = () => {
 
                     <Text
                       variant="bodySmall"
-                      style={{color:item?.out_addr? theme.colors.green:theme.colors.red}}>
-                      {item?.out_addr||'Yet to clock out'}
+                      style={{ color: item?.out_addr ? theme.colors.green : theme.colors.red }}>
+                      {item?.out_addr || 'Yet to clock out'}
                     </Text>
                   </View>
-                  
+
                 </View>
                 {item?.attn_reject_remarks && (
                   <View
@@ -773,7 +792,7 @@ const AttendanceReportScreen = () => {
 
                       <Text
                         variant="bodySmall"
-                        style={{color: theme.colors.error}}>
+                        style={{ color: theme.colors.error }}>
                         {item?.attn_reject_remarks}
                       </Text>
                     </View>

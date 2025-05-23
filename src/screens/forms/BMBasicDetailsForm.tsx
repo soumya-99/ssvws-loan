@@ -775,7 +775,7 @@ const BMBasicDetailsForm = forwardRef(({
 
                     <InputPaper
                         label="Voter ID"
-                        maxLength={10}
+                        maxLength={20}
                         leftIcon='card-account-details-outline'
                         keyboardType="default"
                         value={formData.voterId}

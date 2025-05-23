@@ -13,6 +13,7 @@ import SearchTransactionChooseScreen from '../screens/SearchTransactionChooseScr
 import SearchApprovedLoansScreen from '../screens/SearchApprovedLoansScreen'
 import SearchUnapprovedLoansScreen from '../screens/SearchUnapprovedLoansScreen'
 import RecoveryMemberScreen from '../screens/RecoveryMemberScreen'
+import DuplicateReceiptScreen from '../screens/DuplicateReceiptScreen'
 
 export default function SearchNavigation() {
     const Stack = createNativeStackNavigator()
@@ -31,6 +32,7 @@ export default function SearchNavigation() {
             <Stack.Screen name={navigationRoutes.searchApprovedLoansScreen} component={SearchApprovedLoansScreen} />
             <Stack.Screen name={navigationRoutes.searchUnapprovedLoansScreen} component={SearchUnapprovedLoansScreen} />
             <Stack.Screen name={navigationRoutes.recoveryMemberScreen} component={RecoveryMemberScreen} />
+            <Stack.Screen name={navigationRoutes.duplicateReceiptScreen} component={DuplicateReceiptScreen} />
         </Stack.Navigator>
     )
 }

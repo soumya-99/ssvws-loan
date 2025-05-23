@@ -2,12 +2,11 @@ import { BluetoothEscposPrinter } from "react-native-bluetooth-escpos-printer"
 import { CONSTANTS } from "../utils/constants"
 
 export const useEscPosPrint = () => {
-    async function handlePrint(data: any) {
+    async function handlePrint(data: any, isDuplicate = false) {
         try {
             let tot_amt = 0
             console.log('dataaaaaaaaaaaaaa', data)
             console.log("Called Printer...")
-            // setLoading(true)
 
             let columnSingleRow = [32]
             let columnWidths = [12, 1, 19]
@@ -21,7 +20,7 @@ export const useEscPosPrint = () => {
             await BluetoothEscposPrinter.printColumn(
                 columnSingleRow,
                 [BluetoothEscposPrinter.ALIGN.CENTER],
-                [`RECEIPT`],
+                [`${isDuplicate ? "DUPLICATE RECEIPT" : "RECEIPT"}`],
                 {},
             );
             await BluetoothEscposPrinter.printColumn(
@@ -62,7 +61,7 @@ export const useEscPosPrint = () => {
                     BluetoothEscposPrinter.ALIGN.CENTER,
                     BluetoothEscposPrinter.ALIGN.RIGHT,
                 ],
-                ['TIME', ":", `${new Date().toLocaleTimeString("en-GB")}`],
+                ['TIME', ":", `${data[0]?.upload_on}`],
                 {},
             );
             await BluetoothEscposPrinter.printColumn(

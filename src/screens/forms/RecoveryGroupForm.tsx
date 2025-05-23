@@ -335,6 +335,7 @@ const RecoveryGroupForm = ({ fetchedData, approvalStatus = "U" }) => {
             prn_amt: item?.prn_amt,
             intt_amt: item?.intt_amt,
             last_trn_dt: formattedDate(formData.txnDate),
+            upload_on: new Date().toLocaleTimeString("en-GB")
         }));
 
 

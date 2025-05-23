@@ -13,8 +13,8 @@ const navigationRoutes = {
     bottomNavigationPaper: "BottomNavigationPaper",
     reportsNavigation: "ReportsNavigation",
     reportsChooseScreen: "ReportsChooseScreen",
-    demandReport:"DemandReport",
-    recoveryReportScreen: "RecoveryReportScreen",    
+    demandReport: "DemandReport",
+    recoveryReportScreen: "RecoveryReportScreen",
     groupwiseRecovery: "GroupwiseRecovery",
     disbursementReportScreen: "DisbursementReportScreen",
     loanRecoveryNavigation: "LoanRecoveryNavigation",
@@ -38,12 +38,13 @@ const navigationRoutes = {
     settingsScreen: "SettingsScreen",
     printerConnectScreen: "PrinterConnectScreen",
     noInternetScreen: "NoInternetScreen",
-    
+
     attendanceReportScreen: "AttendanceReportScreen",
 
     bmPendingLoansNavigation: "BMPendingLoansNavigation",
     bmPendingLoansScreen: "BMPendingLoansScreen",
     bmPendingLoanFormScreen: "BMPendingLoanFormScreen",
+    duplicateReceiptScreen: "DuplicateReceiptScreen"
 }
 
 export default navigationRoutes
