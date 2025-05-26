@@ -12,7 +12,7 @@ const AppContext = ({ children }) => {
     const appState = useRef(AppState.currentState)
     const appVersion = DeviceInfo.getVersion()
     // debugging
-    const uat = true
+    const uat = false
 
     const [isLogin, setIsLogin] = useState<boolean>(() => false)
     const [isLoading, setIsLoading] = useState<boolean>(() => false)
