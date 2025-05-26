@@ -11,6 +11,7 @@ import { ADDRESSES } from '../../config/api_list'
 import ButtonPaper from '../../components/ButtonPaper'
 import { loginStorage } from '../../storage/appStorage'
 import { disableConditionExceptBasicDetails } from '../../utils/disableCondition'
+import { SCREEN_WIDTH } from 'react-native-normalize'
 
 interface BMOccupationDetailsFormProps {
     formNumber?: any
@@ -101,6 +102,7 @@ const BMOccupationDetailsForm = forwardRef(({
         setLoading(true)
         await axios.get(`${ADDRESSES.FETCH_PURPOSE_OF_LOAN}`)
             .then(res => {
+                console.log("FETCH_PURPOSE_OF_LOAN", res?.data)
                 if (res?.data?.suc === 1) {
                     res?.data?.msg?.forEach((item) => {
                         setPurposesOfLoan(prev => [
@@ -271,6 +273,36 @@ const BMOccupationDetailsForm = forwardRef(({
                         }
                         descriptionStyle={{ color: theme.colors.tertiary }}
                     />
+                    {/* <Dropdown
+                        style={styles.dropdown}
+                        placeholderStyle={[styles.placeholderStyle, { color: theme.colors.onBackground }]}
+                        selectedTextStyle={[styles.selectedTextStyle, { color: theme.colors.primary }]}
+                        inputSearchStyle={[styles.inputSearchStyle, { borderRadius: 10 }]}
+                        containerStyle={{
+                            width: SCREEN_WIDTH / 1.1,
+                            alignSelf: "center",
+                            borderRadius: 10
+                        }}
+                        iconStyle={styles.iconStyle}
+                        data={purposesOfLoan}
+                        search
+                        maxHeight={300}
+                        labelField="purpose_id"
+                        valueField="purp_id"
+                        placeholder="Select Purpose*"
+                        searchPlaceholder="Search Purpose..."
+                        value={formData.purposeOfLoanName}
+                        onChange={item => {
+                            console.log("jjj")
+                            console.log("??????????????????????", item)
+                            // setValue(item.value);
+                            handleFormChange("groupCode", item?.value);
+                            // handleFormChange("groupCodeName", item?.label);
+                        }}
+                        renderLeftIcon={() => (
+                            <Icon size={25} source={"account-group-outline"} />
+                        )}
+                    /> */}
                     <InputPaper
                         label="Amount Applied*"
                         maxLength={15}
@@ -346,4 +378,32 @@ const BMOccupationDetailsForm = forwardRef(({
 
 export default BMOccupationDetailsForm
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    dropdown: {
+        margin: 16,
+        height: 30,
+        width: SCREEN_WIDTH,
+        alignSelf: "center",
+        paddingHorizontal: 35,
+        borderRadius: 10
+    },
+    // icon: {
+    //     marginLeft: -150,
+    // },
+    placeholderStyle: {
+        fontSize: 16,
+        marginLeft: 16,
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+        marginLeft: 16,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
+})

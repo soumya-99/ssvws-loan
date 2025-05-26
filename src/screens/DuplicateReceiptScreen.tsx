@@ -186,6 +186,7 @@ const DuplicateReceiptScreen = () => {
                             multiRangeMode
                             startDate={startDate}
                             endDate={endDate}
+                            minDate={new Date("2025-05-23")}
                             // max={30}
                             // onChange={({ startDate: newStart, endDate: newEnd }) => {
                             //     setStartDate(newStart);
