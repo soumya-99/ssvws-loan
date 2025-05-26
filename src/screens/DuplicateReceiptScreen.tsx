@@ -1,15 +1,14 @@
-import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid } from 'react-native'
+import { StyleSheet, SafeAreaView, ScrollView, View, ToastAndroid, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { usePaperColorScheme } from '../theme/theme'
 import { SCREEN_HEIGHT } from 'react-native-normalize'
 import HeadingComp from '../components/HeadingComp'
-import { Divider, Icon, IconButton, List, MD2Colors, Searchbar, Text } from 'react-native-paper'
+import { Divider, IconButton, List, MD2Colors, Searchbar, Text } from 'react-native-paper'
 import axios from 'axios'
 import { ADDRESSES } from '../config/api_list'
-import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { loginStorage } from '../storage/appStorage'
 import DateTimePicker, { DateType, useDefaultStyles } from 'react-native-ui-datepicker'
-import dayjs from 'dayjs'
 import ButtonPaper from '../components/ButtonPaper'
 import { formattedDate } from '../utils/dateFormatter'
 import { BASE_URL } from '../config/config'
@@ -24,11 +23,10 @@ const DuplicateReceiptScreen = () => {
 
     const [loading, setLoading] = useState(() => false)
 
-    const [startDate, setStartDate] = useState<DateType>(dayjs())
-    const [endDate, setEndDate] = useState<DateType>(dayjs())
+    const [startDate, setStartDate] = useState<DateType>(undefined)
+    const [endDate, setEndDate] = useState<DateType>(undefined)
     const [search, setSearch] = useState(() => "")
     const [formsData, setFormsData] = useState<any[]>(() => [])
-    const [isApproved, setIsApproved] = useState<string>(() => "U")
     const [filteredDataArray, setFilteredDataArray] = useState(() => [])
 
     const defaultStyles = useDefaultStyles();
@@ -46,6 +44,45 @@ const DuplicateReceiptScreen = () => {
     useEffect(() => {
         setFilteredDataArray(formsData)
     }, [formsData])
+
+    const countDays = (a: DateType, b: DateType) => {
+        const d1 = new Date(a.toString())
+        const d2 = new Date(b.toString())
+
+        return Math.ceil(Math.abs(d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24))
+    }
+
+    const handleChangeDateRange = ({
+        startDate: newStart,
+        endDate: newEnd,
+    }: {
+        startDate: DateType,
+        endDate: DateType
+    }) => {
+        if (newStart && newEnd) {
+            const span = countDays(newStart, newEnd)
+            if (span > 31) {
+                Alert.alert(
+                    'Range Too Long',
+                    `You selected ${span} days. Please pick up to 31 days.`,
+                    [
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                setStartDate(undefined)
+                                setEndDate(undefined)
+                            },
+                        },
+                    ],
+                    { cancelable: false }
+                )
+                return
+            }
+        }
+
+        setStartDate(newStart)
+        setEndDate(newEnd)
+    }
 
     const handleSearch = async () => {
         setLoading(true)
@@ -88,7 +125,7 @@ const DuplicateReceiptScreen = () => {
         setLoading(false)
     }
 
-    const duplicatePrint = async (data) => {
+    const duplicatePrint = async (data: any) => {
         console.log("dataa dupp", data)
         await handleFetchDuplicateReceipt(data)
     }
@@ -150,11 +187,12 @@ const DuplicateReceiptScreen = () => {
                             startDate={startDate}
                             endDate={endDate}
                             // max={30}
-                            onChange={({ startDate: newStart, endDate: newEnd }) => {
-                                setStartDate(newStart);
-                                setEndDate(newEnd);
-                                console.log('START DT - END DT', startDate, endDate);
-                            }}
+                            // onChange={({ startDate: newStart, endDate: newEnd }) => {
+                            //     setStartDate(newStart);
+                            //     setEndDate(newEnd);
+                            //     console.log('START DT - END DT', startDate, endDate);
+                            // }}
+                            onChange={handleChangeDateRange}
                         />
                     </View>
                     <ButtonPaper
